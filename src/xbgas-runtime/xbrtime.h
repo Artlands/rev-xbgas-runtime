@@ -1,7 +1,7 @@
 /*
  * _XBRTIME_H_
  *
- * Copyright (C) 2017-2018 Tactical Computing Laboratories, LLC
+ * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
  * contact@tactcomplabs.com
  *
@@ -39,6 +39,8 @@ extern "C" {
 #include "xbrtime-macros.h"
 #include "xbrtime-collectives.h"
 #include "xbrtime-atomics.h"
+#include "xbrtime-print.h"
+#include "xbrtime-malloc.h"
 
 /* ---------------------------------------- FUNCTION PROTOTYPES */
 

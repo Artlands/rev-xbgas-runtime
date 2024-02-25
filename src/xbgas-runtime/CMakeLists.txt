@@ -1,6 +1,6 @@
 # src/xbgas-runtime CMakeLists.txt driver
 #
-# Copyright (C) 2017-2018 Tactical Computing Laboratories, LLC
+# Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
 # All Rights Reserved
 # contact@tactcomplabs.com
 #
@@ -18,20 +18,23 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
 
 set(XBGASSrcs
 xbrtime.h
+xbrtime-print.h
+xbrtime-malloc.h
 xbrtime-version.h
 xbrtime-types.h
 xbrtime-macros.h
 xbrtime-alloc.h
 xbrtime-api.h
 xbrtime-collectives.h
-xbrtime-atomics.h
+# xbrtime-atomics.h
+xbrtime_print.c
+xbrtime_malloc.c
 xbrtime_init.c
-xbrtime_ctor.c
 xbrtime_util.c
 xbrtime_api.c
 xbrtime_alloc.c
 xbrtime_barrier.c
-xbrtime_atomics.c
+# xbrtime_atomics.c
 xbrtime_alltoall.c
 xbrtime_broadcast.c
 xbrtime_gather.c
@@ -39,10 +42,9 @@ xbrtime_gather_all.c
 xbrtime_reduce.c
 xbrtime_reduce_all.c
 xbrtime_scatter.c
-xbrtime_ctor_asm.s
 xbrtime_util_asm.s
 xbrtime_api_asm.s
-xbrtime_atomics_asm.s
+# xbrtime_atomics_asm.s
 )
 
 include_directories( . )

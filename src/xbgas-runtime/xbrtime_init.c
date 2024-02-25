@@ -1,7 +1,7 @@
 /*
  * _XBRTIME_INIT_C_
  *
- * Copyright (C) 2017-2018 Tactical Computing Laboratories, LLC
+ * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
  * contact@tactcomplabs.com
  *
@@ -12,24 +12,23 @@
  */
 
 #include "xbrtime.h"
-extern volatile  uint64_t* barrier;
-#define INIT_ADDR 0xBB00000000000000ull
 
 /* ------------------------------------------------- GLOBALS */
 XBRTIME_DATA *__XBRTIME_CONFIG;
 
 /* ------------------------------------------------- FUNCTION PROTOTYPES */
-size_t __xbrtime_asm_get_memsize();
-int __xbrtime_asm_get_id();
-int __xbrtime_asm_get_npes();
+int      __xbrtime_asm_get_id();
+int      __xbrtime_asm_get_npes();
+size_t   __xbrtime_asm_get_memsize();
 uint64_t __xbrtime_asm_get_startaddr();
-void __xbrtime_asm_fence();
+uint64_t __xbrtime_asm_get_barrier_addr();
+void     __xbrtime_asm_fence();
 
 extern void xbrtime_close(){
   int i = 0;
 
   /* initiate a barrier */
-  //xbrtime_barrier();
+  xbrtime_barrier();
 
   if( __XBRTIME_CONFIG != NULL ){
     /* hard fence */
@@ -51,7 +50,7 @@ extern void xbrtime_close(){
   }
 }
 
-extern int xbrtime_init(){
+int xbrtime_init(){
 
   /* vars */
   int i = 0;
@@ -63,22 +62,36 @@ extern int xbrtime_init(){
     return -1;
   }
 
-  __XBRTIME_CONFIG->_MMAP       = malloc(sizeof(XBRTIME_MEM_T) * _XBRTIME_MEM_SLOTS_);
-  __XBRTIME_CONFIG->_ID         = __xbrtime_asm_get_id();
-  __XBRTIME_CONFIG->_MEMSIZE    = __xbrtime_asm_get_memsize();
-  __XBRTIME_CONFIG->_NPES       = __xbrtime_asm_get_npes();
-  __XBRTIME_CONFIG->_START_ADDR = __xbrtime_asm_get_startaddr();
+  __XBRTIME_CONFIG->_ID         = (int)(__xbrtime_asm_get_id());
+  __XBRTIME_CONFIG->_NPES       = (int)(__xbrtime_asm_get_npes());
+  __XBRTIME_CONFIG->_MEMSIZE    = (int)(__xbrtime_asm_get_memsize());
+  __XBRTIME_CONFIG->_START_ADDR = (uint64_t)(__xbrtime_asm_get_startaddr());
   __XBRTIME_CONFIG->_SENSE      = 0x01ull;
-  __XBRTIME_CONFIG->_BARRIER 		= barrier;
+  __XBRTIME_CONFIG->_BARRIER 		= (uint64_t*)(__xbrtime_asm_get_barrier_addr());
+  __XBRTIME_CONFIG->_MMAP       = malloc(sizeof(XBRTIME_MEM_T) * _XBRTIME_MEM_SLOTS_);
+
+
+#ifdef XBRTIME_DEBUG
+  printf( "\033[32mXBRTIME_DEBUG :\033[0m PE = %d, NPES = %d, MEMSIZE = %d, START_ADDR = 0x%lx, BARRIER_ADDR = 0x%lx\n",
+         __XBRTIME_CONFIG->_ID,
+         __XBRTIME_CONFIG->_NPES,
+         __XBRTIME_CONFIG->_MEMSIZE,
+         __XBRTIME_CONFIG->_START_ADDR,
+         __XBRTIME_CONFIG->_BARRIER);
+#endif
+
+  /* initialize the barrier */
 	// MAX_PE_NUM = 1024, thus, MAX_Barrier buffer space = log2^1024 = 10
 	for( i = 0; i < 10; i++){
-  	__XBRTIME_CONFIG->_BARRIER[i] 		= 0xfffffffffull;
-  	__XBRTIME_CONFIG->_BARRIER[10+i] 	= 0xaaaaaaaaaull;
+  	__XBRTIME_CONFIG->_BARRIER[i] 		= (uint64_t)(0xfffffffffull);
+  	__XBRTIME_CONFIG->_BARRIER[10+i] 	= (uint64_t)(0xaaaaaaaaaull);
 	}
-#ifdef XBGAS_DEBUG
-	printf("PE:%d----BARRIER[O] = 0x%lx\n", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[0]);
-	printf("PE:%d----BARRIER[1] = 0x%lx\n", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[1]);
+
+#ifdef XBRTIME_DEBUG
+  printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[O] = 0x%lx\n", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[0]);
+	printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[11] = 0x%lx\n", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[11]);
 #endif
+
   /* too many total PEs */
   if( __XBRTIME_CONFIG->_NPES > __XBRTIME_MAX_PE ){
     free( __XBRTIME_CONFIG );
@@ -105,9 +118,6 @@ extern int xbrtime_init(){
     __XBRTIME_CONFIG->_MAP[i]._PHYSICAL  = i+1;
   }
 
-
-  int init = 1;
-  *((uint64_t *)INIT_ADDR) = init;
   return 0;
 }
 

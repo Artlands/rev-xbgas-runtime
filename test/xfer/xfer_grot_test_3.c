@@ -1,6 +1,6 @@
 /* _XFER_GROT_TEST_3_C_
  *
- * Copyright (C) 2017-2018 Tactical Computing Laboratories, LLC
+ * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
  * contact@tactcomplabs.com
  *
@@ -26,31 +26,31 @@ int main( int argc, char **argv ){
 
   printf( "Initializing xBGAS Runtime\n" );
   rtn = xbrtime_init();
-  printf( "PE=%d; xBGAS is Initialized\n", xbrtime_mype() );
+  printf( "PE=%d: xBGAS is Initialized\n", xbrtime_mype() );
 
-  printf( "PE=%d; Allocating %d bytes\n", xbrtime_mype(), (int)(sz) * (int)(ne));
+  printf( "PE=%d: Allocating %d bytes\n", xbrtime_mype(), (int)(sz) * (int)(ne));
   ptr = (uint64_t *)(xbrtime_malloc( sz*ne ));
 
-  printf( "PE=%d; *PTR = 0x%"PRIu64"\n", xbrtime_mype(), (uint64_t)(ptr) );
+  printf( "PE=%d: *PTR = 0x%"PRIu64"\n", xbrtime_mype(), (uint64_t)(ptr) );
   for( i=0; i<ne; i++ ){
     ptr[i] = (uint64_t)(xbrtime_mype()+i);
   }
 
   /* perform a barrier */
-  printf( "PE=%d; EXECUTING BARRIER\n", xbrtime_mype() );
+  printf( "PE=%d: EXECUTING BARRIER\n", xbrtime_mype() );
   xbrtime_barrier();
   //xbrtime_barrier_full();
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
-    printf( "PE=%d; PERFORMING OPERATION\n", xbrtime_mype() );
+    printf( "PE=%d: PERFORMING OPERATION\n", xbrtime_mype() );
     xbrtime_ulonglong_get((unsigned long long *)(ptr),
                           (unsigned long long *)(ptr),
                           ne,
                           1,
                           1 );
   }else{
-    printf( "PE=%d; PERFORMING OPERATION\n", xbrtime_mype() );
+    printf( "PE=%d: PERFORMING OPERATION\n", xbrtime_mype() );
     xbrtime_ulonglong_get((unsigned long long *)(ptr),
                           (unsigned long long *)(ptr),
                           ne,
@@ -59,13 +59,13 @@ int main( int argc, char **argv ){
   }
 
   /* perform a barrier */
-  printf( "PE=%d; EXECUTING BARRIER\n", xbrtime_mype() );
+  printf( "PE=%d: EXECUTING BARRIER\n", xbrtime_mype() );
   xbrtime_barrier();
 
-  printf( "PE=%d; PTR[0]=0x%"PRIu64"\n",
+  printf( "PE=%d: PTR[0]=0x%"PRIu64"\n",
           xbrtime_mype(), ptr[0]);
 
-  printf( "PE=%d; xBGAS is Closing\n", xbrtime_mype() );
+  printf( "PE=%d: xBGAS is Closing\n", xbrtime_mype() );
   xbrtime_free( ptr );
   xbrtime_close();
   printf( "xBGAS is Closed\n" );

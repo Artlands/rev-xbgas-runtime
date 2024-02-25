@@ -1,6 +1,6 @@
 /* _INIT_TEST_4_C_
  *
- * Copyright (C) 2017-2018 Tactical Computing Laboratories, LLC
+ * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
  * contact@tactcomplabs.com
  *
@@ -10,7 +10,7 @@
  *
  */
 
-#include <stdio.h>
+// #include <stdio.h>
 #include "xbrtime.h"
 
 int main( int argc, char **argv ){

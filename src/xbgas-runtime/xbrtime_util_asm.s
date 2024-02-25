@@ -1,7 +1,7 @@
 #
 # _XBRTIME_UTIL_ASM_S_
 #
-# Copyright (C) 2017-2018 Tactical Computing Laboratories, LLC
+# Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
 # All Rights Reserved
 # contact@tactcomplabs.com
 #
@@ -46,6 +46,13 @@ __xbrtime_asm_get_startaddr:
   eaddi a0,e13,0
   ret
   .size __xbrtime_asm_get_startaddr, .-__xbrtime_asm_get_startaddr
+
+  .global __xbrtime_asm_get_barrier_addr
+  .type __xbrtime_asm_get_barrier_addr, @function
+__xbrtime_asm_get_barrier_addr:
+  eaddi a0,e14,0
+  ret
+  .size __xbrtime_asm_get_barrier_addr, .-__xbrtime_asm_get_barrier_addr
 
   .globl __xbrtime_asm_fence
   .type __xbrtime_asm_fence, @function

@@ -1,6 +1,6 @@
 # xBGAS Top-Level CMake Description
 #
-# Copyright (C) 2017-2018 Tactical Computing Laboratories, LLC
+# Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
 # All Rights Reserved
 # contact@tactcomplabs.com
 #
@@ -9,15 +9,22 @@
 # this distribution.
 #
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.19)
 project(xbgas-runtime C CXX ASM)
+
+
+# Global compiler options
+add_compile_options(-march=rv64gc_zifencei -mcmodel=medany -static -std=gnu11 -fno-common -fno-builtin-printf -w -lm)
+
+# Global linker options
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 
 #------------------------------------------------------------------------
 #-- COMPILER OPTIONS
 #------------------------------------------------------------------------
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -Wall")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -Wall -DXBGAS_DEBUG")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -Wall -DXBRTIME_DEBUG")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O3 -Wall")
 
 #------------------------------------------------------------------------
@@ -37,11 +44,21 @@ find_package(Doxygen)
 option(BUILD_DOCUMENTATION "Create and install the doxygen-ized API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
 
 set( RISCV_ENV "$ENV{RISCV}" )
+
 if(RISCV_ENV)
   message(STATUS "RISCV environment set to ${RISCV_ENV}.")
 else()
   message(FATAL_ERROR "RISCV environment variable is not set.")
 endif()
+
+set( REV_ENV "$ENV{REV}" )
+if(REV_ENV)
+  message(STATUS "REV environment set to ${REV_ENV}.")
+else()
+  message(FATAL_ERROR "REV environment variable is not set.")
+endif()
+
+include_directories("${REV_ENV}/common/syscalls")
 
 #------------------------------------------------------------------------
 #-- DOCUMENTATION
