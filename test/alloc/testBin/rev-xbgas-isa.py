@@ -31,7 +31,7 @@ if len(sys.argv) != 2:
   sys.stderr.write("Usage: You must pass the executable you wish to simulate using the '--model-options' option with sst\n")
   raise SystemExit(1)
 
-NPES = 4
+NPES = 2
 
 PROGRAM = sys.argv[1]
 CLOCK = "2.5GHz"  

@@ -14,6 +14,7 @@
 # e11 = contains the number of PEs
 # e12 = contains the size of the shared memory region
 # e13 = contains the starting address of the physical shared memory region
+# e14 = contains the starting address of the barrier variable
 
   .file "xbrtime_util_asm.s"
   .text
