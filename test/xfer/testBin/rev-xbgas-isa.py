@@ -30,9 +30,6 @@ import sys
 # Define SST core options
 sst.setProgramOption("timebase", "1ps")
 
-# Tell SST what statistics handling we want
-sst.setStatisticLoadLevel(1)
-
 if len(sys.argv) != 2:
   sys.stderr.write("Usage: You must pass the executable you wish to simulate using the '--model-options' option with sst\n")
   raise SystemExit(1)
@@ -129,7 +126,7 @@ for i in range(0, NPES):
 
 
 # Tell SST what statistics handling we want
-sst.setStatisticOutput("sst.statOutputCSV")
-sst.enableAllStatisticsForAllComponents()
+# sst.setStatisticOutput("sst.statOutputCSV")
+# sst.enableAllStatisticsForAllComponents()
 
 # EOF

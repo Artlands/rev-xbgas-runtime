@@ -13,7 +13,7 @@
 // #include <stdio.h>
 #include "xbrtime.h"
 
-#define _XBGAS_ALLOC_SIZE_ 100000000000000000
+#define _XBGAS_ALLOC_SIZE_ 1000000
 
 int main( int argc, char **argv ){
   int rtn = 0;

@@ -36,13 +36,13 @@ foreach(testSrc ${TEST_SRCS})
   set_target_properties(${testName} PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin)
 
-  # # Add the tests for execution
-  # add_test(NAME ${testName}
-  #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
-  #   COMMAND mpirun -n 2 -bind-to core:2 ${RISCV_ENV}/bin/spike -x512 pk ${CMAKE_CURRENT_SOURCE_DIR}/testBin/${testName})
-  # set_tests_properties( ${testName} 
-	# PROPERTIES 
-	# 	PASS_REGULAR_EXPRESSION "" 
-	# 	ENVIRONMENT "export MPICH_ASYNC_PROGRESS=1")
+  # Add the tests for execution
+  add_test(NAME ${testName}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
+    COMMAND sst ${CMAKE_CURRENT_SOURCE_DIR}/testBin/rev-xbgas-isa.py --model-options=${CMAKE_CURRENT_SOURCE_DIR}/testBin/${testName}.exe)
+  set_tests_properties( ${testName} 
+	PROPERTIES 
+    TIMEOUT 30
+		PASS_REGULAR_EXPRESSION "")
 endforeach(testSrc)
 endif()
