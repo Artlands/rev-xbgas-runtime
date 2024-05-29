@@ -39,8 +39,6 @@ extern "C" {
 #include "xbrtime-macros.h"
 #include "xbrtime-collectives.h"
 #include "xbrtime-atomics.h"
-#include "xbrtime-print.h"
-#include "xbrtime-malloc.h"
 
 /* ---------------------------------------- FUNCTION PROTOTYPES */
 

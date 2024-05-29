@@ -18,8 +18,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
 
 set(XBGASSrcs
 xbrtime.h
-xbrtime-print.h
-xbrtime-malloc.h
 xbrtime-version.h
 xbrtime-types.h
 xbrtime-macros.h
@@ -27,8 +25,6 @@ xbrtime-alloc.h
 xbrtime-api.h
 xbrtime-collectives.h
 # xbrtime-atomics.h
-xbrtime_print.c
-xbrtime_malloc.c
 xbrtime_init.c
 xbrtime_util.c
 xbrtime_api.c

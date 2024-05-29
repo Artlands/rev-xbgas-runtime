@@ -27,6 +27,12 @@ import os
 import sst
 import sys
 
+# Define SST core options
+sst.setProgramOption("timebase", "1ps")
+
+# Tell SST what statistics handling we want
+sst.setStatisticLoadLevel(1)
+
 if len(sys.argv) != 2:
   sys.stderr.write("Usage: You must pass the executable you wish to simulate using the '--model-options' option with sst\n")
   raise SystemExit(1)
@@ -85,7 +91,7 @@ for i in range(0, NPES):
     "memCost" : "[0:1:10]",                       # Memory loads required 1-10 cycles
     "enable_xbgas" : 1,                           # Enable XBGAS support 
     "enable_memH": 1,                             # Enable memHierarchy support
-    "shared_memory_size": SHARED_MEM_SIZE,                   # Shared memory size
+    "shared_memory_size": SHARED_MEM_SIZE,        # Shared memory size
     "splash" : 0                                  # Display the splash message
   })
   # print("Created xBGAS CPU component " + str(i) + ": " + xbgas_cpu.getFullName())
@@ -123,7 +129,7 @@ for i in range(0, NPES):
 
 
 # Tell SST what statistics handling we want
-# sst.setStatisticLoadLevel(2)
-# sst.setStatisticOutput("sst.statOutputCSV")
+sst.setStatisticOutput("sst.statOutputCSV")
+sst.enableAllStatisticsForAllComponents()
 
 # EOF

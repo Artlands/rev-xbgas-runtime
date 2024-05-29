@@ -1,3 +1,4 @@
 .DS_Store
-/testBin
-/build
+build/
+*.exe
+.vscode/

@@ -16,49 +16,41 @@
 
 #define _XBGAS_ALLOC_SIZE_ 8
 
-int main( int argc, char **argv ){
-  int rtn = 0;
+int main()
+{
+  int rtn       = 0;
   uint64_t *ptr = NULL;
-  size_t sz = _XBGAS_ALLOC_SIZE_;
-  printf( "Initializing xBGAS Runtime\n" );
-  rtn = xbrtime_init();
-  printf( "PE=%d: xBGAS is Initialized\n", xbrtime_mype() );
+  size_t sz     = _XBGAS_ALLOC_SIZE_;
 
-  printf( "PE=%d: Allocating %d bytes\n", xbrtime_mype(), (int)(sz) );
+  /* Initialize the runtime */ 
+  rtn = xbrtime_init();
+
+  /* Allocate a symmetric memory region */
   ptr = (uint64_t *)(xbrtime_malloc( sz ));
 
-  printf( "PE=%d: *PTR = 0x%"PRIu64"\n", xbrtime_mype(), (uint64_t)(ptr) );
+  /* Initialize the symmetric memory region */
   ptr[0] = (uint64_t)(xbrtime_mype());
 
   /* perform a barrier */
-  printf( "PE=%d: executing barrier\n", xbrtime_mype() );
   xbrtime_barrier();
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
-    printf( "PE=%d: performing operation\n", xbrtime_mype() );
-    xbrtime_ulonglong_get((unsigned long long *)(ptr),
+    xbrtime_ulonglong_get((unsigned long long *)(ptr), 
                           (unsigned long long *)(ptr),
-                          1,
-                          1,
-                          1 );
-  }else{
-    printf( "PE=%d: doing nothing\n", xbrtime_mype() );
+                          1,    // Target PE
+                          1,    // Number of elements            
+                          1 );  // Stride                  
   }
 
   /* perform a barrier */
-  printf( "PE=%d: executing barrier\n", xbrtime_mype() );
   xbrtime_barrier();
 
-	printf( "PE=%d: entering while loop\n", xbrtime_mype());
-  printf( "PE=%d: PTR[0]=0x%"PRIu64"\n",
+  printf( "PE=%d: PTR[0]=0x%"PRIu64"\n", 
           xbrtime_mype(), ptr[0]);
 
-  printf( "PE=%d: xBGAS is Closing\n", xbrtime_mype() );
   xbrtime_free( ptr );
   xbrtime_close();
-  printf( "xBGAS is Closed\n" );
-
   return rtn;
 }
 
