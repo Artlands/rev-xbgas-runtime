@@ -36,8 +36,8 @@ extern uint32_t xbrtime_decode_pe( int pe ){
   }
 
   for( i=0; i<__XBRTIME_CONFIG->_NPES; i++ ){
-    if( __XBRTIME_CONFIG->_MAP[i]._LOGICAL == pe ){
-      return __XBRTIME_CONFIG->_MAP[i]._PHYSICAL;
+    if( __XBRTIME_CONFIG->_MAP[i]._PHYSICAL == pe ){
+      return __XBRTIME_CONFIG->_MAP[i]._NAMESPACE;
     }
   }
 

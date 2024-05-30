@@ -114,8 +114,12 @@ int xbrtime_init(){
 
   /* init the PE mapping structure */
   for( i=0; i<__XBRTIME_CONFIG->_NPES; i++ ){
-    __XBRTIME_CONFIG->_MAP[i]._LOGICAL   = i;
-    __XBRTIME_CONFIG->_MAP[i]._PHYSICAL  = i+1;
+    __XBRTIME_CONFIG->_MAP[i]._PHYSICAL  = i;
+    if (i == __XBRTIME_CONFIG->_ID) {
+      __XBRTIME_CONFIG->_MAP[i]._NAMESPACE = 0;
+    } else {
+      __XBRTIME_CONFIG->_MAP[i]._NAMESPACE = i + 1;
+    }
   }
 
   return 0;
