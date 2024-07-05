@@ -74,6 +74,7 @@ the following cmake build arguments:
 - -DBUILD_INIT_TESTING=ON   : enables the "init" tests
 - -DBUILD_ALLOC_TESTING=ON  : enables the allocation/free tests
 - -DBUILD_XFER_TESTING=ON   : enables the data transfer tests
+- -DBUILD_COLLECTIVE_TESTING=ON   : enables the collective operations tests
 
 Once you have build the library and associated tests, you can run the tests
 via the following command line:

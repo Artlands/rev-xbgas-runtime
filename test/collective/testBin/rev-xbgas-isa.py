@@ -26,53 +26,61 @@
 import os
 import sst
 import sys
-
-if len(sys.argv) != 2:
-  sys.stderr.write("Usage: You must pass the executable you wish to simulate using the '--model-options' option with sst\n")
+ 
+# Define SST core options
+sst.setProgramOption("timebase", "1ps")
+ 
+# Tell SST what statistics handling we want
+sst.setStatisticLoadLevel(1)
+ 
+if len(sys.argv) != 3:
+  sys.stderr.write("Usage: You must pass the executable you wish to simulate and the number of PEs using the '--model-options' option with sst\n")
   raise SystemExit(1)
-
-NPES = 2
-
+ 
 PROGRAM = sys.argv[1]
+NPES = int(sys.argv[2])
+ 
 CLOCK = "2.5GHz"  
 MEMSIZE = 1024*1024*1024
 SHARED_MEM_SIZE = 1024*1024*16
-
+ 
 memctrl_params = {
   "clock": CLOCK,
   "addr_range_start": 0,
   "addr_range_end": MEMSIZE-1,
   "backing": "malloc"
 }
-
+ 
 mem_params = {
   "access_time" : "100ns",
   "mem_size" : "8GB"
 }
-
+ 
 net_params = {
   "input_buf_size" : "512B",
   "output_buf_size" : "512B",
   "link_bw" : "10GB/s"
 }
-
+ 
 # setup the router
 router = sst.Component("router", "merlin.hr_router")
 router.setSubComponent("topology", "merlin.singlerouter")
 router.addParams(net_params)
-
+ 
 router.addParams({
     "xbar_bw" : "10GB/s",
     "flit_size" : "32B",
-    "num_ports" : str(NPES),
+    "num_ports" : NPES,
     "id" : 0
 })
-
-for i in range(0, NPES):
+ 
+for i in range(0, int(NPES)):
   if i == 0:
     VERBOSE = 1
+    SPLASH = 0
   else:
     VERBOSE = 1
+    SPLASH = 0
   # xBGAS CPUs
   xbgas_cpu = sst.Component("cpu" + str(i), "revcpu.RevCPU")
   xbgas_cpu.addParams({
@@ -83,10 +91,10 @@ for i in range(0, NPES):
     "startAddr" : "[0:0x00000000]",               # Starting address for core 0
     "machine" : "[0:RV64GCX]",
     "memCost" : "[0:1:10]",                       # Memory loads required 1-10 cycles
-    "enable_xbgas" : 1,                           # Enable XBGAS support 
+    "enable_xbgas" : 1,                           # Enable XBGAS support
     "enable_memH": 1,                             # Enable memHierarchy support
-    "shared_memory_size": SHARED_MEM_SIZE,                   # Shared memory size
-    "splash" : 0                                  # Display the splash message
+    "shared_memory_size": SHARED_MEM_SIZE,        # Shared memory size
+    "splash" : SPLASH                                  # Display the splash message
   })
   # print("Created xBGAS CPU component " + str(i) + ": " + xbgas_cpu.getFullName())
   
@@ -94,14 +102,14 @@ for i in range(0, NPES):
   
   # Setup the memory controllers
   lsq = xbgas_cpu.setSubComponent("memory", "revcpu.RevBasicMemCtrl")
-
+ 
   # Create the memHierarchy subcomponent
   miface = lsq.setSubComponent("memIface", "memHierarchy.standardInterface")
   
   # Create the memory controller in memHierarchy
   memctrl = sst.Component("memory" + str(i), "memHierarchy.MemController")
   memctrl.addParams(memctrl_params)
-
+ 
   # Create the memory backend subcomponent
   memory = memctrl.setSubComponent("backend", "memHierarchy.simpleMem")
   memory.addParams(mem_params)
@@ -114,16 +122,16 @@ for i in range(0, NPES):
   rmt_lsq = xbgas_cpu.setSubComponent("remote_memory", "revcpu.RevBasicRmtMemCtrl")
   rmt_nic = rmt_lsq.setSubComponent("xbgasNicIface", "revcpu.XbgasNIC")
   rmt_nic_iface = rmt_nic.setSubComponent("iface", "merlin.linkcontrol")
-
+ 
   rmt_nic_iface.addParams(net_params)
   
   # Setup the links
   link = sst.Link("link" + str(i))
   link.connect( (rmt_nic_iface, "rtr_port", "20ns"), (router, f"port{i}", "20ns") )
-
-
+ 
+ 
 # Tell SST what statistics handling we want
-# sst.setStatisticLoadLevel(2)
-# sst.setStatisticOutput("sst.statOutputCSV")
-
+sst.setStatisticOutput("sst.statOutputCSV")
+sst.enableAllStatisticsForAllComponents()
+ 
 # EOF
