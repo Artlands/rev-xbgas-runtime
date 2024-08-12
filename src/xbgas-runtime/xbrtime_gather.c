@@ -17,13 +17,16 @@
 void xbrtime_##_typename##_gather_tree(_type *dest, const _type *src, int *pe_msg_sz, int *pe_disp, size_t nelems, int root)                \
 {                                                                                                                                           \
     int i, j, counter, numpes, my_rpe, my_vpe, numpes_log, mask, temp_rpe, two_i, r_partner, v_partner, iter_msg_size, r_i, zero_idx;       \
+    printf("haha1"); \
     _type *temp = (_type*) xbrtime_malloc(nelems * sizeof(_type));   /* Buffer space for messages */                                        \
+    printf("haha2"); \
     numpes = xbrtime_num_pes();                                                                                                             \
     my_rpe = xbrtime_mype();                                                                                                                \
     my_vpe = ((my_rpe >= root) ? (my_rpe - root) : (my_rpe + numpes - root));                                                               \
     numpes_log = (int) ceil((log(numpes)/log(2)));                                                                                          \
     mask = (int) (pow(2,numpes_log) - 1);                                                                                                   \
-    int adj_disp[numpes];                                                                                                                   \
+    int adj_disp[numpes];                                                                                                                   \ 
+    printf("haha3");                                                                                                        \
                                                                                                                                             \
     /* Calculate adj_disp by vpe */                                                                                                         \
     counter = 0;                                                                                                                            \
