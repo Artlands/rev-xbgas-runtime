@@ -65,6 +65,38 @@ void xbrtime_##_typename##_broadcast(_type *dest, const _type *src, size_t nelem
 
 #undef XBGAS_DECL_BROADCAST
 
+#define XBGAS_DECL_BROADCAST_SUBSET(_type, _typename)                                                                              \
+void xbrtime_##_typename##_broadcast_subset_tree(_type *dest, const _type *src, size_t nelems, int stride, int root, const int *subset, size_t subset_size);              \
+void xbrtime_##_typename##_broadcast_subset_van_de_geijn(_type *dest, const _type *src, size_t nelems, int stride, int root, const int *subset, size_t subset_size);      \
+void xbrtime_##_typename##_broadcast_subset(_type *dest, const _type *src, size_t nelems, int stride, int root, const int *subset, size_t subset_size);
+
+    XBGAS_DECL_BROADCAST_SUBSET(float, float)
+    XBGAS_DECL_BROADCAST_SUBSET(double, double)
+    XBGAS_DECL_BROADCAST_SUBSET(char, char)
+    XBGAS_DECL_BROADCAST_SUBSET(unsigned char, uchar)
+    XBGAS_DECL_BROADCAST_SUBSET(signed char, schar)
+    XBGAS_DECL_BROADCAST_SUBSET(unsigned short, ushort)
+    XBGAS_DECL_BROADCAST_SUBSET(short, short)
+    XBGAS_DECL_BROADCAST_SUBSET(unsigned int, uint)
+    XBGAS_DECL_BROADCAST_SUBSET(int, int)
+    XBGAS_DECL_BROADCAST_SUBSET(unsigned long, ulong)
+    XBGAS_DECL_BROADCAST_SUBSET(long, long)
+    XBGAS_DECL_BROADCAST_SUBSET(unsigned long long, ulonglong)
+    XBGAS_DECL_BROADCAST_SUBSET(long long, longlong)
+    XBGAS_DECL_BROADCAST_SUBSET(uint8_t, uint8)
+    XBGAS_DECL_BROADCAST_SUBSET(int8_t, int8)
+    XBGAS_DECL_BROADCAST_SUBSET(uint16_t, uint16)
+    XBGAS_DECL_BROADCAST_SUBSET(int16_t, int16)
+    XBGAS_DECL_BROADCAST_SUBSET(uint32_t, uint32)
+    XBGAS_DECL_BROADCAST_SUBSET(int32_t, int32)
+    XBGAS_DECL_BROADCAST_SUBSET(uint64_t, uint64)
+    XBGAS_DECL_BROADCAST_SUBSET(int64_t, int64)
+    XBGAS_DECL_BROADCAST_SUBSET(size_t, size)
+    XBGAS_DECL_BROADCAST_SUBSET(ptrdiff_t, ptrdiff)
+    //  XBGAS_DECL_BROADCAST_SUBSET(long double, longdouble)
+
+#undef XBGAS_DECL_BROADCAST_SUBSET
+
 /*!   \fn xbrtime_TYPENAME_reduce_FUNC( TYPE *dest, const TYPE *src, size_t nelems, int stride, int root )
       \brief Performs reduction operation FUNC (sum, product, min, max, and, or, xor) on one or more values of type TYPE and places the result on root
       \param dest is a pointer to the base shared address where final reduce values are placed on the root PE
