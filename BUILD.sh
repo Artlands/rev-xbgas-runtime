@@ -14,7 +14,7 @@ fi
 
 mkdir build && cd build
 
-cmake .. -DBUILD_ALL_TESTING=ON \
+cmake .. -DBUILD_COLLECTIVE_TESTING=ON \
          -DBUILD_DOCUMENTATION=OFF \
          -DCMAKE_INSTALL_PREFIX=$XBGAS_RUNTIME
 

@@ -23,7 +23,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 #-- COMPILER OPTIONS
 #------------------------------------------------------------------------
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") #cannot use -O3 since it will cause seg fault for sst
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -Wall -DXBRTIME_DEBUG")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O3 -Wall")
 
