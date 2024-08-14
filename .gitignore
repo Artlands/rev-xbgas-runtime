@@ -2,3 +2,6 @@
 build/
 *.exe
 .vscode/
+include/
+lib/
+*.csv
