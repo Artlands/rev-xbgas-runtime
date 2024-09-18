@@ -24,13 +24,13 @@ xbrtime-macros.h
 xbrtime-alloc.h
 xbrtime-api.h
 xbrtime-collectives.h
-# xbrtime-atomics.h
+xbrtime-atomics.h
 xbrtime_init.c
 xbrtime_util.c
 xbrtime_api.c
 xbrtime_alloc.c
 xbrtime_barrier.c
-# xbrtime_atomics.c
+xbrtime_atomics.c
 xbrtime_alltoall.c
 xbrtime_broadcast.c
 xbrtime_gather.c
@@ -40,7 +40,7 @@ xbrtime_reduce_all.c
 xbrtime_scatter.c
 xbrtime_util_asm.s
 xbrtime_api_asm.s
-# xbrtime_atomics_asm.s
+xbrtime_atomics_asm.s
 malloc.h
 print.h
 malloc.c

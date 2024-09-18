@@ -80,25 +80,25 @@ _type xbrtime_##_typename##_atomic_##_op(_type *dest, _type op_val, int pe);
     XBGAS_DECL_ATOMIC_OP(unsigned int, uint, min)
     XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, min)
     XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, min)
-    //XBGAS_DECL_ATOMIC_OP(int, int, min)
-    //XBGAS_DECL_ATOMIC_OP(long, long, min)
-    //XBGAS_DECL_ATOMIC_OP(int32_t, int32, min)
+    XBGAS_DECL_ATOMIC_OP(int, int, min)
+    XBGAS_DECL_ATOMIC_OP(long, long, min)
+    XBGAS_DECL_ATOMIC_OP(int32_t, int32, min)
     XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, min)
     XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, min)
-    //XBGAS_DECL_ATOMIC_OP(long long, longlong, min)
-    //XBGAS_DECL_ATOMIC_OP(int64_t, int64, min)
+    XBGAS_DECL_ATOMIC_OP(long long, longlong, min)
+    XBGAS_DECL_ATOMIC_OP(int64_t, int64, min)
 
     /* Atomic max */
     XBGAS_DECL_ATOMIC_OP(unsigned int, uint, max)
     XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, max)
     XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, max)
-    //XBGAS_DECL_ATOMIC_OP(int, int, max)
-    //XBGAS_DECL_ATOMIC_OP(long, long, max)
-    //XBGAS_DECL_ATOMIC_OP(int32_t, int32, max)
+    XBGAS_DECL_ATOMIC_OP(int, int, max)
+    XBGAS_DECL_ATOMIC_OP(long, long, max)
+    XBGAS_DECL_ATOMIC_OP(int32_t, int32, max)
     XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, max)
     XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, max)
-    //XBGAS_DECL_ATOMIC_OP(long long, longlong, max)
-    //XBGAS_DECL_ATOMIC_OP(int64_t, int64, max)
+    XBGAS_DECL_ATOMIC_OP(long long, longlong, max)
+    XBGAS_DECL_ATOMIC_OP(int64_t, int64, max)
 
 #undef XBGAS_DECL_ATOMIC_OP
 
@@ -110,7 +110,7 @@ _type xbrtime_##_typename##_atomic_##_op(_type *dest, _type op_val, int pe);
       \return value at dest before compare and swap
 */
 #define XBGAS_DECL_ATOMIC_CAS(_type, _typename)                                                         \
-_type xbrtime_##_typename##_atomic_compare_swap(_type *dest, _type comp_val, int pe);
+_type xbrtime_##_typename##_atomic_compare_swap(_type *dest, _type expected_val, int pe, _type desired_val);
 
     /* Atomic compare and swap */
     XBGAS_DECL_ATOMIC_CAS(unsigned int, uint)
