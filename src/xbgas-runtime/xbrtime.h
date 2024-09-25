@@ -30,6 +30,7 @@ extern "C" {
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include "syscalls.h"
 
 /* ---------------------------------------- REQUIRED HEADERS */
 #include "xbrtime-types.h"
@@ -40,7 +41,8 @@ extern "C" {
 #include "xbrtime-collectives.h"
 #include "xbrtime-atomics.h"
 #include "malloc.h"
-#include "print.h"
+
+#define printf rev_fast_printf
 
 /* ---------------------------------------- FUNCTION PROTOTYPES */
 

@@ -12,6 +12,7 @@
 cmake_minimum_required (VERSION 3.19)
 project(xbgas-runtime C CXX ASM)
 
+include_directories(${REV}/common/syscalls)
 
 # Global compiler options
 add_compile_options(-march=rv64gc_zifencei -mcmodel=medany -static -std=gnu11 -fno-common -fno-builtin-printf -w -lm)

@@ -42,9 +42,7 @@ xbrtime_util_asm.s
 xbrtime_api_asm.s
 xbrtime_atomics_asm.s
 malloc.h
-print.h
 malloc.c
-print.c
 )
 
 include_directories( . )
