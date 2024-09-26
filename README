@@ -2,35 +2,32 @@ xBGAS-RUNTIME
 contact@tactcomplabs.com
 --------------------------------------------------------------------------------
 
-xBGAS Machine Runtime Library
-
+I.  Overview
 --------------------------------------------------------------------------------
 
-I.  Intro
---------------------------------------------------------------------------------
+The xBGAS Runtime Library is designed for SST simulation and enables OpenSHMEM-like functionality for xBGAS-enabled RISC-V architectures. Written in a combination of C and Assembly, it provides high-performance SHMEM operations, including “Get”, “Put” and "Collectives" functionality, for other libraries and users.
 
-The xBGAS machine runtime library is designed to provide OpenSHMEM-like
-functionality for an xBGAS-enabled RISC-V system architecture.  The xBGAS
-machine runtime library is written in a mixture of C and Assembly in order to
-provide high performance SHMEM "Get" and "Put" functionality for other libraries
-and users.
 
 II. Requirements
 --------------------------------------------------------------------------------
 
-The xBGAS runtime library requires the following packages to build:
-- xBGAS RISC-V Tools: https://github.com/tactcomplabs/xbgas-tools
+To run and simulate xBGAS applications, the following components are required::
+- SST: http://sst-simulator.org/
+- REV-xBGAS: https://github.com/artlands/rev-xbgas
+
+To build the xBGAS runtime library, you will need:
+- xBGAS RISC-V GNU Compiler Toolchain: https://github.com/Artlands/riscv-gnu-toolchain-xbgas
 - CMake 2.6+
 
-The xBGAS tools should be installed to a directory pointed to by the
-$RISCV environment variable (per the core RISCV tools build directions)
+Environment Variables: Ensure the following are set before building:
+- $REV: Path to the REV-xBGAS development directory (for system call linking).
+- $RISCV: Path to the xBGAS GNU compiler toolchain.
+- $XBGAS_RUNTIME: Target installation directory for the xBGAS runtime library.
 
 III.  Compiling
 --------------------------------------------------------------------------------
 
-Compiling the xBGAS runtime requires that the user set the $RISCV environment
-variable to point to the appropriately installed xBGAS tools.  Building
-the library can be performed as follows:
+To compile the xBGAS runtime library, follow these steps:
 
 $> git clone https://github.com/tactcomplabs/xbgas-runtime.git
 $> cd xbgas-runtime
@@ -39,56 +36,32 @@ $> cd build
 $> cmake ../
 $> make -j
 
-...will create ~/xbgas-runtime/build/src/xbgas-runtime/libxbrtime.a
+Optional CMake Build Arguments:
+- -DCMAKE_BUILD_TYPE=Debug : Build with debug symbols.
+- -DCMAKE_BUILD_TYPE=Release : Optimized release build (default).
+- -DBUILD_DOCUMENTATION=ON : Generate documentation (requires Doxygen). Build with "make doc"
 
-Additional build arguments for CMake are as follows:
-- -DCMAKE_BUILD_TYPE=Debug : enables debug builds with debug symbols
-- -DCMAKE_BUILD_TYPE=Release : enables release builds with full optimization (default)
-- -DBUILD_DOCUMENTATION=ON : enables documentation; requires Doxygen; "make doc"
-
-IV.   Installing
+IV.   Installation
 --------------------------------------------------------------------------------
 
-First, follow the steps in Section III. to compile the source code and
-the documentation.  Additionally, you can specify the following cmake directive
-to change the installation location:
-
-- -DCMAKE_INSTALL_PREFIX=/path/to/installation/
-
-Once you have compiled the library and the documentation, do the following
-to install the library, headers and docs:
+Once compiled, install the library, headers, and documentation using:
 $> make install
 
 V.    Testing
 --------------------------------------------------------------------------------
 
-The test harness for the xBGAS runtime library is built into the CMake build
-infrastructure.  If you would like to build and run the integrated xBGAS
-tests, add the following to your cmake build configuration:
+The xBGAS runtime library includes a built-in test harness within the CMake infrastructure.
 
-- -DBUILD_ALL_TESTING=ON
+To build and run tests, include the following CMake argument:
+- -DBUILD_ALL_TESTING=ON : Enable all tests.
 
-If you would like to enable individual blocks of tests, you can do so via
-the following cmake build arguments:
+Alternatively, enable specific test blocks using the following options:
+- -DBUILD_INIT_TESTING=ON   : "init" tests
+- -DBUILD_ALLOC_TESTING=ON  : Allocation and free tests
+- -DBUILD_XFER_TESTING=ON   : Data transfer tests
 
-- -DBUILD_INIT_TESTING=ON   : enables the "init" tests
-- -DBUILD_ALLOC_TESTING=ON  : enables the allocation/free tests
-- -DBUILD_XFER_TESTING=ON   : enables the data transfer tests
-
-Once you have build the library and associated tests, you can run the tests
-via the following command line:
+Once built, run the tests with:
 
 $> make test
-
-NOTE: All the tests require that the "$RISCV" environment variable be set
-as was the case with the build process. All the tests are currently set to run using two PE's.
-
-VI.    Demo & Tutorials (based on spike simulation)
---------------------------------------------------------------------------------
-The following video introduces how to play with RISC-V xBGAS extension, including
-programming with the xBGAS runtime, compiling, and executing the xBGAS benchmarks.
-
-* https://youtu.be/IeIpJkMjMuc
-
 --------------------------------------------------------------------------------
 EOF

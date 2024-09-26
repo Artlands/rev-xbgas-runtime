@@ -1,4 +1,4 @@
-# test/init CMakeLists.txt driver
+# test/alloc CMakeLists.txt driver
 #
 # Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
 # All Rights Reserved
@@ -9,40 +9,29 @@
 # this distribution.
 #
 
-include_directories(${XBGAS_PATH})
-
-set(CMAKE_EXECUTABLE_SUFFIX ".exe")
-
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.c)
 
 if(BUILD_INIT_TESTING)
-foreach(testSrc ${TEST_SRCS})
-  # Extract the file name
-  get_filename_component(testName ${testSrc} NAME_WE)
+  set (passRegex "Simulation is complete")
 
-  # Add compile target
-  add_executable(${testName} ${testSrc})
+  add_test(
+    NAME BUILD_CLEAN
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND make clean
+  )
 
-  # Override the compiler
-  set(CMAKE_C_COMPILER "${RISCV_ENV}/bin/riscv64-unknown-elf-gcc")
-  set(CMAKE_ASM_COMPILER "${RISCV_ENV}/bin/riscv64-unknown-elf-gcc")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -static")
-  set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+  foreach(testSrc ${TEST_SRCS})
+    # Extract the file name
+    get_filename_component(testName ${testSrc} NAME_WE)
 
-  # Add linker deps
-  target_link_libraries(${testName} xbrtime m)
-
-  # Drop the exe's in a separate directory
-  set_target_properties(${testName} PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin)
-
-  # Add the tests for execution
-  add_test(NAME ${testName}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
-    COMMAND sst ${CMAKE_CURRENT_SOURCE_DIR}/testBin/rev-xbgas-isa.py --model-options=${CMAKE_CURRENT_SOURCE_DIR}/testBin/${testName}.exe)
-  set_tests_properties( ${testName} 
-	PROPERTIES 
-    TIMEOUT 30
-		PASS_REGULAR_EXPRESSION "")
-endforeach(testSrc)
+    # Add the tests for execution
+    add_test(NAME ${testName}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMAND ./run_xbrtime_test.sh)
+    set_tests_properties( ${testName} 
+      PROPERTIES
+      ENVIRONMENT "RVASM=${testName}; RVCC=${RVCC}"
+      TIMEOUT 30
+      PASS_REGULAR_EXPRESSION "${passRegex}")
+  endforeach(testSrc)
 endif()

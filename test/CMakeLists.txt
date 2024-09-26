@@ -9,6 +9,9 @@
 # this distribution.
 #
 
+#------- TESTS  ---------------
+message(STATUS "CTest Setup")
+
 if(BUILD_ALL_TESTING)
   set(BUILD_INIT_TESTING "ON")
   set(BUILD_ALLOC_TESTING "ON")

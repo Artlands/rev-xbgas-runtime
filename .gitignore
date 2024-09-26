@@ -1,4 +1,8 @@
 .DS_Store
-build/
 *.exe
+*.csv
+*.so
+*.dylib
+build/*
 .vscode/
+libxbrtime.a
