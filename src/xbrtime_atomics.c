@@ -67,7 +67,7 @@ _type xbrtime_##_typename##_atomic_##_op(_type *dest, _type op_val, int pe)     
 }
 
 #define XBGAS_ATOMIC_CAS(_type, _typename, _typesize, _typecast)                                                            \
-_type xbrtime_##_typename##_atomic_compare_swap(_type *dest, _type expected_val, int pe, _type desired_val)                 \
+_type xbrtime_##_typename##_atomic_compare_swap(_type *dest, _type expected_val, _type desired_val, int pe)                 \
 {                                                                                                                           \
     return ((_type) __xbrtime_atomic_compare_swap_##_typesize(__xbrtime_ltor(((uint64_t)dest), pe),                         \
                                                              (_typecast) expected_val,                                      \

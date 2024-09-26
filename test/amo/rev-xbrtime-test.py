@@ -27,16 +27,12 @@ import os
 import sst
 import sys
 
-# Define SST core options
-sst.setProgramOption("timebase", "1ps")
-
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
   sys.stderr.write("Usage: You must pass the executable you wish to simulate using the '--model-options' option with sst\n")
   raise SystemExit(1)
 
-NPES = 2
-
 PROGRAM = sys.argv[1]
+NPES = int(sys.argv[2])
 CLOCK = "2.5GHz"  
 MEMSIZE = 1024*1024*1024
 SHARED_MEM_SIZE = 1024*1024*16
@@ -126,7 +122,7 @@ for i in range(0, NPES):
 
 
 # Tell SST what statistics handling we want
+# sst.setStatisticLoadLevel(2)
 # sst.setStatisticOutput("sst.statOutputCSV")
-# sst.enableAllStatisticsForAllComponents()
 
 # EOF

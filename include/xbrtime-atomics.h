@@ -110,7 +110,7 @@ _type xbrtime_##_typename##_atomic_##_op(_type *dest, _type op_val, int pe);
       \return value at dest before compare and swap
 */
 #define XBGAS_DECL_ATOMIC_CAS(_type, _typename)                                                         \
-_type xbrtime_##_typename##_atomic_compare_swap(_type *dest, _type expected_val, int pe, _type desired_val);
+_type xbrtime_##_typename##_atomic_compare_swap(_type *dest, _type expected_val, _type desired_val, int pe);
 
     /* Atomic compare and swap */
     XBGAS_DECL_ATOMIC_CAS(unsigned int, uint)

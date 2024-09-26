@@ -253,13 +253,13 @@
 
     #---------------------------------------------------
 
-    #  .global __xbrtime_atomic_min_s4
-    #  .type __xbrtime_atomic_min_s4, @function
-    #  __xbrtime_atomic_min_s4:
-    #  eaddie e10, 0, a2
-    #  eamomin.w a0, a1, (a0)
-    #  ret
-    #  .size __xbrtime_atomic_min_s4, .-__xbrtime_atomic_min_s4
+    .global __xbrtime_atomic_min_s4
+    .type __xbrtime_atomic_min_s4, @function
+  __xbrtime_atomic_min_s4:
+    eaddie e10, a2, 0
+    eamomin.w a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_min_s4, .-__xbrtime_atomic_min_s4
 
     #---------------------------------------------------
 
@@ -273,13 +273,13 @@
 
     #---------------------------------------------------
 
-    #  .global __xbrtime_atomic_min_s8
-    #  .type __xbrtime_atomic_min_s8, @function
-    #  __xbrtime_atomic_min_s8:
-    #  eaddie e10, 0, a2
-    #  eamomin.d a0, a1, (a0)
-    #  ret
-    #  .size __xbrtime_atomic_min_s8, .-__xbrtime_atomic_min_s8
+    .global __xbrtime_atomic_min_s8
+    .type __xbrtime_atomic_min_s8, @function
+  __xbrtime_atomic_min_s8:
+    eaddie e10, a2, 0
+    eamomin.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_min_s8, .-__xbrtime_atomic_min_s8
 
     #---------------------------------------------------
 
@@ -293,13 +293,13 @@
 
     #---------------------------------------------------
 
-    #  .global __xbrtime_atomic_max_s4
-    #  .type __xbrtime_atomic_max_s4, @function
-    #  __xbrtime_atomic_max_s4:
-    #  eaddie e10, 0, a2
-    #  eamomax.w a0, a1, (a0)
-    #  ret
-    #  .size __xbrtime_atomic_max_s4, .-__xbrtime_atomic_max_s4
+    .global __xbrtime_atomic_max_s4
+    .type __xbrtime_atomic_max_s4, @function
+  __xbrtime_atomic_max_s4:
+    eaddie e10, a2, 0
+    eamomax.w a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_max_s4, .-__xbrtime_atomic_max_s4
 
     #---------------------------------------------------
 
@@ -313,13 +313,13 @@
 
     #---------------------------------------------------
 
-    #  .global __xbrtime_atomic_max_s8
-    #  .type __xbrtime_atomic_max_s8, @function
-    #  __xbrtime_atomic_max_s8:
-    #  eaddie e10, 0, a2
-    #  eamomax.d a0, a1, (a0)
-    #  ret
-    #  .size __xbrtime_atomic_max_s8, .-__xbrtime_atomic_max_s8
+    .global __xbrtime_atomic_max_s8
+    .type __xbrtime_atomic_max_s8, @function
+  __xbrtime_atomic_max_s8:
+    eaddie e10, a2, 0
+    eamomax.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_max_s8, .-__xbrtime_atomic_max_s8
 
     #---------------------------------------------------
 
