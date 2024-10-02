@@ -33,7 +33,7 @@ int main()
   xbrtime_init();
 
   if ( xbrtime_mype() == 0 ){
-    printf( "XBGAS Atomic Compare and Swap Test 1; PEs = %d", xbrtime_num_pes() );
+    printf( "XBGAS Atomic Add Test 1; PEs = %d", xbrtime_num_pes() );
   }
 
   xbrtime_barrier();
@@ -112,14 +112,14 @@ int main()
   rev_clock_gettime( 0, &s );
   for( unsigned i=0; i<ITERS; i++ ){
     xbrtime_long_get((long *)(&start), (long *)(&idx[i]), 1, 1, target[i]);
-    start = (uint64_t) xbrtime_long_atomic_compare_swap((long *)(&array[start]), (long)(0x00), (long)(0x00), target[i]);
+    start = (uint64_t) xbrtime_long_atomic_add((long *)(&array[start]), (long)(0x01), target[i]);
   }
   rev_clock_gettime( 0, &e );
 
   kams = (int)((xbrtime_num_pes() * ITERS * 1.0e-3) / ((e.tv_nsec - s.tv_nsec) * 1.0e-9));
 
   if ( xbrtime_mype() == 0 ){
-    printf( "XBGAS Atomic Compare and Swap Test 1-RAND: Complete " );
+    printf( " XBGAS Atomic Add Test 1-RAND: Complete " );
     printf( " Total iterations: %d ", ITERS * xbrtime_num_pes() );
     printf( " Time: %d ns ", (e.tv_nsec - s.tv_nsec));
     printf( " KAMS: %d Kilo AMOs/second", kams );

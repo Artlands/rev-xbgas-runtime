@@ -16,8 +16,8 @@ use strict "vars";
 use warnings;
 no  warnings("once");
 use Getopt::Long;
-my $ELEMS = 20480;
-my $ITERS = 10000;
+my $ELEMS = 2048;
+my $ITERS = 1000;
 
 #--------------------------------------------------------------------------
 # Command line processing

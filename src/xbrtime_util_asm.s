@@ -98,8 +98,8 @@ __xbrtime_remote_touch:
   .global __xbrtime_wait_bulk_comp
   .type __xbrtime_wait_bulk_comp, @function
 __xbrtime_wait_bulk_comp:
-  .wait_loop:
+  .wait_bulk_loop:
     csrr t0, 0xca0
-    beqz t0, .wait_loop
+    beqz t0, .wait_bulk_loop
     ret
   .size __xbrtime_wait_bulk_comp, .-__xbrtime_wait_bulk_comp

@@ -27,12 +27,13 @@ import os
 import sst
 import sys
 
-if len(sys.argv) != 3:
+if len(sys.argv) != 2:
   sys.stderr.write("Usage: You must pass the executable you wish to simulate using the '--model-options' option with sst\n")
   raise SystemExit(1)
 
+NPES = 2
+
 PROGRAM = sys.argv[1]
-NPES = int(sys.argv[2])
 CLOCK = "2.5GHz"  
 MEMSIZE = 1024*1024*1024
 SHARED_MEM_SIZE = 1024*1024*16
@@ -44,17 +45,6 @@ memctrl_params = {
   "backing": "malloc"
 }
 
-l1cache_params = {
-  "access_latency_cycles" : "4",
-  "cache_frequency" : "2 Ghz",
-  "replacement_policy" : "lru",
-  "coherence_protocol" : "MESI",
-  "associativity" : "4",
-  "cache_line_size" : "64",
-  "L1" : "1",
-  "cache_size" : "16KiB"
-}
-
 mem_params = {
   "access_time" : "100ns",
   "mem_size" : "8GB"
@@ -63,7 +53,7 @@ mem_params = {
 net_params = {
   "input_buf_size" : "512B",
   "output_buf_size" : "512B",
-  "link_bw" : "25GB/s"
+  "link_bw" : "10GB/s"
 }
 
 # setup the router
@@ -72,7 +62,7 @@ router.setSubComponent("topology", "merlin.singlerouter")
 router.addParams(net_params)
 
 router.addParams({
-    "xbar_bw" : "25GB/s",
+    "xbar_bw" : "10GB/s",
     "flit_size" : "32B",
     "num_ports" : str(NPES),
     "id" : 0
@@ -107,9 +97,6 @@ for i in range(0, NPES):
 
   # Create the memHierarchy subcomponent
   miface = lsq.setSubComponent("memIface", "memHierarchy.standardInterface")
-
-  l1cache = sst.Component("l1cache" + str(i), "memHierarchy.Cache")
-  l1cache.addParams(l1cache_params)
   
   # Create the memory controller in memHierarchy
   memctrl = sst.Component("memory" + str(i), "memHierarchy.MemController")
@@ -120,11 +107,8 @@ for i in range(0, NPES):
   memory.addParams(mem_params)
   
   # setup the links
-  link_miface_l1cache = sst.Link("link_miface_l1cache" + str(i))
-  link_miface_l1cache.connect((miface, "port", "1ns"), (l1cache, "high_network_0", "1ns"))
-
-  link_l1cache_mem = sst.Link("link_l1cache_mem" + str(i))
-  link_l1cache_mem.connect((l1cache, "low_network_0", "1ns"), (memctrl, "direct_link", "1ns"))
+  link_miface_mem = sst.Link("link_miface_mem" + str(i))
+  link_miface_mem.connect( (miface, "port", "50ps"), (memctrl, "direct_link", "50ps") )
   
   # Create remote memory controllers
   rmt_lsq = xbgas_cpu.setSubComponent("remote_memory", "revcpu.RevBasicRmtMemCtrl")
@@ -133,8 +117,9 @@ for i in range(0, NPES):
 
   rmt_nic_iface.addParams(net_params)
   
+  # Setup the links
   link = sst.Link("link" + str(i))
-  link.connect( (rmt_nic_iface, "rtr_port", "100ns"), (router, f"port{i}", "100ns") )
+  link.connect( (rmt_nic_iface, "rtr_port", "20ns"), (router, f"port{i}", "20ns") )
 
 
 # Tell SST what statistics handling we want
