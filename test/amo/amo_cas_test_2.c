@@ -78,7 +78,7 @@ int main()
     for( unsigned i=0; i< ITERS; i++ ){
       if( xbrtime_mype() == xbrtime_num_pes()-1 ){
         // last pe
-        target[i] = 1;
+        target[i] = 0;
       } else {
         target[i] = xbrtime_mype() + 1;
       }
@@ -106,6 +106,7 @@ int main()
   for( unsigned i=0; i<ITERS; i++ ){
     start = (uint64_t) xbrtime_long_atomic_compare_swap((long *)(&array[idx]), (long)(0x00), (long)(0x00), target[i]);
     idx += STRIDE;
+    printf( "Iteration %d; PE %d; array[%d] = %lu; start = %lu; target = %d ", i, xbrtime_mype(), idx, array[idx], start, target[i] );
   }
   rev_clock_gettime( 0, &e );
 

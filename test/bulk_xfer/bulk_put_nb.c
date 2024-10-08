@@ -27,26 +27,26 @@ int main()
   xbrtime_init();
 
   if ( xbrtime_mype() == 0 ){
-    printf( "XBGAS Bulk Get Test; PEs = %d", xbrtime_num_pes() );
+    printf( "XBGAS Bulk Put Test; PEs = %d", xbrtime_num_pes() );
   }
 
   xbrtime_barrier();
 
-  // array resides in symmetric heap space
-  array = (uint64_t *)xbrtime_malloc( ELEMS * sizeof(uint64_t) );
+  // dest resides in symmetric heap space
+  dest = (uint64_t *)xbrtime_malloc( ELEMS * sizeof(uint64_t) );
 
-  if ( array == NULL ){
+  if ( dest == NULL ){
     printf( "Array could not be allocated" );
     xbrtime_close();
     return 1;
   }
 
   // dest resides in local PE memory
-  dest = (uint64_t *)(malloc( ELEMS * sizeof(uint64_t) ));
+  array = (uint64_t *)(malloc( ELEMS * sizeof(uint64_t) ));
 
-  if ( dest == NULL ){
+  if ( array == NULL ){
     printf( " dest could not be allocated" );
-    xbrtime_free( array );
+    xbrtime_free( dest );
     xbrtime_close();
     return 1;
   }
@@ -62,25 +62,25 @@ int main()
 
   struct __kernel_timespec s, e;
   rev_clock_gettime( 0, &s );
-  
-  if ( xbrtime_mype() == 0 ){
-    xbrtime_longlong_get((long long *)(dest), (long long*)(array), ELEMS, 1, 1);
-  }
-
-  rev_clock_gettime( 0, &e );
 
   if ( xbrtime_mype() == 0 ){
-    printf( " XBGAS Bulk Get Test: Complete " );
-    printf( " Total elements: %d ", ELEMS );
-    printf( " Time: %d ns ", (e.tv_nsec - s.tv_nsec));
+    xbrtime_longlong_put_nb((long long *)(dest), (long long*)(array), ELEMS, 1, 1);
   }
 
   xbrtime_barrier();
 
+  rev_clock_gettime( 0, &e );
+
+  if ( xbrtime_mype() == 0 ){
+    printf( " XBGAS Bulk Put Test (non-blocking): Complete " );
+    printf( " Total elements: %d ", ELEMS );
+    printf( " Time: %d ns ", (e.tv_nsec - s.tv_nsec));
+  }
+
   // Find the smaller number between 5 and ELEMS
   int n = (5 < ELEMS) ? 5 : ELEMS;
 
-  if ( xbrtime_mype() == 0 ) {
+  if ( xbrtime_mype() == 1 ) {
     // print first n elements
     for( unsigned i=0; i<n; i++ ){
       printf( "dest[%d] = %" PRIu64 " ", i, dest[i] );

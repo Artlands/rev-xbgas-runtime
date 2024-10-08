@@ -58,11 +58,14 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O3 -static -w")
 # xbrtime paths
 set(REV_SYSCALLS_PATH "${REV}/common/syscalls" CACHE PATH "REV syscalls path")
 set(XBRTIME_INCLUDE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "Xbrtime include path")
+set(REV_TRACE_PATH "${REV}/test/include" CACHE PATH "REV trace path")
+
 
 # Include directories
 include_directories(
   ${REV_SYSCALLS_PATH}
   ${XBRTIME_INCLUDE_PATH}
+  ${REV_TRACE_PATH}
 )
 
 #------------------------------------------------------------------------

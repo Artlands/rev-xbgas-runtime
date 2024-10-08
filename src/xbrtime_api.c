@@ -1139,7 +1139,6 @@ void xbrtime_float_get(float *dest, const float *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(float)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1162,7 +1161,6 @@ void xbrtime_float_get_nb(float *dest, const float *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(float)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1184,7 +1182,6 @@ void xbrtime_double_get(double *dest, const double *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(double)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1207,7 +1204,6 @@ void xbrtime_double_get_nb(double *dest, const double *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(double)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1229,7 +1225,6 @@ void xbrtime_longdouble_get(long double *dest, const long double *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(long double)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1252,7 +1247,6 @@ void xbrtime_longdouble_get_nb(long double *dest, const long double *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(long double)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1296,7 +1290,6 @@ void xbrtime_schar_get_nb(signed char *dest, const signed char *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(signed char)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1318,7 +1311,6 @@ void xbrtime_char_get(char *dest, const char *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(char)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1341,7 +1333,6 @@ void xbrtime_char_get_nb(char *dest, const char *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(char)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1363,7 +1354,6 @@ void xbrtime_short_get(short *dest, const short *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(short)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1386,7 +1376,6 @@ void xbrtime_short_get_nb(short *dest, const short *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(short)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1408,7 +1397,6 @@ void xbrtime_int_get(int *dest, const int *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1431,7 +1419,6 @@ void xbrtime_int_get_nb(int *dest, const int *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(short)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1453,7 +1440,6 @@ void xbrtime_long_get(long *dest, const long *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(long)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1476,7 +1462,6 @@ void xbrtime_long_get_nb(long *dest, const long *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(long)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1498,7 +1483,6 @@ void xbrtime_longlong_get(long long *dest, const long long *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(long long)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1521,7 +1505,6 @@ void xbrtime_longlong_get_nb(long long *dest, const long long *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(long long)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1543,7 +1526,6 @@ void xbrtime_uchar_get(unsigned char *dest, const unsigned char *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned char)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1566,7 +1548,6 @@ void xbrtime_uchar_get_nb(unsigned char *dest, const unsigned char *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned char)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1588,7 +1569,6 @@ void xbrtime_ushort_get(unsigned short *dest, const unsigned short *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned short)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1611,7 +1591,6 @@ void xbrtime_ushort_get_nb(unsigned short *dest, const unsigned short *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned short)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1633,7 +1612,6 @@ void xbrtime_uint_get(unsigned int *dest, const unsigned int *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned int)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1656,7 +1634,6 @@ void xbrtime_uint_get_nb(unsigned int *dest, const unsigned int *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned int)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1678,7 +1655,6 @@ void xbrtime_ulong_get(unsigned long *dest, const unsigned long *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned long)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1701,7 +1677,6 @@ void xbrtime_ulong_get_nb(unsigned long *dest, const unsigned long *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned long)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1723,7 +1698,6 @@ void xbrtime_ulonglong_get(unsigned long long *dest, const unsigned long long *s
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned long long)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1746,7 +1720,6 @@ void xbrtime_ulonglong_get_nb(unsigned long long *dest, const unsigned long long
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(unsigned long long)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1768,7 +1741,6 @@ void xbrtime_int8_get(int8_t *dest, const int8_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int8_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1791,7 +1763,6 @@ void xbrtime_int8_get_nb(int8_t *dest, const int8_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int8_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1813,7 +1784,6 @@ void xbrtime_int16_get(int16_t *dest, const int16_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int16_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1836,7 +1806,6 @@ void xbrtime_int16_get_nb(int16_t *dest, const int16_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int16_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1858,7 +1827,6 @@ void xbrtime_int32_get(int32_t *dest, const int32_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int32_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1881,7 +1849,6 @@ void xbrtime_int32_get_nb(int32_t *dest, const int32_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int32_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1903,7 +1870,6 @@ void xbrtime_int64_get(int64_t *dest, const int64_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int64_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1926,7 +1892,6 @@ void xbrtime_int64_get_nb(int64_t *dest, const int64_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(int64_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1948,7 +1913,6 @@ void xbrtime_uint8_get(uint8_t *dest, const uint8_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint8_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -1971,7 +1935,6 @@ void xbrtime_uint8_get_nb(uint8_t *dest, const uint8_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint8_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -1993,7 +1956,6 @@ void xbrtime_uint16_get(uint16_t *dest, const uint16_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint16_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -2016,7 +1978,6 @@ void xbrtime_uint16_get_nb(uint16_t *dest, const uint16_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint16_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -2038,7 +1999,6 @@ void xbrtime_uint32_get(uint32_t *dest, const uint32_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint32_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -2061,7 +2021,6 @@ void xbrtime_uint32_get_nb(uint32_t *dest, const uint32_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint32_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -2083,7 +2042,6 @@ void xbrtime_uint64_get(uint64_t *dest, const uint64_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint64_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -2106,7 +2064,6 @@ void xbrtime_uint64_get_nb(uint64_t *dest, const uint64_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(uint64_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -2128,7 +2085,6 @@ void xbrtime_size_get(size_t *dest, const size_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(size_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -2151,7 +2107,6 @@ void xbrtime_size_get_nb(size_t *dest, const size_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(size_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 
@@ -2173,7 +2128,6 @@ void xbrtime_ptrdiff_get(ptrdiff_t *dest, const ptrdiff_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(ptrdiff_t)));
-    __xbrtime_wait_bulk_comp();
   }
   __xbrtime_asm_fence();
 }
@@ -2196,7 +2150,6 @@ void xbrtime_ptrdiff_get_nb(ptrdiff_t *dest, const ptrdiff_t *src,
                          xbrtime_decode_pe(pe),
                          (uint32_t)(nelems),
                          (uint32_t)(stride*sizeof(ptrdiff_t)));
-    __xbrtime_wait_bulk_comp();
   }
 }
 

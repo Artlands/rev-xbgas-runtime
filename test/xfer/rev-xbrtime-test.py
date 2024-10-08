@@ -84,7 +84,7 @@ for i in range(0, NPES):
     "machine" : "[0:RV64GC_Xbgas]",
     "memCost" : "[0:1:10]",                       # Memory loads required 1-10 cycles
     "enable_xbgas" : 1,                           # Enable XBGAS support 
-    "enable_memH": 1,                             # Enable memHierarchy support
+    "enableMemH": 1,                             # Enable memHierarchy support
     "shared_memory_size": SHARED_MEM_SIZE,        # Shared memory size
     "splash" : 0                                  # Display the splash message
   })

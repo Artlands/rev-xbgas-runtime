@@ -78,7 +78,7 @@ int main()
     for( unsigned i=0; i< ITERS; i++ ){
       if( xbrtime_mype() == xbrtime_num_pes()-1 ){
         // last pe
-        target[i] = 1;
+        target[i] = 0;
       } else {
         target[i] = xbrtime_mype() + 1;
       }
@@ -112,7 +112,7 @@ int main()
   kams = (int)((xbrtime_num_pes() * ITERS * 1.0e-3) / ((e.tv_nsec - s.tv_nsec) * 1.0e-9));
 
   if ( xbrtime_mype() == 0 ){
-    printf( "XBGAS Atomic Compare and Swap Test 2-STRIDE%d: Complete ", STRIDE );
+    printf( "XBGAS Atomic Add Test 2-STRIDE%d: Complete ", STRIDE );
     printf( " Total iterations: %d ", ITERS * xbrtime_num_pes() );
     printf( " Time: %d ns ", (e.tv_nsec - s.tv_nsec));
     printf( " KAMS: %d Kilo AMOs/second", kams );

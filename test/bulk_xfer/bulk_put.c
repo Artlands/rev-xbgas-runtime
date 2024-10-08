@@ -61,16 +61,36 @@ int main()
   xbrtime_barrier();
 
   struct __kernel_timespec s, e;
+  rev_clock_gettime( 0, &s );
 
   if ( xbrtime_mype() == 0 ){
-    rev_clock_gettime( 0, &s );
-
     xbrtime_longlong_put((long long *)(dest), (long long*)(array), ELEMS, 1, 1);
+  }
 
-    rev_clock_gettime( 0, &e );
+  xbrtime_barrier();
+
+  rev_clock_gettime( 0, &e );
+
+  if ( xbrtime_mype() == 0 ){
     printf( " XBGAS Bulk Put Test: Complete " );
     printf( " Total elements: %d ", ELEMS );
     printf( " Time: %d ns ", (e.tv_nsec - s.tv_nsec));
+  }
+
+  // Find the smaller number between 5 and ELEMS
+  int n = (5 < ELEMS) ? 5 : ELEMS;
+
+  if ( xbrtime_mype() == 1 ) {
+    // print first n elements
+    for( unsigned i=0; i<n; i++ ){
+      printf( "dest[%d] = %" PRIu64 " ", i, dest[i] );
+    }
+    if ( ELEMS > n) {
+      // print last n elements
+      for( unsigned i=ELEMS-n; i<ELEMS; i++ ){
+        printf( "dest[%d] = %" PRIu64 " ", i, dest[i] );
+      }
+    }
   }
 
   xbrtime_close();

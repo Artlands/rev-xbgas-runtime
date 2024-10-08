@@ -31,6 +31,7 @@ extern "C" {
 #include <stdio.h>
 #include <math.h>
 #include "syscalls.h"
+#include "rev-macros.h"
 
 /* ---------------------------------------- REQUIRED HEADERS */
 #include "xbrtime-types.h"

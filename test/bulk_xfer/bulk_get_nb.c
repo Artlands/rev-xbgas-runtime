@@ -64,18 +64,17 @@ int main()
   rev_clock_gettime( 0, &s );
   
   if ( xbrtime_mype() == 0 ){
-    xbrtime_longlong_get((long long *)(dest), (long long*)(array), ELEMS, 1, 1);
+    xbrtime_longlong_get_nb((long long *)(dest), (long long*)(array), ELEMS, 1, 1);
   }
+  xbrtime_barrier();
 
   rev_clock_gettime( 0, &e );
 
   if ( xbrtime_mype() == 0 ){
-    printf( " XBGAS Bulk Get Test: Complete " );
+    printf( " XBGAS Bulk Get Test (non-blocking): Complete " );
     printf( " Total elements: %d ", ELEMS );
     printf( " Time: %d ns ", (e.tv_nsec - s.tv_nsec));
   }
-
-  xbrtime_barrier();
 
   // Find the smaller number between 5 and ELEMS
   int n = (5 < ELEMS) ? 5 : ELEMS;

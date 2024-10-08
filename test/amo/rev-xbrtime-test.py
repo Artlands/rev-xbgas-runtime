@@ -37,6 +37,16 @@ CLOCK = "2.5GHz"
 MEMSIZE = 1024*1024*1024
 SHARED_MEM_SIZE = 1024*1024*16
 
+# lsq_params = {
+#   "max_loads" : "512",
+#   "max_stores" : "512",
+#   "max_flush": "512",
+#   "max_llsc" : "512",
+#   "max_readlock" : "512",
+#   "max_writeunlock" : "512",
+#   "ops_per_cycle" : "4",
+# }
+
 memctrl_params = {
   "clock": CLOCK,
   "addr_range_start": 0,
@@ -80,7 +90,7 @@ router.addParams({
 
 for i in range(0, NPES):
   if i == 0:
-    VERBOSE = 1
+    VERBOSE = 5
   else:
     VERBOSE = 1
   # xBGAS CPUs
@@ -94,7 +104,7 @@ for i in range(0, NPES):
     "machine" : "[0:RV64GC_Xbgas]",
     "memCost" : "[0:1:10]",                       # Memory loads required 1-10 cycles
     "enable_xbgas" : 1,                           # Enable XBGAS support 
-    "enable_memH": 1,                             # Enable memHierarchy support
+    "enableMemH": 1,                             # Enable memHierarchy support
     "shared_memory_size": SHARED_MEM_SIZE,        # Shared memory size
     "splash" : 0                                  # Display the splash message
   })
@@ -124,7 +134,7 @@ for i in range(0, NPES):
   link_miface_l1cache.connect((miface, "port", "1ns"), (l1cache, "high_network_0", "1ns"))
 
   link_l1cache_mem = sst.Link("link_l1cache_mem" + str(i))
-  link_l1cache_mem.connect((l1cache, "low_network_0", "1ns"), (memctrl, "direct_link", "1ns"))
+  link_l1cache_mem.connect((l1cache, "low_network_0", "40ns"), (memctrl, "direct_link", "40ns"))
   
   # Create remote memory controllers
   rmt_lsq = xbgas_cpu.setSubComponent("remote_memory", "revcpu.RevBasicRmtMemCtrl")
@@ -134,7 +144,7 @@ for i in range(0, NPES):
   rmt_nic_iface.addParams(net_params)
   
   link = sst.Link("link" + str(i))
-  link.connect( (rmt_nic_iface, "rtr_port", "100ns"), (router, f"port{i}", "100ns") )
+  link.connect( (rmt_nic_iface, "rtr_port", "200ns"), (router, f"port{i}", "200ns") )
 
 
 # Tell SST what statistics handling we want

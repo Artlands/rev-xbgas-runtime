@@ -83,7 +83,7 @@ int main()
     for( unsigned i=0; i< ITERS; i++ ){
       if( xbrtime_mype() == xbrtime_num_pes()-1 ){
         // last pe
-        target[i] = 1;
+        target[i] = 0;
       } else {
         target[i] = xbrtime_mype() + 1;
       }

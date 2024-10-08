@@ -333,10 +333,10 @@
     esc.w t0, a3, (a0)         # Try to update.
     bnez t0, _cas_u4           # Retry if store-conditional failed
     li a0, 0                   # Set return to success
-    jr ra                      # Return
+    ret                        # Return
   _cas_fail_u4:
     li a0, 1                   # Set return to failure.
-    jr ra                      # Return
+    ret                        # Return
     .size __xbrtime_atomic_compare_swap_u4, .-__xbrtime_atomic_compare_swap_u4
 
     #---------------------------------------------------
@@ -351,10 +351,10 @@
     esc.w t0, a3, (a0)         # Try to update.
     bnez t0, _cas_s4           # Retry if store-conditional failed
     li a0, 0                   # Set return to success
-    jr ra                      # Return
+    ret                        # Return
   _cas_fail_s4:
     li a0, 1                   # Set return to failure.
-    jr ra                      # Return
+    ret                        # Return
     .size __xbrtime_atomic_compare_swap_s4, .-__xbrtime_atomic_compare_swap_s4
 
     #---------------------------------------------------
@@ -369,10 +369,10 @@
     esc.d t0, a3, (a0)         # Try to update.
     bnez t0, _cas_u8           # Retry if store-conditional failed
     li a0, 0                   # Set return to success
-    jr ra                      # Return
+    ret                        # Return
   _cas_fail_u8:
     li a0, 1                   # Set return to failure.
-    jr ra                      # Return
+    ret                        # Return
     .size __xbrtime_atomic_compare_swap_u8, .-__xbrtime_atomic_compare_swap_u8
 
     #---------------------------------------------------
@@ -387,10 +387,10 @@
     esc.d t0, a3, (a0)         # Try to update.
     bnez t0, _cas_s8           # Retry if store-conditional failed
     li a0, 0                   # Set return to success
-    jr ra                      # Return
+    ret                        # Return
   _cas_fail_s8:
     li a0, 1                   # Set return to failure.
-    jr ra                      # Return
+    ret                        # Return
     .size __xbrtime_atomic_compare_swap_s8, .-__xbrtime_atomic_compare_swap_s8
 
     #---------------------------------------------------
