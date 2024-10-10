@@ -90,7 +90,7 @@ router.addParams({
 
 for i in range(0, NPES):
   if i == 0:
-    VERBOSE = 5
+    VERBOSE = 1
   else:
     VERBOSE = 1
   # xBGAS CPUs

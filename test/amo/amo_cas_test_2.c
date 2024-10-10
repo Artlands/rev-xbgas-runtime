@@ -16,7 +16,7 @@
 #include "dataset1.h"
 
 #define ITERS 500
-#define STRIDE 4
+#define STRIDE 1
 
 int main()
 {
@@ -87,7 +87,7 @@ int main()
 
   // Setup the array values
   for( unsigned i=0; i<ELEMS; i++ ){
-    array[i] = input_data[i];
+    array[i] = 0x00;
   }
 
   if( xbrtime_mype() == 0 ){
@@ -104,11 +104,12 @@ int main()
 
   rev_clock_gettime( 0, &s );
   for( unsigned i=0; i<ITERS; i++ ){
-    start = (uint64_t) xbrtime_long_atomic_compare_swap((long *)(&array[idx]), (long)(0x00), (long)(0x00), target[i]);
+    start = (uint64_t) xbrtime_long_atomic_compare_swap((long *)(&array[idx]), (long)(0x00), (long)(input_data[i]), target[i]);
     idx += STRIDE;
-    printf( "Iteration %d; PE %d; array[%d] = %lu; start = %lu; target = %d ", i, xbrtime_mype(), idx, array[idx], start, target[i] );
   }
   rev_clock_gettime( 0, &e );
+
+  xbrtime_barrier();
 
   kams = (int)((xbrtime_num_pes() * ITERS * 1.0e-3) / ((e.tv_nsec - s.tv_nsec) * 1.0e-9));
 
@@ -117,6 +118,14 @@ int main()
     printf( " Total iterations: %d ", ITERS * xbrtime_num_pes() );
     printf( " Time: %d ns ", (e.tv_nsec - s.tv_nsec));
     printf( " KAMS: %d Kilo AMOs/second", kams );
+  }
+
+  // Print out the first 5 elements
+  if ( xbrtime_mype() == 0 ){
+    printf( "First 5 elements: " );
+    for( unsigned i=0; i<5; i++ ){
+      printf( "array[%d] = 0x%lx ", i, array[i] );
+    }
   }
 
   xbrtime_close();
