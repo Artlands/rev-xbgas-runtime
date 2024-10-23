@@ -18,7 +18,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "xbrtime-alloc.h"
+#include "xbrtime_alloc.h"
 
 #define __XBRTIME_MAX_PE 1024
 

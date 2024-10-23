@@ -34,16 +34,25 @@ extern "C" {
 #include "rev-macros.h"
 
 /* ---------------------------------------- REQUIRED HEADERS */
-#include "xbrtime-types.h"
-#include "xbrtime-api.h"
-#include "xbrtime-alloc.h"
-#include "xbrtime-version.h"
-#include "xbrtime-macros.h"
-#include "xbrtime-collectives.h"
-#include "xbrtime-atomics.h"
+#include "xbrtime_types.h"
+#include "xbrtime_api.h"
+#include "xbrtime_alloc.h"
+#include "xbrtime_version.h"
+#include "xbrtime_macros.h"
+#include "xbrtime_collectives.h"
+#include "xbrtime_atomics.h"
 #include "malloc.h"
 
 #define printf rev_fast_printf
+
+enum xbgas_wait_ops {
+    XBRTIME_CMP_EQ,
+    XBRTIME_CMP_NE,
+    XBRTIME_CMP_GT,
+    XBRTIME_CMP_LE,
+    XBRTIME_CMP_LT,
+    XBRTIME_CMP_GE
+};
 
 /* ---------------------------------------- FUNCTION PROTOTYPES */
 

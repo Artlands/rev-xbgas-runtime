@@ -26,6 +26,7 @@ xbrtime_scatter.c
 xbrtime_util_asm.s
 xbrtime_api_asm.s
 xbrtime_atomics_asm.s
+xbrtime_wait.c
 malloc.c
 )
 
