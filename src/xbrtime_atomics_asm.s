@@ -35,362 +35,341 @@
   #     - u8 = unsigned eight bytes
   #     - s8 = signed eight bytes
   #---------------------------------------------------
-  # Atomic Function Calling Convention
-  #   - a0 = base address of memory location
-  #   - a1 = op value (expected value for cas)
-  #   - a2 = remote pe
-  #   - a3 = desired value for cas
-  #---------------------------------------------------
 
-    .global __xbrtime_atomic_swap_u4
-    .type __xbrtime_atomic_swap_u4, @function
-  __xbrtime_atomic_swap_u4:
-    eaddie e10, a2, 0
-    eamoswap.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_swap_u4, .-__xbrtime_atomic_swap_u4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_swap_s4
-    .type __xbrtime_atomic_swap_s4, @function
-  __xbrtime_atomic_swap_s4:
-    eaddie e10, a2, 0
-    eamoswap.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_swap_s4, .-__xbrtime_atomic_swap_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_swap_u8
-    .type __xbrtime_atomic_swap_u8, @function
-  __xbrtime_atomic_swap_u8:
-    eaddie e10, a2, 0
-    eamoswap.d a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_swap_u8, .-__xbrtime_atomic_swap_u8
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_swap_s8
-    .type __xbrtime_atomic_swap_s8, @function
-  __xbrtime_atomic_swap_s8:
-    eaddie e10, a2, 0
-    eamoswap.d a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_swap_s8, .-__xbrtime_atomic_swap_s8
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_add_u4
-    .type __xbrtime_atomic_add_u4, @function
-  __xbrtime_atomic_add_u4:
+    .global __xbrtime_atomic_add_4
+    .type __xbrtime_atomic_add_4, @function
+  __xbrtime_atomic_add_4:
     eaddie e10, a2, 0
     eamoadd.w a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_add_u4, .-__xbrtime_atomic_add_u4
+    .size __xbrtime_atomic_add_4, .-__xbrtime_atomic_add_4
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_add_s4
-    .type __xbrtime_atomic_add_s4, @function
-  __xbrtime_atomic_add_s4:
-    eaddie e10, a2, 0
-    eamoadd.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_add_s4, .-__xbrtime_atomic_add_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_add_u8
-    .type __xbrtime_atomic_add_u8, @function
-  __xbrtime_atomic_add_u8:
+    .global __xbrtime_atomic_add_8
+    .type __xbrtime_atomic_add_8, @function
+  __xbrtime_atomic_add_8:
     eaddie e10, a2, 0
     eamoadd.d a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_add_u8, .-__xbrtime_atomic_add_u8
+    .size __xbrtime_atomic_add_8, .-__xbrtime_atomic_add_8
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_add_s8
-    .type __xbrtime_atomic_add_s8, @function
-  __xbrtime_atomic_add_s8:
-    eaddie e10, a2, 0
-    eamoadd.d a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_add_s8, .-__xbrtime_atomic_add_s8
-
-    #---------------------------------------------------
-
-
-    .global __xbrtime_atomic_bxor_u4
-    .type __xbrtime_atomic_bxor_u4, @function
-  __xbrtime_atomic_bxor_u4:
-    eaddie e10, a2, 0
-    eamoxor.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_bxor_u4, .-__xbrtime_atomic_bxor_u4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_bxor_s4
-    .type __xbrtime_atomic_bxor_s4, @function
-  __xbrtime_atomic_bxor_s4:
-    eaddie e10, a2, 0
-    eamoxor.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_bxor_s4, .-__xbrtime_atomic_bxor_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_bxor_u8
-    .type __xbrtime_atomic_bxor_u8, @function
-  __xbrtime_atomic_bxor_u8:
-    eaddie e10, a2, 0
-    eamoxor.d a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_bxor_u8, .-__xbrtime_atomic_bxor_u8
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_bxor_s8
-    .type __xbrtime_atomic_bxor_s8, @function
-  __xbrtime_atomic_bxor_s8:
-    eaddie e10, a2, 0
-    eamoxor.d a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_bxor_s8, .-__xbrtime_atomic_bxor_s8
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_band_u4
-    .type __xbrtime_atomic_band_u4, @function
-  __xbrtime_atomic_band_u4:
+    .global __xbrtime_atomic_band_4
+    .type __xbrtime_atomic_band_4, @function
+  __xbrtime_atomic_band_4:
     eaddie e10, a2, 0
     eamoand.w a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_band_u4, .-__xbrtime_atomic_band_u4
+    .size __xbrtime_atomic_band_4, .-__xbrtime_atomic_band_4
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_band_s4
-    .type __xbrtime_atomic_band_s4, @function
-  __xbrtime_atomic_band_s4:
-    eaddie e10, a2, 0
-    eamoand.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_band_s4, .-__xbrtime_atomic_band_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_band_u8
-    .type __xbrtime_atomic_band_u8, @function
-  __xbrtime_atomic_band_u8:
+    .global __xbrtime_atomic_band_8
+    .type __xbrtime_atomic_band_8, @function
+  __xbrtime_atomic_band_8:
     eaddie e10, a2, 0
     eamoand.d a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_band_u8, .-__xbrtime_atomic_band_u8
+    .size __xbrtime_atomic_band_8, .-__xbrtime_atomic_band_8
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_band_s8
-    .type __xbrtime_atomic_band_s8, @function
-  __xbrtime_atomic_band_s8:
-    eaddie e10, a2, 0
-    eamoand.d a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_band_s8, .-__xbrtime_atomic_band_s8
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_bor_u4
-    .type __xbrtime_atomic_bor_u4, @function
-  __xbrtime_atomic_bor_u4:
+    .global __xbrtime_atomic_bor_4
+    .type __xbrtime_atomic_bor_4, @function
+  __xbrtime_atomic_bor_4:
     eaddie e10, a2, 0
     eamoor.w a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_bor_u4, .-__xbrtime_atomic_bor_u4
+    .size __xbrtime_atomic_bor_4, .-__xbrtime_atomic_bor_4
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_bor_s4
-    .type __xbrtime_atomic_bor_s4, @function
-  __xbrtime_atomic_bor_s4:
-    eaddie e10, a2, 0
-    eamoor.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_bor_s4, .-__xbrtime_atomic_bor_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_bor_u8
-    .type __xbrtime_atomic_bor_u8, @function
-  __xbrtime_atomic_bor_u8:
+    .global __xbrtime_atomic_bor_8
+    .type __xbrtime_atomic_bor_8, @function
+  __xbrtime_atomic_bor_8:
     eaddie e10, a2, 0
     eamoor.d a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_bor_u8, .-__xbrtime_atomic_bor_u8
+    .size __xbrtime_atomic_bor_8, .-__xbrtime_atomic_bor_8
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_bor_s8
-    .type __xbrtime_atomic_bor_s8, @function
-  __xbrtime_atomic_bor_s8:
+    .global __xbrtime_atomic_bxor_4
+    .type __xbrtime_atomic_bxor_4, @function
+  __xbrtime_atomic_bxor_4:
     eaddie e10, a2, 0
-    eamoor.d a0, a1, (a0)
+    eamoxor.w a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_bor_s8, .-__xbrtime_atomic_bor_s8
+    .size __xbrtime_atomic_bxor_4, .-__xbrtime_atomic_bxor_4
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_min_u4
-    .type __xbrtime_atomic_min_u4, @function
-  __xbrtime_atomic_min_u4:
+    .global __xbrtime_atomic_bxor_8
+    .type __xbrtime_atomic_bxor_8, @function
+  __xbrtime_atomic_bxor_8:
+    eaddie e10, a2, 0
+    eamoxor.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_bxor_8, .-__xbrtime_atomic_bxor_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_min_4
+    .type __xbrtime_atomic_min_4, @function
+  __xbrtime_atomic_min_4:
     eaddie e10, a2, 0
     eamominu.w a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_min_u4, .-__xbrtime_atomic_min_u4
+    .size __xbrtime_atomic_min_4, .-__xbrtime_atomic_min_4
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_min_s4
-    .type __xbrtime_atomic_min_s4, @function
-  __xbrtime_atomic_min_s4:
-    eaddie e10, a2, 0
-    eamomin.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_min_s4, .-__xbrtime_atomic_min_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_min_u8
-    .type __xbrtime_atomic_min_u8, @function
-  __xbrtime_atomic_min_u8:
+    .global __xbrtime_atomic_min_8
+    .type __xbrtime_atomic_min_8, @function
+  __xbrtime_atomic_min_8:
     eaddie e10, a2, 0
     eamominu.d a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_min_u8, .-__xbrtime_atomic_min_u8
+    .size __xbrtime_atomic_min_8, .-__xbrtime_atomic_min_8
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_min_s8
-    .type __xbrtime_atomic_min_s8, @function
-  __xbrtime_atomic_min_s8:
-    eaddie e10, a2, 0
-    eamomin.d a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_min_s8, .-__xbrtime_atomic_min_s8
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_max_u4
-    .type __xbrtime_atomic_max_u4, @function
-  __xbrtime_atomic_max_u4:
+    .global __xbrtime_atomic_max_4
+    .type __xbrtime_atomic_max_4, @function
+  __xbrtime_atomic_max_4:
     eaddie e10, a2, 0
     eamomaxu.w a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_max_u4, .-__xbrtime_atomic_max_u4
+    .size __xbrtime_atomic_max_4, .-__xbrtime_atomic_max_4
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_max_s4
-    .type __xbrtime_atomic_max_s4, @function
-  __xbrtime_atomic_max_s4:
-    eaddie e10, a2, 0
-    eamomax.w a0, a1, (a0)
-    ret
-    .size __xbrtime_atomic_max_s4, .-__xbrtime_atomic_max_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_max_u8
-    .type __xbrtime_atomic_max_u8, @function
-    __xbrtime_atomic_max_u8:
+    .global __xbrtime_atomic_max_8
+    .type __xbrtime_atomic_max_8, @function
+    __xbrtime_atomic_max_8:
     eaddie e10, a2, 0
     eamomaxu.d a0, a1, (a0)
     ret
-    .size __xbrtime_atomic_max_u8, .-__xbrtime_atomic_max_u8
+    .size __xbrtime_atomic_max_8, .-__xbrtime_atomic_max_8
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_max_s8
-    .type __xbrtime_atomic_max_s8, @function
-  __xbrtime_atomic_max_s8:
-    eaddie e10, a2, 0
-    eamomax.d a0, a1, (a0)
+    .global __xbrtime_atomic_fetch_4
+    .type __xbrtime_atomic_fetch_4, @function
+  __xbrtime_atomic_fetch_4:
+    eaddie e10, a1, 0
+    eamoadd.w a0, x0, (a0)
     ret
-    .size __xbrtime_atomic_max_s8, .-__xbrtime_atomic_max_s8
+    .size __xbrtime_atomic_fetch_4, .-__xbrtime_atomic_fetch_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_8
+    .type __xbrtime_atomic_fetch_8, @function
+  __xbrtime_atomic_fetch_8:
+    eaddie e10, a1, 0
+    eamoadd.d a0, x0, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_8, .-__xbrtime_atomic_fetch_8
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_compare_swap_u4
-    .type __xbrtime_atomic_compare_swap_u4, @function
-  __xbrtime_atomic_compare_swap_u4:
+    .global __xbrtime_atomic_set_4
+    .type __xbrtime_atomic_set_4, @function
+  __xbrtime_atomic_set_4:
     eaddie e10, a2, 0
-  _cas_u4:
+    eamoswap.w x0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_set_4, .-__xbrtime_atomic_set_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_set_8
+    .type __xbrtime_atomic_set_8, @function
+  __xbrtime_atomic_set_8:
+    eaddie e10, a2, 0
+    eamoswap.d x0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_set_8, .-__xbrtime_atomic_set_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_compare_swap_4
+    .type __xbrtime_atomic_compare_swap_4, @function
+  __xbrtime_atomic_compare_swap_4:
+    eaddie e10, a3, 0
     elr.w t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_u4   # Doesn't match, so fail.
-    esc.w t0, a3, (a0)         # Try to update.
-    bnez t0, _cas_u4           # Retry if store-conditional failed
-    li a0, 0                   # Set return to success
+    bne t0, a1, _cas_fail_4    # Doesn't match, so fail
+    esc.w x0, a2, (a0)         # Update
+    mv a0, t0                  # Move the returned value to the return register
+    ret
+  _cas_fail_4:
+    esc.w x0, t0, (a0)         # Write back the original value to release the lock
+    mv a0, t0                  # Move the returned value to the return register
     ret                        # Return
-  _cas_fail_u4:
-    li a0, 1                   # Set return to failure.
-    ret                        # Return
-    .size __xbrtime_atomic_compare_swap_u4, .-__xbrtime_atomic_compare_swap_u4
+    .size __xbrtime_atomic_compare_swap_4, .-__xbrtime_atomic_compare_swap_4
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_compare_swap_s4
-    .type __xbrtime_atomic_compare_swap_s4, @function
-  __xbrtime_atomic_compare_swap_s4:
-    eaddie e10, a2, 0
-  _cas_s4:
-    elr.w t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_s4   # Doesn't match, so fail.
-    esc.w t0, a3, (a0)         # Try to update.
-    bnez t0, _cas_s4           # Retry if store-conditional failed
-    li a0, 0                   # Set return to success
-    ret                        # Return
-  _cas_fail_s4:
-    li a0, 1                   # Set return to failure.
-    ret                        # Return
-    .size __xbrtime_atomic_compare_swap_s4, .-__xbrtime_atomic_compare_swap_s4
-
-    #---------------------------------------------------
-
-    .global __xbrtime_atomic_compare_swap_u8
-    .type __xbrtime_atomic_compare_swap_u8, @function
-  __xbrtime_atomic_compare_swap_u8:
-    eaddie e10, a2, 0
-  _cas_u8:
+    .global __xbrtime_atomic_compare_swap_8
+    .type __xbrtime_atomic_compare_swap_8, @function
+  __xbrtime_atomic_compare_swap_8:
+    eaddie e10, a3, 0
     elr.d t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_u8   # Doesn't match, so fail.
-    esc.d t0, a3, (a0)         # Try to update.
-    bnez t0, _cas_u8           # Retry if store-conditional failed
-    li a0, 0                   # Set return to success
+    bne t0, a1, _cas_fail_8    # Doesn't match, so fail
+    esc.d x0, a2, (a0)         # Update
+    mv a0, t0                  # Move the returned value to the return register
+    ret
+  _cas_fail_8:
+    esc.d x0, t0, (a0)         # Write back the original value to release the lock
+    mv a0, t0                  # Move the returned value to the return register
     ret                        # Return
-  _cas_fail_u8:
-    li a0, 1                   # Set return to failure.
-    ret                        # Return
-    .size __xbrtime_atomic_compare_swap_u8, .-__xbrtime_atomic_compare_swap_u8
+    .size __xbrtime_atomic_compare_swap_8, .-__xbrtime_atomic_compare_swap_8
 
     #---------------------------------------------------
 
-    .global __xbrtime_atomic_compare_swap_s8
-    .type __xbrtime_atomic_compare_swap_s8, @function
-  __xbrtime_atomic_compare_swap_s8:
+    .global __xbrtime_atomic_swap_4
+    .type __xbrtime_atomic_swap_4, @function
+  __xbrtime_atomic_swap_4:
     eaddie e10, a2, 0
-  _cas_s8:
-    elr.d t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_s8   # Doesn't match, so fail.
-    esc.d t0, a3, (a0)         # Try to update.
-    bnez t0, _cas_s8           # Retry if store-conditional failed
-    li a0, 0                   # Set return to success
-    ret                        # Return
-  _cas_fail_s8:
-    li a0, 1                   # Set return to failure.
-    ret                        # Return
-    .size __xbrtime_atomic_compare_swap_s8, .-__xbrtime_atomic_compare_swap_s8
+    eamoswap.w a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_swap_4, .-__xbrtime_atomic_swap_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_swap_8
+    .type __xbrtime_atomic_swap_8, @function
+  __xbrtime_atomic_swap_8:
+    eaddie e10, a2, 0
+    eamoswap.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_swap_8, .-__xbrtime_atomic_swap_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_inc_4
+    .type __xbrtime_atomic_fetch_inc_4, @function
+  __xbrtime_atomic_fetch_inc_4:
+    eaddie e10, a1, 0
+    li t0, 1                    # Load the immediate value 1 into register t0
+    eamoadd.w a0, t0, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_inc_4, .-__xbrtime_atomic_fetch_inc_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_inc_8
+    .type __xbrtime_atomic_fetch_inc_8, @function
+  __xbrtime_atomic_fetch_inc_8:
+    eaddie e10, a1, 0
+    li t0, 1                    # Load the immediate value 1 into register t0
+    eamoadd.d a0, t0, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_inc_8, .-__xbrtime_atomic_fetch_inc_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_inc_4
+    .type __xbrtime_atomic_inc_4, @function
+  __xbrtime_atomic_inc_4:
+    eaddie e10, a1, 0
+    li t0, 1                    # Load the immediate value 1 into register t0
+    eamoadd.w x0, t0, (a0)
+    ret
+    .size __xbrtime_atomic_inc_4, .-__xbrtime_atomic_inc_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_inc_8
+    .type __xbrtime_atomic_inc_8, @function
+  __xbrtime_atomic_inc_8:
+    eaddie e10, a1, 0
+    li t0, 1                    # Load the immediate value 1 into register t0
+    eamoadd.d x0, t0, (a0)
+    ret
+    .size __xbrtime_atomic_inc_8, .-__xbrtime_atomic_inc_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_add_4
+    .type __xbrtime_atomic_fetch_add_4, @function
+  __xbrtime_atomic_fetch_add_4:
+    eaddie e10, a2, 0
+    eamoadd.w a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_add_4, .-__xbrtime_atomic_fetch_add_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_add_8
+    .type __xbrtime_atomic_fetch_add_8, @function
+  __xbrtime_atomic_fetch_add_8:
+    eaddie e10, a2, 0
+    eamoadd.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_add_8, .-__xbrtime_atomic_fetch_add_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_and_4
+    .type __xbrtime_atomic_fetch_and_4, @function
+  __xbrtime_atomic_fetch_and_4:
+    eaddie e10, a2, 0
+    eamoand.w a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_and_4, .-__xbrtime_atomic_fetch_and_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_and_8
+    .type __xbrtime_atomic_fetch_and_8, @function
+  __xbrtime_atomic_fetch_and_8:
+    eaddie e10, a2, 0
+    eamoand.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_and_8, .-__xbrtime_atomic_fetch_and_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_or_4
+    .type __xbrtime_atomic_fetch_or_4, @function
+  __xbrtime_atomic_fetch_or_4:
+    eaddie e10, a2, 0
+    eamoor.w a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_or_4, .-__xbrtime_atomic_fetch_or_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_or_8
+    .type __xbrtime_atomic_fetch_or_8, @function
+  __xbrtime_atomic_fetch_or_8:
+    eaddie e10, a2, 0
+    eamoor.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_or_8, .-__xbrtime_atomic_fetch_or_8
+
+    #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_xor_4
+    .type __xbrtime_atomic_fetch_xor_4, @function
+  __xbrtime_atomic_fetch_xor_4:
+    eaddie e10, a2, 0
+    eamoxor.w a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_xor_4, .-__xbrtime_atomic_fetch_xor_4
+
+     #---------------------------------------------------
+
+    .global __xbrtime_atomic_fetch_xor_8
+    .type __xbrtime_atomic_fetch_xor_8, @function
+  __xbrtime_atomic_fetch_xor_8:
+    eaddie e10, a2, 0
+    eamoxor.d a0, a1, (a0)
+    ret
+    .size __xbrtime_atomic_fetch_xor_8, .-__xbrtime_atomic_fetch_xor_8
 
     #---------------------------------------------------

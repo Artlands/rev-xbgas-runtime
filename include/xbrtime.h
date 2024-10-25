@@ -45,7 +45,7 @@ extern "C" {
 
 #define printf rev_fast_printf
 
-enum xbgas_wait_ops {
+enum xbgas_cmp_ops {
     XBRTIME_CMP_EQ,
     XBRTIME_CMP_NE,
     XBRTIME_CMP_GT,
@@ -108,6 +108,18 @@ extern int xbrtime_num_pes();
       \return Void
 */
 extern void xbrtime_barrier();
+
+/*!   \fn void xbrtime_fence()
+      \brief Ensures ordering of delivery of operations on symmetric data objects.
+      \return Void
+*/
+extern void xbrtime_fence();
+
+/*!   \fn void xbrtime_quiet()
+      \brief Waits for completion of outstanding operations on symmetric data objects issued by a PE.
+      \return Void
+*/
+extern void xbrtime_quiet();
 
 
 

@@ -107,5 +107,13 @@ extern void xbrtime_barrier(){
 #endif
 }
 
+extern void xbrtime_fence(){
+	__xbrtime_asm_fence();
+}
+
+extern void xbrtime_quiet(){
+	__xbrtime_asm_quiet_fence();
+}
+
 
 /* EOF */

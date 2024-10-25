@@ -20,7 +20,6 @@ extern "C" {
 
 /*!   \fn xbrtime_TYPENAME_wait_until( _type *ivar, int cmp, _type cmp_value )
       \brief The wait_until operation blocks until the value contained in the symmetric data object, ivar, at the calling PE satisfies the wait condition. 
-      The ivar object at the calling PE may be updated by an AMO performed by a thread located within the calling PE or within another PE.
       \param ivar is the symmetric address of a remotely accessible data object.
       \param cmp is the compare operator that compares ivar with cmp_value
       \param cmp_value is the value to be compared with ivar.
@@ -46,8 +45,7 @@ void xbrtime_##_typename##_wait_until(_type *ivar, int cmp, _type cmp_value);
 #undef XBGAS_DECL_WAIT_UNTIL
 
 /*!   \fn xbrtime_TYPENAME_wait_until_all( _type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value )
-      \brief The wait_until_all operation blocks until the value contained in the symmetric data object, ivar, at the calling PE satisfies the wait condition. 
-      The ivar object at the calling PE may be updated by an AMO performed by a thread located within the calling PE or within another PE.
+      \brief The wait_until_all routine waits until all entries in the wait set specified by ivars and status have satisfied the wait condition at the calling PE.
       \param ivars is the symmetric address of an array of remotely accessible data objects.
       \param nelems is the number of elements in the ivars array
       \param status is the local address of an optional mask array of length nelems that indicates which elements in ivars are excluded from the wait set.
@@ -75,7 +73,7 @@ void xbrtime_##_typename##_wait_until_all(_type *ivars, size_t nelems, const int
 #undef XBGAS_DECL_WAIT_UNTIL_ALL
 
 /*!   \fn xbrtime_TYPENAME_wait_until_any( _type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value )
-      \brief routine waits until any one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE.
+      \brief The wait_until_any routine waits until any one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE.
       \param ivars is the symmetric address of an array of remotely accessible data objects.
       \param nelems is the number of elements in the ivars array
       \param status is the local address of an optional mask array of length nelems that indicates which elements in ivars are excluded from the wait set.
@@ -86,7 +84,7 @@ void xbrtime_##_typename##_wait_until_all(_type *ivars, size_t nelems, const int
 #define XBGAS_DECL_WAIT_UNTIL_ANY(_type, _typename)                                                                 \ 
 size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value);       
 
-    /* Wait until operations */
+    /* Wait until any operations */
     XBGAS_DECL_WAIT_UNTIL_ANY(int, int)
     XBGAS_DECL_WAIT_UNTIL_ANY(long, long)
     XBGAS_DECL_WAIT_UNTIL_ANY(long long, longlong)
@@ -103,7 +101,7 @@ size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const i
 #undef XBGAS_DECL_WAIT_UNTIL_ANY
 
 /*!   \fn xbrtime_TYPENAME_wait_some( _type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type cmp_value )
-      \brief waits until at least one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE. 
+      \brief The wait_some routine waits until at least one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE. 
       This routine tests all elements of ivars in the wait set at least once.
       \param ivars is the symmetric address of an array of remotely accessible data objects.
       \param nelems is the number of elements in the ivars array
@@ -116,7 +114,7 @@ size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const i
 #define XBGAS_DECL_WAIT_UNTIL_SOME(_type, _typename)                                                                 \ 
 size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type cmp_value);       
 
-    /* Wait until operations */
+    /* Wait until some operations */
     XBGAS_DECL_WAIT_UNTIL_SOME(int, int)
     XBGAS_DECL_WAIT_UNTIL_SOME(long, long)
     XBGAS_DECL_WAIT_UNTIL_SOME(long long, longlong)
@@ -133,7 +131,7 @@ size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t
 #undef XBGAS_DECL_WAIT_UNTIL_SOME
 
 /*!   \fn xbrtime_TYPENAME_wait_until_all_vector( _type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values )
-      \brief waits until all entries in the wait set specified by ivars and status have satisfied the wait conditions at the calling PE. 
+      \brief the wait_until_all_vector routine waits until all entries in the wait set specified by ivars and status have satisfied the wait conditions at the calling PE. 
       This routine compares each element of the ivars array in the wait set with each respective value in cmp_values according to the comparison operator cmp at the calling PE.
       \param ivars is the symmetric address of an array of remotely accessible data objects.
       \param nelems is the number of elements in the ivars array
@@ -145,7 +143,7 @@ size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t
 #define XBGAS_DECL_WAIT_UNTIL_ALL_VECTOR(_type, _typename)                                                                  \ 
 void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values);       
 
-    /* Wait until all operations */
+    /* Wait until all vector operations */
     XBGAS_DECL_WAIT_UNTIL_ALL_VECTOR(int, int)
     XBGAS_DECL_WAIT_UNTIL_ALL_VECTOR(long, long)
     XBGAS_DECL_WAIT_UNTIL_ALL_VECTOR(long long, longlong)
@@ -162,7 +160,7 @@ void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, co
 #undef XBGAS_DECL_WAIT_UNTIL_ALL_VECTOR
 
 /*!   \fn xbrtime_TYPENAME_wait_until_any_vector( _type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values )
-      \brief waits until any one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE.
+      \brief The wait_until_any_vector routine waits until any one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE.
       \param ivars is the symmetric address of an array of remotely accessible data objects.
       \param nelems is the number of elements in the ivars array
       \param status is the local address of an optional mask array of length nelems that indicates which elements in ivars are excluded from the wait set.
@@ -173,7 +171,7 @@ void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, co
 #define XBGAS_DECL_WAIT_UNTIL_ANY_VECTOR(_type, _typename)                                                                   \ 
 size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values);       
 
-    /* Wait until all operations */
+    /* Wait until any vector operations */
     XBGAS_DECL_WAIT_UNTIL_ANY_VECTOR(int, int)
     XBGAS_DECL_WAIT_UNTIL_ANY_VECTOR(long, long)
     XBGAS_DECL_WAIT_UNTIL_ANY_VECTOR(long long, longlong)
@@ -190,7 +188,7 @@ size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, 
 #undef XBGAS_DECL_WAIT_UNTIL_ANY_VECTOR
 
 /*!   \fn xbrtime_TYPENAME_wait_some_vector( _type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type *cmp_value )
-      \brief waits until at least one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE. 
+      \brief The wait_some_vector routine waits until at least one entry in the wait set specified by ivars and status satisfies the wait condition at the calling PE. 
       This routine tests all elements of ivars in the wait set at least once.
       \param ivars is the symmetric address of an array of remotely accessible data objects.
       \param nelems is the number of elements in the ivars array
@@ -203,7 +201,7 @@ size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, 
 #define XBGAS_DECL_WAIT_UNTIL_SOME_VECTOR(_type, _typename)                                                                                    \ 
 size_t xbrtime_##_typename##_wait_until_some_vector(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type *cmp_value);       
 
-    /* Wait until operations */
+    /* Wait until some vector operations */
     XBGAS_DECL_WAIT_UNTIL_SOME_VECTOR(int, int)
     XBGAS_DECL_WAIT_UNTIL_SOME_VECTOR(long, long)
     XBGAS_DECL_WAIT_UNTIL_SOME_VECTOR(long long, longlong)

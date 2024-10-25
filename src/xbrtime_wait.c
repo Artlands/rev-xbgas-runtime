@@ -59,6 +59,7 @@ void xbrtime_##_typename##_wait_until(_type *ivar, int cmp, _type cmp_value)    
     XBGAS_WAIT_UNTIL(size_t, size)
     XBGAS_WAIT_UNTIL(ptrdiff_t, ptrdiff)
 
+#undef XBGAS_WAIT_UNTIL
 
 #define XBGAS_WAIT_UNTIL_ALL(_type, _typename)                                                                      \ 
 void xbrtime_##_typename##_wait_until_all(_type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value) \
@@ -122,6 +123,8 @@ void xbrtime_##_typename##_wait_until_all(_type *ivars, size_t nelems, const int
     XBGAS_WAIT_UNTIL_ALL(size_t, size)
     XBGAS_WAIT_UNTIL_ALL(ptrdiff_t, ptrdiff)
 
+#undef XBGAS_WAIT_UNTIL_ALL
+
 #define XBGAS_WAIT_UNTIL_ANY(_type, _typename)                                                                          \ 
 size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value)   \
 {                                                                                                                 \
@@ -175,6 +178,7 @@ size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const i
     XBGAS_WAIT_UNTIL_ANY(size_t, size)
     XBGAS_WAIT_UNTIL_ANY(ptrdiff_t, ptrdiff)
 
+#undef XBGAS_WAIT_UNTIL_ANY
 
 #define XBGAS_WAIT_UNTIL_SOME(_type, _typename)                                                                                           \ 
 size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type cmp_value)   \ 
@@ -246,6 +250,8 @@ size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t
     XBGAS_WAIT_UNTIL_SOME(size_t, size)
     XBGAS_WAIT_UNTIL_SOME(ptrdiff_t, ptrdiff)
 
+#undef XBGAS_WAIT_UNTIL_SOME
+
 #define XBGAS_WAIT_UNTIL_ALL_VECTOR(_type, _typename)                                                                         \ 
 void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values)  \
 {                                                                                                                             \
@@ -308,10 +314,22 @@ void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, co
     XBGAS_WAIT_UNTIL_ALL_VECTOR(size_t, size)
     XBGAS_WAIT_UNTIL_ALL_VECTOR(ptrdiff_t, ptrdiff)
 
+#undef XBGAS_WAIT_UNTIL_ALL_VECTOR
+
 #define XBGAS_WAIT_UNTIL_ANY_VECTOR(_type, _typename)                                                                           \ 
 size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values)  \
 {                                                                                                                               \
   size_t i;                                                                                                                     \
+  int flag = 0;                                                                                                                 \
+  for( i = 0; i < nelems; ++i ) {                                                                                               \
+    if ( status[i] != 0 ) {                                                                                                     \
+      flag = 1;                                                                                                                 \
+      break;                                                                                                                    \
+    }                                                                                                                           \
+  }                                                                                                                             \
+  if ( flag == 0 ) {                                                                                                            \
+    return SIZE_MAX;                                                                                                            \
+  }                                                                                                                             \
   while (1) {                                                                                                                   \
     for (i = 0; i < nelems; ++i) {                                                                                              \
       if (status[i] == 0) {                                                                                                     \
@@ -359,6 +377,7 @@ size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, 
     XBGAS_WAIT_UNTIL_ANY_VECTOR(size_t, size)
     XBGAS_WAIT_UNTIL_ANY_VECTOR(ptrdiff_t, ptrdiff)
 
+#undef XBGAS_WAIT_UNTIL_ANY_VECTOR
 
 #define XBGAS_WAIT_UNTIL_SOME_VECTOR(_type, _typename)                                                                                          \ 
 size_t xbrtime_##_typename##_wait_until_some_vector(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type *cmp_value) \
@@ -430,10 +449,4 @@ size_t xbrtime_##_typename##_wait_until_some_vector(_type *ivars, size_t nelems,
     XBGAS_WAIT_UNTIL_SOME_VECTOR(size_t, size)
     XBGAS_WAIT_UNTIL_SOME_VECTOR(ptrdiff_t, ptrdiff)
 
-#undef XBGAS_WAIT_UNTIL
-#undef XBGAS_WAIT_UNTIL_ALL
-#undef XBGAS_WAIT_UNTIL_ANY
-#undef XBGAS_WAIT_UNTIL_SOME
-#undef XBGAS_WAIT_UNTIL_ALL_VECTOR
-#undef XBGAS_WAIT_UNTIL_ANY_VECTOR
 #undef XBGAS_WAIT_UNTIL_SOME_VECTOR

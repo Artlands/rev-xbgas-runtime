@@ -15,6 +15,8 @@ xbrtime_util.c
 xbrtime_api.c
 xbrtime_alloc.c
 xbrtime_barrier.c
+xbrtime_fence.c
+xbrtime_quiet.c
 xbrtime_atomics.c
 xbrtime_alltoall.c
 xbrtime_broadcast.c
@@ -27,6 +29,7 @@ xbrtime_util_asm.s
 xbrtime_api_asm.s
 xbrtime_atomics_asm.s
 xbrtime_wait.c
+xbrtime_test.c
 malloc.c
 )
 
