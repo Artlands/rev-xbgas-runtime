@@ -24,45 +24,45 @@ int main( int argc, char **argv ){
   size_t sz = _XBGAS_ALLOC_SIZE_;
   size_t ne = _XBGAS_ALLOC_NELEMS_;
 
-  printf( "Initializing xBGAS Runtime\n" );
+  printf( "Initializing xBGAS Runtime" );
   rtn = xbrtime_init();
-  printf( "PE=%d: xBGAS is Initialized\n", xbrtime_mype() );
+  printf( "PE=%d: xBGAS is Initialized", xbrtime_mype() );
 
-  printf( "PE=%d: Allocating %d bytes\n", xbrtime_mype(), (int)(sz) * (int)(ne));
+  printf( "PE=%d: Allocating %d bytes", xbrtime_mype(), (int)(sz) * (int)(ne));
   ptr = (uint64_t *)(xbrtime_malloc( sz*ne ));
 
-  printf( "PE=%d: *PTR = 0x%"PRIu64"\n", xbrtime_mype(), (uint64_t)(ptr) );
+  printf( "PE=%d: *PTR = 0x%"PRIu64"", xbrtime_mype(), (uint64_t)(ptr) );
   for( i=0; i<ne; i++ ){
     ptr[i] = (uint64_t)(xbrtime_mype()+i);
   }
 
   /* perform a barrier */
-  printf( "PE=%d: EXECUTING BARRIER\n", xbrtime_mype() );
+  printf( "PE=%d: EXECUTING BARRIER", xbrtime_mype() );
   xbrtime_barrier();
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
-    printf( "PE=%d: PERFORMING OPERATION\n", xbrtime_mype() );
+    printf( "PE=%d: PERFORMING OPERATION", xbrtime_mype() );
     xbrtime_ulonglong_get((unsigned long long *)(ptr),
                           (unsigned long long *)(ptr),
                           ne,
                           1,
                           1 );
   }else{
-    printf( "PE=%d: DOING NOTHING\n", xbrtime_mype() );
+    printf( "PE=%d: DOING NOTHING", xbrtime_mype() );
   }
 
   /* perform a barrier */
-  printf( "PE=%d: EXECUTING BARRIER\n", xbrtime_mype() );
+  printf( "PE=%d: EXECUTING BARRIER", xbrtime_mype() );
   xbrtime_barrier();
 
-  printf( "PE=%d: PTR[0]=0x%"PRIu64"\n",
+  printf( "PE=%d: PTR[0]=0x%"PRIu64"",
           xbrtime_mype(), ptr[0]);
 
-  printf( "PE=%d: xBGAS is Closing\n", xbrtime_mype() );
+  printf( "PE=%d: xBGAS is Closing", xbrtime_mype() );
   xbrtime_free( ptr );
   xbrtime_close();
-  printf( "xBGAS is Closed\n" );
+  printf( "xBGAS is Closed" );
 
   return rtn;
 }

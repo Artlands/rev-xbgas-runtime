@@ -3,6 +3,7 @@
 
 // base stores the head of the memory block list
 void *base = NULL;
+void *shbase = NULL;
 int num_segments = 0;
 mem_segment segments[MAX_SEGMENTS] = {0};
 
@@ -184,6 +185,66 @@ void free(void *ptr) {
       break;
     }
   }
+
+  return;
+}
+
+void *shmalloc(size_t size) {
+  if( size <= 0 ) {
+    return NULL;
+  }
+  if (!__XBRTIME_CONFIG) {
+    return NULL;
+  }
+  if (__XBRTIME_CONFIG->_START_ADDR == 0x00ull) {
+    return NULL;
+  }
+  mem_block *block;
+
+  // Align size to include the metadata structure and achieve proper alignment
+  size_t total_size = align8(BLOCK_SIZE) + align8(size);
+
+  if( !shbase ) {
+    // First time allocation, initialize a new block
+    shbase = (void *)(__XBRTIME_CONFIG->_START_ADDR);
+    block = (mem_block *)(shbase);
+    block->free = 1;
+    block->size = __XBRTIME_CONFIG->_MEMSIZE - align8(BLOCK_SIZE);
+    block->next = NULL;
+    block->prev = NULL;
+    split_block(block, size);
+    return (void *)((char *)block + align8(BLOCK_SIZE));
+  } else {
+    // Find a free block
+    block = find_block(shbase, total_size);
+    if (block) {
+      split_block(block, size);
+      return (void *)((char *)block + align8(BLOCK_SIZE));
+    } else {
+      // If no block is found, return NULL
+      return NULL;
+    }
+  }
+}
+
+void shfree(void *ptr) {
+  if( !ptr ) {
+    return;
+  }
+  if (!__XBRTIME_CONFIG) {
+    return;
+  }
+  if (__XBRTIME_CONFIG->_START_ADDR == 0x00ull) {
+    return;
+  }
+  // Find the block corresponding to the pointer
+  mem_block *block = (mem_block *)((char *)ptr - align8(BLOCK_SIZE));
+  // Mark the block as free
+  block->free = 1;
+
+  // Merge the block with the neighbor blocks, block will be updated to the 
+  // start of the merged block
+  block = merge_blocks(block);
 
   return;
 }

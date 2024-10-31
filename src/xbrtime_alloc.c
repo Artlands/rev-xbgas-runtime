@@ -15,71 +15,20 @@
 #include <inttypes.h>
 
 /* ------------------------------------------------- FUNCTION PROTOTYPES */
-uint64_t __xbrtime_get_remote_alloc( uint64_t slot, int pe );
-uint32_t xbrtime_decode_pe( int pe );
 void __xbrtime_asm_quiet_fence();
 
-uint64_t __xbrtime_ltor(uint64_t remote, int pe){
-  int i               = 0;
-  uint64_t base_slot  = 0x00ull;
-  uint64_t offset     = 0x00ull;
-  uint64_t new_addr   = 0x00ull;
-
-  if( xbrtime_mype() == pe ){
-    /* return the same address block */
-    return remote;
-  }else{
-    /* perform the address translation */
-
-#ifdef XBRTIME_DEBUG
-    printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: Translating local address at pe=%d from 0x%"PRIu64"\n",
-            xbrtime_mype(), pe, remote );
-#endif
-
-    for( i=0; i<_XBRTIME_MEM_SLOTS_; i++ ){
-      if( (remote >= __XBRTIME_CONFIG->_MMAP[i].start_addr) &&
-          (remote < (__XBRTIME_CONFIG->_MMAP[i].start_addr+
-                     __XBRTIME_CONFIG->_MMAP[i].size)) ){
-        /* found our slot */
-        base_slot = (uint64_t)(&__XBRTIME_CONFIG->_MMAP[i].start_addr);
-
-        /* calculate the local offset */
-        offset = remote - __XBRTIME_CONFIG->_MMAP[i].start_addr;
-
-        new_addr = (__xbrtime_get_remote_alloc(base_slot,xbrtime_decode_pe(pe))
-                                    +offset);
-#ifdef XBRTIME_DEBUG
-        printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: REMOTE ADDRESS IN SLOT=%d AT PE=%d IS 0x%"PRIu64"\n",
-                i, xbrtime_mype(), pe, new_addr );
-#endif
-        return new_addr;
-      }
-    }
-  }
-  /*
-   * if we reach this point, there is an error in translation
-   * return 0x00ull will cause a user access violation on the
-   * memory operation and raise a segmentation fault
-   *
-   */
-  return 0x00ull;
-}
-
 void *__xbrtime_shared_malloc( size_t sz ){
+  if (sz <= 0) {
+    return NULL;
+  }
   void *ptr = NULL;
   int slot  = -1;
-  int i     = 0;
-  int done  = 0;
 
   /* find an open slot */
-  while( (slot == -1) && (done != 1) ){
+  for( int i=0; i<_XBRTIME_MEM_SLOTS_; i++ ){
     if( __XBRTIME_CONFIG->_MMAP[i].size == 0 ){
       slot = i;
-      done = 1;
-    }
-    i++;
-    if( i==_XBRTIME_MEM_SLOTS_ ){
-      done = 1;
+      break;
     }
   }
 
@@ -88,16 +37,16 @@ void *__xbrtime_shared_malloc( size_t sz ){
     return NULL;
   }
 
-  /* attempt to create an allocation */
-  ptr = malloc( sz );
+  /* attempt to create an allocation on the pre-allocated heap*/
+  ptr = shmalloc( sz );
   if( ptr == NULL ){
     return NULL;
   }
 
   /* memory is good, register the block */
 #ifdef XBRTIME_DEBUG
-  printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: ALLOCATING MEMORY IN SLOT=%d\n",
-          xbrtime_mype(), slot );
+  printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: ALLOCATING MEMORY IN SLOT=%d AT ADDRESS 0x%"PRIx64", SIZE %d",
+          xbrtime_mype(), slot, ptr, sz );
 #endif
 
   __XBRTIME_CONFIG->_MMAP[slot].size = sz;
@@ -109,17 +58,13 @@ void __xbrtime_shared_free(void *ptr){
   uint64_t mem = (uint64_t)(ptr);
   int i = 0;
 
-  /*
-   * walk the allocated blocks and attempt to free
-   * the allocation
-   *
-   */
+  /* walk the allocated blocks and attempt to free the allocation */
   for( i=0; i<_XBRTIME_MEM_SLOTS_; i++ ){
     if( (mem >= __XBRTIME_CONFIG->_MMAP[i].start_addr) &&
         (mem < (__XBRTIME_CONFIG->_MMAP[i].start_addr+
                 __XBRTIME_CONFIG->_MMAP[i].size)) ){
       /* found the allocation */
-      free( ptr );
+      shfree( ptr );
       __XBRTIME_CONFIG->_MMAP[i].start_addr = 0x00ull;
       __XBRTIME_CONFIG->_MMAP[i].size = 0;
       return ;

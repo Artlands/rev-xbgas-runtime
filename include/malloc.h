@@ -33,6 +33,10 @@ typedef struct mem_segment
 void* malloc(size_t size);
 void free(void *ptr);
 
+// Malloc on symmetric heap
+void* shmalloc(size_t size);
+void shfree(void *ptr);
+
 #ifdef __cplusplus
 }
 #endif /* extern "C" */

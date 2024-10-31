@@ -46,7 +46,7 @@ int main()
   /* perform a barrier */
   xbrtime_barrier();
 
-  printf( "PE=%d: PTR[0]=0x%"PRIu64"\n", 
+  printf( "PE=%d: PTR[0]=0x%x", 
           xbrtime_mype(), ptr[0]);
 
   xbrtime_free( ptr );

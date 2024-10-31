@@ -29,7 +29,7 @@ extern "C" {
  *
  */
 typedef struct{
-  int _NAMESPACE;           /*! XBRTIME_PE_MAP: Namespace */
+  int _NAMESPACE;         /*! XBRTIME_PE_MAP: Namespace */
   int _PHYSICAL;          /*! XBRTIME_PE_MAP: Physical node ID */
   uint64_t _BASE;         /*! XBRTIME_PE_MAP: Base physical address */
 }XBRTIME_PE_MAP;

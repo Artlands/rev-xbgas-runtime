@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 /*!   \fn xbrtime_TYPENAME_atomic_OP( TYPE *dest, TYPE op_val, int pe )
-      \brief Performs an atomic memory operation on a remote pe; OP is one of {add, bor, band, bxor, min, max}
+      \brief Performs an atomic memory operation on a remote pe; OP is one of {add, or, and, xor}
       \param dest is a pointer to the base shared address on the target PE where the atomic operation is to be performed
       \param op_val is a provdied operand for the atomic operation
       \param pe is the id of the target remote pe
@@ -43,59 +43,31 @@ _type xbrtime_##_typename##_atomic_##_op(_type *dest, _type op_val, int pe);
     XBGAS_DECL_ATOMIC_OP(ptrdiff_t, ptrdiff, add)
 
     /* Atomic logical and */
-    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, band)
-    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, band)
-    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, band)
-    XBGAS_DECL_ATOMIC_OP(int32_t, int32, band)
-    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, band)
-    XBGAS_DECL_ATOMIC_OP(int64_t, int64, band)
-    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, band)
+    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, and)
+    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, and)
+    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, and)
+    XBGAS_DECL_ATOMIC_OP(int32_t, int32, and)
+    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, and)
+    XBGAS_DECL_ATOMIC_OP(int64_t, int64, and)
+    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, and)
 
     /* Atomic logical or */
-    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, bor)
-    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, bor)
-    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, bor)
-    XBGAS_DECL_ATOMIC_OP(int32_t, int32, bor)
-    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, bor)
-    XBGAS_DECL_ATOMIC_OP(int64_t, int64, bor)
-    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, bor)
+    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, or)
+    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, or)
+    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, or)
+    XBGAS_DECL_ATOMIC_OP(int32_t, int32, or)
+    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, or)
+    XBGAS_DECL_ATOMIC_OP(int64_t, int64, or)
+    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, or)
 
     /* Atomic logical exclusive or */
-    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, bxor)
-    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, bxor)
-    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, bxor)
-    XBGAS_DECL_ATOMIC_OP(int32_t, int32, bxor)
-    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, bxor)
-    XBGAS_DECL_ATOMIC_OP(int64_t, int64, bxor)
-    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, bxor)
-
-    /* Atomic min */
-    XBGAS_DECL_ATOMIC_OP(int, int, min)
-    XBGAS_DECL_ATOMIC_OP(long, long, min)
-    XBGAS_DECL_ATOMIC_OP(long long, longlong, min)
-    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, min)
-    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, min)
-    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, min)
-    XBGAS_DECL_ATOMIC_OP(int32_t, int32, min)
-    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, min)
-    XBGAS_DECL_ATOMIC_OP(int64_t, int64, min)
-    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, min)
-    XBGAS_DECL_ATOMIC_OP(size_t, size, min)
-    XBGAS_DECL_ATOMIC_OP(ptrdiff_t, ptrdiff, min)
-
-    /* Atomic max */
-    XBGAS_DECL_ATOMIC_OP(int, int, max)
-    XBGAS_DECL_ATOMIC_OP(long, long, max)
-    XBGAS_DECL_ATOMIC_OP(long long, longlong, max)
-    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, max)
-    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, max)
-    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, max)
-    XBGAS_DECL_ATOMIC_OP(int32_t, int32, max)
-    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, max)
-    XBGAS_DECL_ATOMIC_OP(int64_t, int64, max)
-    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, max)
-    XBGAS_DECL_ATOMIC_OP(size_t, size, max)
-    XBGAS_DECL_ATOMIC_OP(ptrdiff_t, ptrdiff, max)
+    XBGAS_DECL_ATOMIC_OP(unsigned int, uint, xor)
+    XBGAS_DECL_ATOMIC_OP(unsigned long, ulong, xor)
+    XBGAS_DECL_ATOMIC_OP(unsigned long long, ulonglong, xor)
+    XBGAS_DECL_ATOMIC_OP(int32_t, int32, xor)
+    XBGAS_DECL_ATOMIC_OP(uint32_t, uint32, xor)
+    XBGAS_DECL_ATOMIC_OP(int64_t, int64, xor)
+    XBGAS_DECL_ATOMIC_OP(uint64_t, uint64, xor)
 
 #undef XBGAS_DECL_ATOMIC_OP
 

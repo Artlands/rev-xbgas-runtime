@@ -30,8 +30,8 @@ extern "C" {
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <inttypes.h>
 #include "syscalls.h"
-#include "rev-macros.h"
 
 /* ---------------------------------------- REQUIRED HEADERS */
 #include "xbrtime_types.h"
@@ -68,6 +68,13 @@ extern int xbrtime_init();
 */
 extern void xbrtime_close();
 
+/*!   \fn int xbrtime_pe_accessible( int pe )
+      \brief Checks to see whether a pe is accessible via the data transfer routines
+      \param pe is the target processing element
+      \return 1 on success, 0 otherwise
+*/
+extern int xbrtime_pe_accessible( int pe );
+
 /*!   \fn int xbrtime_addr_accessible( const void *addr, int pe )
       \brief Checks to see whether the address on the target pe can be reached
       \param addr is a pointer to a valid address
@@ -75,6 +82,15 @@ extern void xbrtime_close();
       \return 1 on success, 0 otherwise
 */
 extern int xbrtime_addr_accessible( const void *addr, int pe );
+
+/*!   \fn uint64_t xbrtime_ptr( const void *dest, int pe )
+      \brief Returns the address of a symmetric data object on the specified PE.
+      \param dest is the symmetric address of the remotely accessible data object to be referenced.
+      \param pe is an integer that indicates the PE number on which dest is to be accessed.
+      \return The address of an remotely accessible dest data object is returned when it can be accessed using memory loads and stores. 
+      Otherwise, 0x00ull is returned.
+*/
+extern uint64_t xbrtime_ptr( const void *dest, int pe );
 
 /*!   \fn void *xbrtime_malloc( size_t sz )
       \brief Allocates a block of contiguous shared memory of minimum size, 'sz'
