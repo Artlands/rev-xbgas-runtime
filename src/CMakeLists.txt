@@ -18,13 +18,13 @@ xbrtime_barrier.c
 xbrtime_fence.c
 xbrtime_quiet.c
 xbrtime_atomics.c
-xbrtime_alltoall.c
-xbrtime_broadcast.c
-xbrtime_gather.c
-xbrtime_gather_all.c
-xbrtime_reduce.c
-xbrtime_reduce_all.c
-xbrtime_scatter.c
+# xbrtime_alltoall.c
+# xbrtime_broadcast.c
+# xbrtime_gather.c
+# xbrtime_gather_all.c
+# xbrtime_reduce.c
+# xbrtime_reduce_all.c
+# xbrtime_scatter.c
 xbrtime_util_asm.s
 xbrtime_api_asm.s
 xbrtime_atomics_asm.s

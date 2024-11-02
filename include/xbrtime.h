@@ -54,6 +54,11 @@ enum xbgas_cmp_ops {
     XBRTIME_CMP_GE
 };
 
+enum xbgas_signal_ops {
+    XBRTIME_SIGNAL_SET,
+    XBRTIME_SIGNAL_ADD,
+};
+
 /* ---------------------------------------- FUNCTION PROTOTYPES */
 
 /*!   \fn int xbrtime_init()

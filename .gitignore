@@ -2,7 +2,6 @@
 *.exe
 *.dump
 *.csv
-*.txt
 *.so
 *.dylib
 build/*

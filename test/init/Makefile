@@ -18,7 +18,7 @@ ARCH=rv64imafdc
 ISA_SOURCES := $(wildcard *.c)
 ISA_HEADERS := $(wildcard *.h)
 ISA_EXES=$(ISA_SOURCES:.c=.exe)
-RISCV_GCC_OPTS ?= -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu17 -O0 -ffast-math -fno-common -fno-builtin-printf -march=$(ARCH) -mabi=lp64d
+RISCV_GCC_OPTS ?=  -mcmodel=medany -static -std=gnu17 -O0 -ffast-math -fno-common -fno-builtin-printf -march=$(ARCH) -mabi=lp64d
 CFLAGS = -I$(XBGAS_RUNTIME)/include  -I$(REV)/common/syscalls 
 
 ifeq "$(RVCC)" "riscv64-unknown-elf-gcc"

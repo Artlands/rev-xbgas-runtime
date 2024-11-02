@@ -213,7 +213,7 @@ _type xbrtime_##_typename##_atomic_swap(_type *dest, _type value, int pe)       
     return ((_type) __xbrtime_atomic_swap_##_typesize(__xbrtime_ltor(((uint64_t)dest), pe), (_typecast)value, xbrtime_decode_pe(pe))); \    
 }
 
-    /* Atomic set */
+    /* Atomic swap */
     XBGAS_ATOMIC_SWAP(float, float, u4, uint32_t)
     XBGAS_ATOMIC_SWAP(double, double, u8, uint64_t)
     XBGAS_ATOMIC_SWAP(int, int, s4, int32_t)
@@ -259,7 +259,7 @@ void xbrtime_##_typename##_atomic_inc(_type *dest, int pe)                      
     return ((void) __xbrtime_atomic_inc_##_typesize(__xbrtime_ltor(((uint64_t)dest), pe), xbrtime_decode_pe(pe)));   \    
 }
 
-    /* Atomic fetch-and-increment*/
+    /* Atomic increment*/
     XBGAS_ATOMIC_INC(int, int, 4)
     XBGAS_ATOMIC_INC(long, long, 4)
     XBGAS_ATOMIC_INC(long long, longlong, 8)
