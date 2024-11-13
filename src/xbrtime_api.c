@@ -13,7 +13,6 @@
 
 #include "xbrtime.h"
 #include <inttypes.h>
-// #define XBRTIME_DEBUG
 
 /* ------------------------------------------------- FUNCTION PROTOTYPES */
 void __xbrtime_asm_fence();
