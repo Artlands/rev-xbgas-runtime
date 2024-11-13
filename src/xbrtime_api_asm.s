@@ -542,21 +542,4 @@ __xbrtime_get_8_seq:
 
   #---------------------------------------------------
 
-  # Put Signal Calling convention:
-  #   - a0 = dest address
-  #   - a1 = src address
-  #   - a2 = nelems
-  #   - a3 = signal address
-  #   - a4 = signal
-  #   - a5 = signal operation
-  #   - a6 = remote pe
-
-  #.global __xbrtime_put_signal_u4
-  #.type __xbrtime_put_signal_u4, @function
-#__xbrtime_put_signal_u4:
-  #eaddie e10, a4, 0
-  #ebsd a0, a1, a3, a4
-  #ret
-  #.size __xbrtime_put_signal_u4, .-__xbrtime_put_signal_u4
-
   #-- EOF
