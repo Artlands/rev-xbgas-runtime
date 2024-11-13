@@ -1,4 +1,4 @@
-/* _AMO_FETCH_OR_TEST_C_
+/* _AMO_SWAP_TEST_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -10,23 +10,30 @@
  *
  */
 
+
 #include "xbrtime.h"
 #include <stdio.h>
 
+
 int main(void) {
-  uint32_t *dest;
-  int old = -1;
+  int *dest;
+
   xbrtime_init();
   int mype = xbrtime_mype();
+  int npes = xbrtime_num_pes();
 
-  dest = (uint32_t *)xbrtime_malloc(1 * sizeof(uint32_t));
-  dest[0] = 0b111000;
+  dest = (int *)xbrtime_malloc(1 * sizeof(int));
+  dest[0] = mype;
   
-  if ( mype == 1 ) {
-    old = xbrtime_uint32_atomic_fetch_or(&dest[0], 0b000111, 0);
+  printf("Before atomic set: %d: dest = %ld", mype, dest[0]);
+
+  xbrtime_barrier();
+  int new_val = mype + 99;
+  if ( mype & 1 ) {
+    xbrtime_int_atomic_set(&dest[0], new_val, (mype + 1) % npes);
   }
   xbrtime_barrier();
-  printf("%d: dst = %" PRIu32 ", old = %d", mype, dest[0], old);
+  printf("After atomic set: %d: dest = %ld", mype, dest[0]);
 
   xbrtime_free(dest);
   xbrtime_close();

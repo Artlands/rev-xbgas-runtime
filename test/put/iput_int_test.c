@@ -28,6 +28,8 @@ int main( int argc, char **argv ){
     dest[i] = 99;
   }
 
+  xbrtime_barrier(); 
+
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
     xbrtime_int_iput(dest, source, 1, 2, 5, 1);

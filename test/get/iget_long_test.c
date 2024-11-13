@@ -28,6 +28,8 @@ int main( int argc, char **argv ){
     source[i] = 0xdeafbeef + i;
   }
 
+  xbrtime_barrier(); 
+
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
     xbrtime_long_iget(dest, source, 1, 2, 5, 1);

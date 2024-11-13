@@ -22,15 +22,39 @@ void __xbrtime_asm_quiet_fence();
 uint32_t xbrtime_decode_pe( int pe );
 uint64_t __xbrtime_ltor(uint64_t remote,int pe);
 
-void __xbrtime_put_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
-void __xbrtime_put_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
-void __xbrtime_put_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
-void __xbrtime_put_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
+void __xbrtime_put_1( uint64_t dest, uint64_t value, uint32_t pe );
+void __xbrtime_put_2( uint64_t dest, uint64_t value, uint32_t pe );
+void __xbrtime_put_4( uint64_t dest, uint64_t value, uint32_t pe );
+void __xbrtime_put_8( uint64_t dest, uint64_t value, uint32_t pe );
 
-void __xbrtime_get_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
-void __xbrtime_get_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
-void __xbrtime_get_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
-void __xbrtime_get_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t stride, uint32_t pe );
+uint64_t __xbrtime_get_u1( uint64_t source, uint32_t pe );
+uint64_t __xbrtime_get_s1( uint64_t source, uint32_t pe );
+uint64_t __xbrtime_get_u2( uint64_t source, uint32_t pe );
+uint64_t __xbrtime_get_s2( uint64_t source, uint32_t pe );
+uint64_t __xbrtime_get_f4( uint64_t source, uint32_t pe );
+uint64_t __xbrtime_get_f8( uint64_t source, uint32_t pe );
+uint64_t __xbrtime_get_4( uint64_t source, uint32_t pe );
+uint64_t __xbrtime_get_8( uint64_t source, uint32_t pe );
+
+bool __xbrtime_put_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+bool __xbrtime_put_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+bool __xbrtime_put_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+bool __xbrtime_put_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+
+void __xbrtime_put_1_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_put_2_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_put_4_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_put_8_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+
+bool __xbrtime_get_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+bool __xbrtime_get_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+bool __xbrtime_get_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+bool __xbrtime_get_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+
+void __xbrtime_get_1_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_get_2_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_get_4_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_get_8_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 
 void __xbrtime_put_u1_seq( uint64_t dest, uint64_t source, uint64_t d_stride, uint64_t s_stride, uint32_t nelems, uint32_t pe );
 void __xbrtime_put_s1_seq( uint64_t dest, uint64_t source, uint64_t d_stride, uint64_t s_stride, uint32_t nelems, uint32_t pe );
@@ -46,20 +70,87 @@ void __xbrtime_get_s2_seq( uint64_t dest, uint64_t source, uint64_t d_stride, ui
 void __xbrtime_get_4_seq( uint64_t dest, uint64_t source, uint64_t d_stride, uint64_t s_stride, uint32_t nelems, uint32_t pe );
 void __xbrtime_get_8_seq( uint64_t dest, uint64_t source, uint64_t d_stride, uint64_t s_stride, uint32_t nelems, uint32_t pe );
 
+#define XBGAS_P(_type, _typename, _typesize )                                               \
+void xbrtime_##_typename##_p(_type *dest, _type value, int pe)                              \
+{                                                                                           \ 
+  return ((void)__xbrtime_put_##_typesize(__xbrtime_ltor((uint64_t)(dest),pe),              \
+                                          (_type)(value),                                   \
+                                          xbrtime_decode_pe(pe)));                          \
+}                                                                                                   
+
+  XBGAS_P(float, float, 4)
+  XBGAS_P(double, double, 8)
+  XBGAS_P(long double, longdouble, 8)
+  XBGAS_P(char, char, 1)
+  XBGAS_P(signed char, schar, 1)
+  XBGAS_P(short, short, 2)
+  XBGAS_P(int, int, 4)
+  XBGAS_P(long, long, 8)
+  XBGAS_P(long long, longlong, 8)
+  XBGAS_P(unsigned char, uchar, 1)
+  XBGAS_P(unsigned short, ushort, 2)
+  XBGAS_P(unsigned int, uint, 4)
+  XBGAS_P(unsigned long, ulong, 8)
+  XBGAS_P(unsigned long long, ulonglong, 8)
+  XBGAS_P(int8_t, int8, 1)
+  XBGAS_P(int16_t, int16, 2)
+  XBGAS_P(int32_t, int32, 4)
+  XBGAS_P(int64_t, int64, 8)
+  XBGAS_P(uint8_t, uint8, 1)
+  XBGAS_P(uint16_t, uint16, 2)
+  XBGAS_P(uint32_t, uint32, 4)
+  XBGAS_P(uint64_t, uint64, 8)
+  XBGAS_P(size_t, size, 4)
+  XBGAS_P(ptrdiff_t, ptrdiff, 8)
+
+#undef XBGAS_P
+
+#define XBGAS_G(_type, _typename, _typesize )                                                                           \
+_type xbrtime_##_typename##_g(const _type *source, int pe)                                                              \
+{                                                                                                                       \ 
+                                                                                                                        \
+    return ((_type)__xbrtime_get_##_typesize(__xbrtime_ltor((uint64_t)(source), pe),                                    \
+                                             xbrtime_decode_pe(pe)));                                                   \
+}                                                                                                   
+
+  XBGAS_G(float, float, f4)
+  XBGAS_G(double, double, f8)
+  XBGAS_G(long double, longdouble, 8)
+  XBGAS_G(char, char, u1)
+  XBGAS_G(signed char, schar, s1)
+  XBGAS_G(short, short, s2)
+  XBGAS_G(int, int, 4)
+  XBGAS_G(long, long, 8)
+  XBGAS_G(long long, longlong, 8)
+  XBGAS_G(unsigned char, uchar, u1)
+  XBGAS_G(unsigned short, ushort, u2)
+  XBGAS_G(unsigned int, uint, 4)
+  XBGAS_G(unsigned long, ulong, 8)
+  XBGAS_G(unsigned long long, ulonglong, 8)
+  XBGAS_G(int8_t, int8, s1)
+  XBGAS_G(int16_t, int16, s2)
+  XBGAS_G(int32_t, int32, 4)
+  XBGAS_G(int64_t, int64, 8)
+  XBGAS_G(uint8_t, uint8, u1)
+  XBGAS_G(uint16_t, uint16, u2)
+  XBGAS_G(uint32_t, uint32, 4)
+  XBGAS_G(uint64_t, uint64, 8)
+  XBGAS_G(size_t, size, 4)
+  XBGAS_G(ptrdiff_t, ptrdiff, 8)
+
+#undef XBGAS_G
 
 #define XBGAS_PUT(_type, _typename, _typesize )                                                     \
-void xbrtime_##_typename##_put(_type *dest, const _type *source, size_t nelems, int pe)             \
+bool xbrtime_##_typename##_put(_type *dest, const _type *source, size_t nelems, int pe)             \
 {                                                                                                   \ 
   if(nelems == 0){                                                                                  \
-    return;                                                                                         \
+    return 0;                                                                                       \
   }else{                                                                                            \
-    return ((void)__xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),              \
+    return ((bool)__xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),              \
                                                   (uint64_t)(source),                               \
                                                   (uint32_t)(nelems),                               \
-                                                  (uint32_t)(sizeof(_type)),                        \
                                                   xbrtime_decode_pe(pe)));                          \
   }                                                                                                 \
-  __xbrtime_asm_fence();                                                                            \
 }                                                                                                   \
                                                                                                     \
 void xbrtime_##_typename##_put_nbi(_type *dest, const _type *source, size_t nelems, int pe)         \
@@ -67,11 +158,10 @@ void xbrtime_##_typename##_put_nbi(_type *dest, const _type *source, size_t nele
   if(nelems == 0){                                                                                  \
     return;                                                                                         \
   }else{                                                                                            \
-    return ((void)__xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),              \
-                                                  (uint64_t)(source),                               \
-                                                  (uint32_t)(nelems),                               \
-                                                  (uint32_t)(sizeof(_type)),                        \
-                                                  xbrtime_decode_pe(pe)));                          \
+    return ((void)__xbrtime_put_##_typesize##_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),          \
+                                                      (uint64_t)(source),                           \
+                                                      (uint32_t)(nelems),                           \
+                                                      xbrtime_decode_pe(pe)));                      \
   }                                                                                                 \
 }   
 
@@ -104,18 +194,16 @@ void xbrtime_##_typename##_put_nbi(_type *dest, const _type *source, size_t nele
 #undef XBGAS_PUT
 
 #define XBGAS_GET(_type, _typename, _typesize )                                                     \
-void xbrtime_##_typename##_get(_type *dest, const _type *source, size_t nelems, int pe)             \
+bool xbrtime_##_typename##_get(_type *dest, const _type *source, size_t nelems, int pe)             \
 {                                                                                                   \ 
   if(nelems == 0){                                                                                  \
-    return;                                                                                         \
+    return 0;                                                                                       \
   }else{                                                                                            \
-    return ((void)__xbrtime_get_##_typesize##_agg((uint64_t)(dest),                                 \
+    return ((bool)__xbrtime_get_##_typesize##_agg((uint64_t)(dest),                                 \
                                                    __xbrtime_ltor((uint64_t)(source), pe),          \
                                                    (uint32_t)(nelems),                              \
-                                                   (uint32_t)(sizeof(_type)),                       \
                                                    xbrtime_decode_pe(pe)));                         \
   }                                                                                                 \
-  __xbrtime_wait_bulk_comp();                                                                       \
 }                                                                                                   \
                                                                                                     \
 void xbrtime_##_typename##_get_nbi(_type *dest, const _type *source, size_t nelems, int pe)         \
@@ -123,11 +211,10 @@ void xbrtime_##_typename##_get_nbi(_type *dest, const _type *source, size_t nele
   if(nelems == 0){                                                                                  \
     return;                                                                                         \
   }else{                                                                                            \
-    return ((void)__xbrtime_get_##_typesize##_agg((uint64_t)(dest),                                 \
-                                                   __xbrtime_ltor((uint64_t)(source), pe),          \
-                                                   (uint32_t)(nelems),                              \
-                                                   (uint32_t)(sizeof(_type)),                       \
-                                                   xbrtime_decode_pe(pe)));                         \
+    return ((void)__xbrtime_get_##_typesize##_agg_nbi((uint64_t)(dest),                             \
+                                                       __xbrtime_ltor((uint64_t)(source), pe),      \
+                                                       (uint32_t)(nelems),                          \
+                                                       xbrtime_decode_pe(pe)));                     \
   }                                                                                                 \
 } 
 
@@ -250,49 +337,124 @@ void xbrtime_##_typename##_iget(_type *dest, const _type *source, ptrdiff_t dst,
 
 #undef XBGAS_I_GET
 
-// #define XBGAS_PUT_SIGNAL(_type, _typename, _typesize)    \
-// void xbrtime_##_typename##put_signal( _type *dest,                  \
-//                                       const _type *src,             \
-//                                       size_t nelems,                \
-//                                       uint64_t *sig_addr,           \
-//                                       uint64_t signal,              \
-//                                       int sig_op,                   \
-//                                       int pe );                     \
-// {                                                                   \   
-//     return ((void) __xbrtime_put_signal##_typesize( __xbrtime_ltor(((uint64_t)dest), pe), \
-//                                                    (uint64_t)(src),                      \
-//                                                    (uint32_t)(nelems),                    \
-//                                                    (uint64_t)(sig_addr),                  \
-//                                                    (uint64_t)signal,                      \
-//                                                    (int32_t) sig_op,                      \
-//                                                    xbrtime_decode_pe(pe) ));              \    
-// }
+#define XBGAS_PUT_SIGNAL(_type, _typename, _typesize)                                         \
+void xbrtime_##_typename##_put_signal( _type *dest,                                           \
+                                      const _type *source,                                    \
+                                      size_t nelems,                                          \
+                                      uint64_t *sig_addr,                                     \
+                                      uint64_t signal,                                        \
+                                      int sig_op,                                             \
+                                      int pe )                                                \
+{                                                                                             \   
+  bool flag = (bool)__xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),      \
+                                                     (uint64_t)(source),                      \
+                                                     (uint32_t)(nelems),                      \
+                                                     xbrtime_decode_pe(pe));                  \
+  if(flag){                                                                                   \
+    switch ( sig_op ) {                                                                       \
+      case XBRTIME_SIGNAL_SET:                                                                \
+        __xbrtime_atomic_set_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),                      \
+                                signal,                                                       \
+                                xbrtime_decode_pe(pe));                                       \
+        break;                                                                                \
+      case XBRTIME_SIGNAL_ADD:                                                                \
+        __xbrtime_atomic_add_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),                      \
+                                signal,                                                       \
+                                xbrtime_decode_pe(pe));                                       \
+        break;                                                                                \
+      default:                                                                                \
+        break;                                                                                \
+    }                                                                                         \
+  }                                                                                           \
+  return;                                                                                     \
+}
 
-//   XBGAS_PUT_SIGNAL(float, float, u4)
-//   XBGAS_PUT_SIGNAL(double, double, u8)
-//   XBGAS_PUT_SIGNAL(long double, longdouble, u8)
-//   XBGAS_PUT_SIGNAL(char, char, u1)
-//   XBGAS_PUT_SIGNAL(signed char, schar, s1)
-//   XBGAS_PUT_SIGNAL(short, short, s2)
-//   XBGAS_PUT_SIGNAL(int, int, s4)
-//   XBGAS_PUT_SIGNAL(long, long, s8)
-//   XBGAS_PUT_SIGNAL(long long, longlong, s8)
-//   XBGAS_PUT_SIGNAL(unsigned char, uchar, u1)
-//   XBGAS_PUT_SIGNAL(unsigned short, ushort, u2)
-//   XBGAS_PUT_SIGNAL(unsigned int, uint, u4)
-//   XBGAS_PUT_SIGNAL(unsigned long, ulong, u8)
-//   XBGAS_PUT_SIGNAL(unsigned long long, ulonglong, u8)
-//   XBGAS_PUT_SIGNAL(int8_t, int8, s1)
-//   XBGAS_PUT_SIGNAL(int16_t, int16, s2)
-//   XBGAS_PUT_SIGNAL(int32_t, int32, s4)
-//   XBGAS_PUT_SIGNAL(int64_t, int64, s8)
-//   XBGAS_PUT_SIGNAL(uint8_t, uint8, u1)
-//   XBGAS_PUT_SIGNAL(uint16_t, uint16, u2)
-//   XBGAS_PUT_SIGNAL(uint32_t, uint32, u4)
-//   XBGAS_PUT_SIGNAL(uint64_t, uint64, u8)
-//   XBGAS_PUT_SIGNAL(size_t, size, u4)
-//   XBGAS_PUT_SIGNAL(ptrdiff_t, ptrdiff, s8)
+  XBGAS_PUT_SIGNAL(float, float, 4)
+  XBGAS_PUT_SIGNAL(double, double, 8)
+  XBGAS_PUT_SIGNAL(long double, longdouble, 8)
+  XBGAS_PUT_SIGNAL(char, char, 1)
+  XBGAS_PUT_SIGNAL(signed char, schar, 1)
+  XBGAS_PUT_SIGNAL(short, short, 2)
+  XBGAS_PUT_SIGNAL(int, int, 4)
+  XBGAS_PUT_SIGNAL(long, long, 8)
+  XBGAS_PUT_SIGNAL(long long, longlong, 8)
+  XBGAS_PUT_SIGNAL(unsigned char, uchar, 1)
+  XBGAS_PUT_SIGNAL(unsigned short, ushort, 2)
+  XBGAS_PUT_SIGNAL(unsigned int, uint, 4)
+  XBGAS_PUT_SIGNAL(unsigned long, ulong, 8)
+  XBGAS_PUT_SIGNAL(unsigned long long, ulonglong, 8)
+  XBGAS_PUT_SIGNAL(int8_t, int8, 1)
+  XBGAS_PUT_SIGNAL(int16_t, int16, 2)
+  XBGAS_PUT_SIGNAL(int32_t, int32, 4)
+  XBGAS_PUT_SIGNAL(int64_t, int64, 8)
+  XBGAS_PUT_SIGNAL(uint8_t, uint8, 1)
+  XBGAS_PUT_SIGNAL(uint16_t, uint16, 2)
+  XBGAS_PUT_SIGNAL(uint32_t, uint32, 4)
+  XBGAS_PUT_SIGNAL(uint64_t, uint64, 8)
+  XBGAS_PUT_SIGNAL(size_t, size, 4)
+  XBGAS_PUT_SIGNAL(ptrdiff_t, ptrdiff, 8)
 
-// #undef XBGAS_PUT_SIGNAL
+#undef XBGAS_PUT_SIGNAL
+
+#define XBGAS_PUT_SIGNAL_NBI(_type, _typename, _typesize)                            \
+void xbrtime_##_typename##_put_signal_nbi( _type *dest,                              \
+                                          const _type *source,                       \
+                                          size_t nelems,                             \
+                                          uint64_t *sig_addr,                        \
+                                          uint64_t signal,                           \
+                                          int sig_op,                                \
+                                          int pe )                                   \
+{                                                                                    \   
+  (void)__xbrtime_put_##_typesize##_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),     \
+                                            (uint64_t)(source),                      \
+                                            (uint32_t)(nelems),                      \
+                                            xbrtime_decode_pe(pe));                  \
+  switch ( sig_op ) {                                                                \
+    case XBRTIME_SIGNAL_SET:                                                         \
+      __xbrtime_atomic_set_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),               \
+                              signal,                                                \
+                              xbrtime_decode_pe(pe));                                \
+      break;                                                                         \
+    case XBRTIME_SIGNAL_ADD:                                                         \
+      __xbrtime_atomic_add_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),               \
+                              signal,                                                \
+                              xbrtime_decode_pe(pe));                                \
+      break;                                                                         \
+    default:                                                                         \
+      break;                                                                         \
+  }                                                                                  \
+  return;                                                                            \
+}
+
+  XBGAS_PUT_SIGNAL_NBI(float, float, 4)
+  XBGAS_PUT_SIGNAL_NBI(double, double, 8)
+  XBGAS_PUT_SIGNAL_NBI(long double, longdouble, 8)
+  XBGAS_PUT_SIGNAL_NBI(char, char, 1)
+  XBGAS_PUT_SIGNAL_NBI(signed char, schar, 1)
+  XBGAS_PUT_SIGNAL_NBI(short, short, 2)
+  XBGAS_PUT_SIGNAL_NBI(int, int, 4)
+  XBGAS_PUT_SIGNAL_NBI(long, long, 8)
+  XBGAS_PUT_SIGNAL_NBI(long long, longlong, 8)
+  XBGAS_PUT_SIGNAL_NBI(unsigned char, uchar, 1)
+  XBGAS_PUT_SIGNAL_NBI(unsigned short, ushort, 2)
+  XBGAS_PUT_SIGNAL_NBI(unsigned int, uint, 4)
+  XBGAS_PUT_SIGNAL_NBI(unsigned long, ulong, 8)
+  XBGAS_PUT_SIGNAL_NBI(unsigned long long, ulonglong, 8)
+  XBGAS_PUT_SIGNAL_NBI(int8_t, int8, 1)
+  XBGAS_PUT_SIGNAL_NBI(int16_t, int16, 2)
+  XBGAS_PUT_SIGNAL_NBI(int32_t, int32, 4)
+  XBGAS_PUT_SIGNAL_NBI(int64_t, int64, 8)
+  XBGAS_PUT_SIGNAL_NBI(uint8_t, uint8, 1)
+  XBGAS_PUT_SIGNAL_NBI(uint16_t, uint16, 2)
+  XBGAS_PUT_SIGNAL_NBI(uint32_t, uint32, 4)
+  XBGAS_PUT_SIGNAL_NBI(uint64_t, uint64, 8)
+  XBGAS_PUT_SIGNAL_NBI(size_t, size, 4)
+  XBGAS_PUT_SIGNAL_NBI(ptrdiff_t, ptrdiff, 8)
+
+#undef XBGAS_PUT_SIGNAL_NBI
+
+uint64_t xbrtime_signal_fetch(const uint64_t *sig_addr) {
+  return __xbrtime_atomic_fetch_8((uint64_t)(sig_addr));
+}
 
 /* EOF */

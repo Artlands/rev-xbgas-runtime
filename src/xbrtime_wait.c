@@ -17,31 +17,33 @@
 void xbrtime_##_typename##_wait_until(_type *ivar, int cmp, _type cmp_value)         \
 {                                                                                    \ 
   while(1){                                                                          \
+    _type var = (_type)(*ivar);                                                      \
     if(cmp == XBRTIME_CMP_EQ){                                                       \
-      if(*ivar == cmp_value){                                                        \
+      if(var == cmp_value){                                                          \
         break;                                                                       \
       }                                                                              \
     }else if(cmp == XBRTIME_CMP_NE){                                                 \
-      if(*ivar != cmp_value){                                                        \
+      if(var != cmp_value){                                                          \
         break;                                                                       \
       }                                                                              \
     }else if(cmp == XBRTIME_CMP_GT){                                                 \
-      if(*ivar > cmp_value){                                                         \
+      if(var > cmp_value){                                                           \
         break;                                                                       \
       }                                                                              \
     }else if(cmp == XBRTIME_CMP_LE){                                                 \
-      if(*ivar <= cmp_value){                                                        \
+      if(var <= cmp_value){                                                          \
         break;                                                                       \
       }                                                                              \
     }else if(cmp == XBRTIME_CMP_LT){                                                 \
-      if(*ivar < cmp_value){                                                         \
+      if(var < cmp_value){                                                           \
         break;                                                                       \
       }                                                                              \
     }else if(cmp == XBRTIME_CMP_GE){                                                 \
-      if(*ivar >= cmp_value){                                                        \
+      if(var >= cmp_value){                                                          \
         break;                                                                       \  
       }                                                                              \
     }                                                                                \
+  asm volatile("nop");                                                               \
   }                                                                                  \
 }
 

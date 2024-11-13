@@ -29,6 +29,83 @@ extern "C" {
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
+
+/**
+ * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE *src, size_t nelems, int pe)
+ *
+ */
+
+#define XBGAS_DECL_P(_type, _typename)                         \
+  /**                                                          \
+   * @see xbrtime_TYPE_p                                       \
+   */                                                          \
+  void xbrtime_##_typename##_p(_type *dest,                    \
+                               _type value,                    \
+                               int pe);                    
+
+  /* P operation */
+  XBGAS_DECL_P(float, float)
+  XBGAS_DECL_P(double, double)
+  XBGAS_DECL_P(long double, longdouble)
+  XBGAS_DECL_P(char, char)
+  XBGAS_DECL_P(signed char, schar)
+  XBGAS_DECL_P(short, short)
+  XBGAS_DECL_P(int, int)
+  XBGAS_DECL_P(long, long)
+  XBGAS_DECL_P(long long, longlong)
+  XBGAS_DECL_P(unsigned char, uchar)
+  XBGAS_DECL_P(unsigned short, ushort)
+  XBGAS_DECL_P(unsigned int, uint)
+  XBGAS_DECL_P(unsigned long, ulong)
+  XBGAS_DECL_P(unsigned long long, ulonglong)
+  XBGAS_DECL_P(int8_t, int8)
+  XBGAS_DECL_P(int16_t, int16)
+  XBGAS_DECL_P(int32_t, int32)
+  XBGAS_DECL_P(int64_t, int64)
+  XBGAS_DECL_P(uint8_t, uint8)
+  XBGAS_DECL_P(uint16_t, uint16)
+  XBGAS_DECL_P(uint32_t, uint32)
+  XBGAS_DECL_P(uint64_t, uint64)
+  XBGAS_DECL_P(size_t, size)
+  XBGAS_DECL_P(ptrdiff_t, ptrdiff)
+
+#undef XBGAS_DECL_P
+
+#define XBGAS_DECL_G(_type, _typename)                               \
+  /**                                                                \
+   * @see xbrtime_TYPE_g                                             \
+   */                                                                \
+  _type xbrtime_##_typename##_g(const _type *source,                 \
+                                int pe);                    
+
+  /* G operation */
+  XBGAS_DECL_G(float, float)
+  XBGAS_DECL_G(double, double)
+  XBGAS_DECL_G(long double, longdouble)
+  XBGAS_DECL_G(char, char)
+  XBGAS_DECL_G(signed char, schar)
+  XBGAS_DECL_G(short, short)
+  XBGAS_DECL_G(int, int)
+  XBGAS_DECL_G(long, long)
+  XBGAS_DECL_G(long long, longlong)
+  XBGAS_DECL_G(unsigned char, uchar)
+  XBGAS_DECL_G(unsigned short, ushort)
+  XBGAS_DECL_G(unsigned int, uint)
+  XBGAS_DECL_G(unsigned long, ulong)
+  XBGAS_DECL_G(unsigned long long, ulonglong)
+  XBGAS_DECL_G(int8_t, int8)
+  XBGAS_DECL_G(int16_t, int16)
+  XBGAS_DECL_G(int32_t, int32)
+  XBGAS_DECL_G(int64_t, int64)
+  XBGAS_DECL_G(uint8_t, uint8)
+  XBGAS_DECL_G(uint16_t, uint16)
+  XBGAS_DECL_G(uint32_t, uint32)
+  XBGAS_DECL_G(uint64_t, uint64)
+  XBGAS_DECL_G(size_t, size)
+  XBGAS_DECL_G(ptrdiff_t, ptrdiff)
+
+#undef XBGAS_DECL_G
 
 /**
  * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE *src, size_t nelems, int pe)
@@ -39,7 +116,7 @@ extern "C" {
   /**                                                          \
    * @see xbrtime_TYPE_OP                                      \
    */                                                          \
-  void xbrtime_##_typename##_##_op(_type *dest,                \
+  bool xbrtime_##_typename##_##_op(_type *dest,                \
                                    const _type *source,        \
                                    size_t nelems,              \
                                    int pe);                    \
@@ -182,7 +259,7 @@ extern "C" {
   /**                                                       \
    * @see xbrtime_TYPE_PUT_SIGNAL                           \
    */                                                       \
-  void xbrtime_##_typename##put_signal(_type *dest,         \
+  void xbrtime_##_typename##_put_signal(_type *dest,        \
                                         const _type *src,   \
                                         size_t nelems,      \
                                         uint64_t *sig_addr, \
@@ -193,7 +270,7 @@ extern "C" {
   /**                                                       \
    * @see xbrtime_TYPE_PUT_SIGNAL_NBI                       \
    */                                                       \
-  void xbrtime_##_typename##put_signal_nbi(_type *dest,     \
+  void xbrtime_##_typename##_put_signal_nbi(_type *dest,    \
                                         const _type *src,   \
                                         size_t nelems,      \
                                         uint64_t *sig_addr, \
@@ -231,6 +308,10 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif /* extern "C" */
+
+
+/* Signal Fetch */
+uint64_t xbrtime_signal_fetch(const uint64_t *sig_addr);
 
 #endif /* _XBRTIME_TYPES_H_ */
 

@@ -14,6 +14,7 @@
 
 CC=${RVCC}
 ARCH=rv64imafdc
+RV_OBJDUMP=riscv64-unknown-elf-objdump
 
 ISA_SOURCES := $(wildcard *.c)
 ISA_HEADERS := $(wildcard *.h)
@@ -32,5 +33,8 @@ $(ISA_TESTS): $(ISA_EXES)
 	$(CC) $(CFLAGS) $(RISCV_GCC_OPTS)  -o $@ $< -L$(XBGAS_RUNTIME)/lib -lxbrtime -lm
 clean:
 	rm -Rf *.exe
+
+dump: $(ISA_EXES)
+	$(foreach var,$(ISA_EXES),$(RV_OBJDUMP) -d $(var) > $(var).dump;)
 
 #-- EOF

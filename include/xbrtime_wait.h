@@ -25,7 +25,7 @@ extern "C" {
       \param cmp_value is the value to be compared with ivar.
       \return void
 */
-#define XBGAS_DECL_WAIT_UNTIL(_type, _typename)                             \ 
+#define XBGAS_DECL_WAIT_UNTIL(_type, _typename)                             \
 void xbrtime_##_typename##_wait_until(_type *ivar, int cmp, _type cmp_value);       
 
     /* Wait until operations */
@@ -53,7 +53,7 @@ void xbrtime_##_typename##_wait_until(_type *ivar, int cmp, _type cmp_value);
       \param cmp_value is the value to be compared with the objects pointed to by ivars.
       \return void
 */
-#define XBGAS_DECL_WAIT_UNTIL_ALL(_type, _typename)                                                                \ 
+#define XBGAS_DECL_WAIT_UNTIL_ALL(_type, _typename)                                                                \
 void xbrtime_##_typename##_wait_until_all(_type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value);       
 
     /* Wait until all operations */
@@ -81,7 +81,7 @@ void xbrtime_##_typename##_wait_until_all(_type *ivars, size_t nelems, const int
       \param cmp_value is the value to be compared with the objects pointed to by ivars.
       \return size_t is the index of an element in the ivars array that satisfies the wait condition.
 */
-#define XBGAS_DECL_WAIT_UNTIL_ANY(_type, _typename)                                                                 \ 
+#define XBGAS_DECL_WAIT_UNTIL_ANY(_type, _typename)                                                                 \
 size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value);       
 
     /* Wait until any operations */
@@ -111,7 +111,7 @@ size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const i
       \param cmp_value is the value to be compared with the objects pointed to by ivars.
       \return size_t is the number of indices returned in the indices array.
 */
-#define XBGAS_DECL_WAIT_UNTIL_SOME(_type, _typename)                                                                 \ 
+#define XBGAS_DECL_WAIT_UNTIL_SOME(_type, _typename)                                                                                   \
 size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type cmp_value);       
 
     /* Wait until some operations */
@@ -140,7 +140,7 @@ size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t
       \param *cmp_values is the local address of an array of length nelems containing values to be compared with the respective objects in ivars.
       \return void
 */
-#define XBGAS_DECL_WAIT_UNTIL_ALL_VECTOR(_type, _typename)                                                                  \ 
+#define XBGAS_DECL_WAIT_UNTIL_ALL_VECTOR(_type, _typename)                                                                  \
 void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values);       
 
     /* Wait until all vector operations */
@@ -168,7 +168,7 @@ void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, co
       \param *cmp_values is the local address of an array of length nelems containing values to be compared with the respective objects in ivars.
       \return size_t returns the index of an element in the ivars array that satisfies the wait condition. If the wait set is empty, this routine returns SIZE_MAX.
 */
-#define XBGAS_DECL_WAIT_UNTIL_ANY_VECTOR(_type, _typename)                                                                   \ 
+#define XBGAS_DECL_WAIT_UNTIL_ANY_VECTOR(_type, _typename)                                                                   \
 size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values);       
 
     /* Wait until any vector operations */
@@ -198,7 +198,7 @@ size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, 
       \param *cmp_values is the local address of an array of length nelems containing values to be compared with the respective objects in ivars.
       \return size_t is the number of indices returned in the indices array.
 */
-#define XBGAS_DECL_WAIT_UNTIL_SOME_VECTOR(_type, _typename)                                                                                    \ 
+#define XBGAS_DECL_WAIT_UNTIL_SOME_VECTOR(_type, _typename)                                                                                    \
 size_t xbrtime_##_typename##_wait_until_some_vector(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type *cmp_value);       
 
     /* Wait until some vector operations */

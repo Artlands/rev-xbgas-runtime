@@ -1,4 +1,4 @@
-/* _XFER_PUT_TEST_1_C_
+/* _GET_LONG_TEST_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -14,7 +14,7 @@
 #include <inttypes.h>
 #include "xbrtime.h"
 
-#define TEST_SIZE 1024
+#define TEST_SIZE 16
 
 int main( int argc, char **argv ){
   int mype, npes;
@@ -39,8 +39,6 @@ int main( int argc, char **argv ){
     /* perform an operation */
     xbrtime_long_get(dest, source, TEST_SIZE, 1);
   }
-
-  xbrtime_barrier();
 
   // Validate the results
   if( xbrtime_mype() == 0 ){

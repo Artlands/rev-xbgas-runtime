@@ -30,20 +30,151 @@
   #     - s8 = signed eight byte
   #   - {seq,agg} corresponds to sequential
   #             and aggregated transfers
+
+  #---------------------------------------------------
+  # Put Calling Convention
+  #   - a0 = dest address
+  #   - a1 = value 
+  #   - a2 = remote pe
+  #---------------------------------------------------
+
+  .global __xbrtime_put_1
+  .type __xbrtime_put_1, @function
+__xbrtime_put_1:
+  eaddie e10, a2, 0
+  esb a1, 0(a0)
+  ret
+  .size __xbrtime_put_1, .-__xbrtime_put_1
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_2
+  .type __xbrtime_put_2, @function
+__xbrtime_put_2:
+  eaddie e10, a2, 0
+  esh a1, 0(a0)
+  ret
+  .size __xbrtime_put_2, .-__xbrtime_put_2
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_4
+  .type __xbrtime_put_4, @function
+__xbrtime_put_4:
+  eaddie e10, a2, 0
+  esw a1, 0(a0)
+  ret
+  .size __xbrtime_put_4, .-__xbrtime_put_4
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_8
+  .type __xbrtime_put_8, @function
+__xbrtime_put_8:
+  eaddie e10, a2, 0
+  esd a1, 0(a0)
+  ret
+  .size __xbrtime_put_8, .-__xbrtime_put_8
+
+  #---------------------------------------------------
+  # Get Calling Convention
+  #   - a0 = source address
+  #   - a1 = remote pe
+  #---------------------------------------------------
+
+  .global __xbrtime_get_u1
+  .type __xbrtime_get_u1, @function
+__xbrtime_get_u1:
+  eaddie e10, a1, 0
+  elbu a0, 0(a0)
+  ret
+  .size __xbrtime_get_u1, .-__xbrtime_get_u1
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_s1
+  .type __xbrtime_get_s1, @function
+__xbrtime_get_s1:
+  eaddie e10, a1, 0
+  elb a0, 0(a0)
+  ret
+  .size __xbrtime_get_s1, .-__xbrtime_get_s1
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_u2
+  .type __xbrtime_get_u2, @function
+__xbrtime_get_u2:
+  eaddie e10, a1, 0
+  elhu a0, 0(a0)
+  ret
+  .size __xbrtime_get_u2, .-__xbrtime_get_u2
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_s2
+  .type __xbrtime_get_s2, @function
+__xbrtime_get_s2:
+  eaddie e10, a1, 0
+  elh a0, 0(a0)
+  ret
+  .size __xbrtime_get_s2, .-__xbrtime_get_s2
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_4
+  .type __xbrtime_get_4, @function
+__xbrtime_get_4:
+  eaddie e10, a1, 0
+  elw a0, 0(a0)
+  ret
+  .size __xbrtime_get_4, .-__xbrtime_get_4
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_f4
+  .type __xbrtime_get_f4, @function
+__xbrtime_get_f4:
+  eaddie e10, a1, 0
+  elw t0, 0(a0)
+  fmv.w.x fa0, t0
+  ret
+  .size __xbrtime_get_f4, .-__xbrtime_get_f4
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_8
+  .type __xbrtime_get_8, @function
+__xbrtime_get_8:
+  eaddie e10, a1, 0
+  eld a0, 0(a0)
+  ret
+  .size __xbrtime_get_8, .-__xbrtime_get_8
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_f8
+  .type __xbrtime_get_f8, @function
+__xbrtime_get_f8:
+  eaddie e10, a1, 0
+  eld t0, 0(a0)
+  fmv.d.x fa0, t0
+  ret
+  .size __xbrtime_get_f8, .-__xbrtime_get_f8
+
   #---------------------------------------------------
   # Bulk Put/Get Calling Convention
   #   - a0 = dest address
   #   - a1 = source address
   #   - a2 = nelems
-  #   - a3 = stride  
-  #   - a4 = remote pe
+  #   - a3 = remote pe
   #---------------------------------------------------
 
   .global __xbrtime_put_1_agg
   .type __xbrtime_put_1_agg, @function
 __xbrtime_put_1_agg:
-  eaddie e10, a4, 0
-  ebsb a1, a0, a2, a3
+  eaddie e10, a3, 0
+  ebsb a0, a1, a0, a2
   ret
   .size __xbrtime_put_1_agg, .-__xbrtime_put_1_agg
 
@@ -52,8 +183,8 @@ __xbrtime_put_1_agg:
   .global __xbrtime_put_2_agg
   .type __xbrtime_put_2_agg, @function
 __xbrtime_put_2_agg:
-  eaddie e10, a4, 0
-  ebsh a1, a0, a2, a3
+  eaddie e10, a3, 0
+  ebsh a0, a1, a0, a2
   ret
   .size __xbrtime_put_2_agg, .-__xbrtime_put_2_agg
 
@@ -62,8 +193,8 @@ __xbrtime_put_2_agg:
   .global __xbrtime_put_4_agg
   .type __xbrtime_put_4_agg, @function
 __xbrtime_put_4_agg:
-  eaddie e10, a4, 0
-  ebsw a1, a0, a2, a3
+  eaddie e10, a3, 0
+  ebsw a0, a1, a0, a2
   ret
   .size __xbrtime_put_4_agg, .-__xbrtime_put_4_agg
 
@@ -72,18 +203,58 @@ __xbrtime_put_4_agg:
   .global __xbrtime_put_8_agg
   .type __xbrtime_put_8_agg, @function
 __xbrtime_put_8_agg:
-  eaddie e10, a4, 0
-  ebsd a1, a0, a2, a3
+  eaddie e10, a3, 0
+  ebsd a0, a1, a0, a2
   ret
   .size __xbrtime_put_8_agg, .-__xbrtime_put_8_agg
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_1_agg_nbi
+  .type __xbrtime_put_1_agg_nbi, @function
+__xbrtime_put_1_agg_nbi:
+  eaddie e10, a3, 0
+  ebsb x0, a1, a0, a2
+  ret
+  .size __xbrtime_put_1_agg_nbi, .-__xbrtime_put_1_agg_nbi
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_2_agg_nbi
+  .type __xbrtime_put_2_agg_nbi, @function
+__xbrtime_put_2_agg_nbi:
+  eaddie e10, a3, 0
+  ebsh x0, a1, a0, a2
+  ret
+  .size __xbrtime_put_2_agg_nbi, .-__xbrtime_put_2_agg_nbi
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_4_agg_nbi
+  .type __xbrtime_put_4_agg_nbi, @function
+__xbrtime_put_4_agg_nbi:
+  eaddie e10, a3, 0
+  ebsw x0, a1, a0, a2
+  ret
+  .size __xbrtime_put_4_agg_nbi, .-__xbrtime_put_4_agg_nbi
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_8_agg_nbi
+  .type __xbrtime_put_8_agg_nbi, @function
+__xbrtime_put_8_agg_nbi:
+  eaddie e10, a3, 0
+  ebsd x0, a1, a0, a2
+  ret
+  .size __xbrtime_put_8_agg_nbi, .-__xbrtime_put_8_agg_nbi
 
   #---------------------------------------------------
 
   .global __xbrtime_get_1_agg
   .type __xbrtime_get_1_agg, @function
 __xbrtime_get_1_agg:
-  eaddie e11, a4, 0
-  eblb a0, a1, a2, a3
+  eaddie e11, a3, 0
+  eblb a0, a0, a1, a2
   ret
   .size __xbrtime_get_1_agg, .-__xbrtime_get_1_agg
 
@@ -92,8 +263,8 @@ __xbrtime_get_1_agg:
   .global __xbrtime_get_2_agg
   .type __xbrtime_get_2_agg, @function
 __xbrtime_get_2_agg:
-  eaddie e11, a4, 0
-  eblh a0, a1, a2, a3
+  eaddie e11, a3, 0
+  eblh a0, a0, a1, a2
   ret
   .size __xbrtime_get_2_agg, .-__xbrtime_get_2_agg
 
@@ -102,8 +273,8 @@ __xbrtime_get_2_agg:
   .global __xbrtime_get_4_agg
   .type __xbrtime_get_4_agg, @function
 __xbrtime_get_4_agg:
-  eaddie e11, a4, 0
-  eblw a0, a1, a2, a3
+  eaddie e11, a3, 0
+  eblw a0, a0, a1, a2
   ret
   .size __xbrtime_get_4_agg, .-__xbrtime_get_4_agg
 
@@ -112,10 +283,50 @@ __xbrtime_get_4_agg:
   .global __xbrtime_get_8_agg
   .type __xbrtime_get_8_agg, @function
 __xbrtime_get_8_agg:
-  eaddie e11, a4, 0
-  ebld a0, a1, a2, a3
+  eaddie e11, a3, 0
+  ebld a0, a0, a1, a2
   ret
   .size __xbrtime_get_8_agg, .-__xbrtime_get_8_agg
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_1_agg_nbi
+  .type __xbrtime_get_1_agg_nbi, @function
+__xbrtime_get_1_agg_nbi:
+  eaddie e11, a3, 0
+  eblb x0, a0, a1, a2
+  ret
+  .size __xbrtime_get_1_agg_nbi, .-__xbrtime_get_1_agg_nbi
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_2_agg_nbi
+  .type __xbrtime_get_2_agg_nbi, @function
+__xbrtime_get_2_agg_nbi:
+  eaddie e11, a3, 0
+  eblh x0, a0, a1, a2
+  ret
+  .size __xbrtime_get_2_agg_nbi, .-__xbrtime_get_2_agg_nbi
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_4_agg_nbi
+  .type __xbrtime_get_4_agg_nbi, @function
+__xbrtime_get_4_agg_nbi:
+  eaddie e11, a3, 0
+  eblw x0, a0, a1, a2
+  ret
+  .size __xbrtime_get_4_agg_nbi, .-__xbrtime_get_4_agg_nbi
+
+  #---------------------------------------------------
+
+  .global __xbrtime_get_8_agg_nbi
+  .type __xbrtime_get_8_agg_nbi, @function
+__xbrtime_get_8_agg_nbi:
+  eaddie e11, a3, 0
+  ebld x0, a0, a1, a2
+  ret
+  .size __xbrtime_get_8_agg_nbi, .-__xbrtime_get_8_agg_nbi
 
   #---------------------------------------------------
   # Sequential Put/Get Calling Convention

@@ -28,6 +28,8 @@ int main( int argc, char **argv ){
     source[i] = i;
   }
 
+  xbrtime_barrier(); 
+
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
     xbrtime_int_iget(dest, source, 1, 2, 5, 1);

@@ -1,4 +1,4 @@
-/* _XFER_PUT_TEST_1_C_
+/* _PUT_LONG_TEST_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -14,10 +14,11 @@
 #include <inttypes.h>
 #include "xbrtime.h"
 
-#define TEST_SIZE 1024
+#define TEST_SIZE 1200
 
 int main( int argc, char **argv ){
   int mype, npes;
+  bool flag = 0;
   long *source = malloc( sizeof(long) * TEST_SIZE );
 
   xbrtime_init();
@@ -37,8 +38,10 @@ int main( int argc, char **argv ){
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
-    xbrtime_long_put(dest, source, TEST_SIZE, 1);
+    flag = xbrtime_long_put(dest, source, TEST_SIZE, 1);
   }
+
+  printf("PE %d: flag=%d", xbrtime_mype(), flag);
 
   xbrtime_barrier();
 

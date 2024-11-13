@@ -28,6 +28,8 @@ int main( int argc, char **argv ){
     dest[i] = 0x00;
   }
 
+  xbrtime_barrier(); 
+
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
     xbrtime_long_iput(dest, source, 1, 2, 5, 1);

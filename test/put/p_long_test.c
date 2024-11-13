@@ -1,4 +1,4 @@
-/* _AMO_FETCH_OR_TEST_C_
+/* _P_LONG_TEST_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -10,26 +10,30 @@
  *
  */
 
-#include "xbrtime.h"
 #include <stdio.h>
+#include "xbrtime.h"
 
-int main(void) {
-  uint32_t *dest;
-  int old = -1;
+int main( int argc, char **argv ){
+  long source = 0xdeadbeef;
+  long *dest;
+
   xbrtime_init();
   int mype = xbrtime_mype();
-
-  dest = (uint32_t *)xbrtime_malloc(1 * sizeof(uint32_t));
-  dest[0] = 0b111000;
   
-  if ( mype == 1 ) {
-    old = xbrtime_uint32_atomic_fetch_or(&dest[0], 0b000111, 0);
-  }
-  xbrtime_barrier();
-  printf("%d: dst = %" PRIu32 ", old = %d", mype, dest[0], old);
+  dest = (long *)xbrtime_malloc( sizeof(long) );
+  dest[0] = 0x0;
 
-  xbrtime_free(dest);
+  if( mype == 0 )
+    xbrtime_long_p( dest, source, 1 );
+
+  xbrtime_barrier();
+
+  if (mype == 1) 
+    printf("Dest[0]: 0x%x", dest[0]);
+
+  xbrtime_free( dest );
   xbrtime_close();
+
   return 0;
 }
 
