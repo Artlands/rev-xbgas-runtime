@@ -10,23 +10,22 @@
  *
  */
 
-// #include <stdio.h>
 #include "xbrtime.h"
 
 int main( int argc, char **argv ){
   int rtn = 0;
 
-  printf( "Initializing xBGAS Runtime\n" );
+  printf( "Initializing xBGAS Runtime" );
   rtn = xbrtime_init();
-  printf( "xBGAS is Initialized; Closing xBGAS\n" );
+  printf( "xBGAS is Initialized; Closing xBGAS" );
 
-  printf( "I AM PE=%d of %d TOTAL PEs\n",
+  printf( "I AM PE=%d of %d TOTAL PEs",
           xbrtime_mype(),
           xbrtime_num_pes() );
 
 
   xbrtime_close();
-  printf( "xBGAS is Closed\n" );
+  printf( "xBGAS is Closed" );
 
   return rtn;
 }

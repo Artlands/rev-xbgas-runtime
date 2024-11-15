@@ -72,7 +72,7 @@ int xbrtime_init(){
 
 
 #ifdef XBRTIME_DEBUG
-  printf( "\033[32mXBRTIME_DEBUG :\033[0m PE = %d, NPES = %d, MEMSIZE = %d, START_ADDR = 0x%lx, BARRIER_ADDR = 0x%lx\n",
+  printf( "\033[32mXBRTIME_DEBUG :\033[0m PE = %d, NPES = %d, MEMSIZE = %d, START_ADDR = 0x%lx, BARRIER_ADDR = 0x%lx",
          __XBRTIME_CONFIG->_ID,
          __XBRTIME_CONFIG->_NPES,
          __XBRTIME_CONFIG->_MEMSIZE,
@@ -88,8 +88,8 @@ int xbrtime_init(){
 	}
 
 #ifdef XBRTIME_DEBUG
-  printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[O] = 0x%lx\n", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[0]);
-	printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[11] = 0x%lx\n", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[11]);
+  printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[O] = 0x%lx", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[0]);
+	printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[11] = 0x%lx", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[11]);
 #endif
 
   /* too many total PEs */

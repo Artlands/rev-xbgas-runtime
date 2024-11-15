@@ -1,4 +1,4 @@
-/* _ALLOC_TEST_3_C_
+/* _ALLOC_TEST_2_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -10,31 +10,31 @@
  *
  */
 
-// #include <stdio.h>
 #include "xbrtime.h"
 
-#define _XBGAS_ALLOC_SIZE_ 4096
+#define _XBGAS_ALLOC_SIZE_ 483
 
 int main( int argc, char **argv ){
   int rtn = 0;
   void *ptr = NULL;
   size_t sz = _XBGAS_ALLOC_SIZE_;
 
-  printf( "Initializing xBGAS Runtime\n" );
   rtn = xbrtime_init();
-  printf( "xBGAS is Initialized\n" );
 
-  printf( "Allocating %d bytes\n", (int)(sz) );
-  ptr = xbrtime_malloc( sz );
+  printf( "Allocating %d bytes on symmetric heaps", (int)(sz) );
+  ptr = xbrtime_align( sizeof( int ), sz );
 
-  printf( "PTR = %p\n", ptr );
+  printf( "PTR = %p", ptr );
 
+  // Check if ptr is aligned to sizeof( uint64_t )
+  if( ptr && ( (uintptr_t)ptr % sizeof( int ) ) == 0 ){
+    printf( "PTR is aligned to sizeof( int )" );
+  }
+
+  printf( "Freeing the memory" );
   xbrtime_free( ptr );
 
-  printf( "xBGAS is Closing\n" );
   xbrtime_close();
-  printf( "xBGAS is Closed\n" );
-
   return rtn;
 }
 

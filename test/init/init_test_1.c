@@ -15,11 +15,11 @@
 int main( int argc, char **argv ){
   int rtn = 0;
 
-  printf( "Initializing xBGAS Runtime\n");
+  printf( "Initializing xBGAS Runtime");
   rtn = xbrtime_init();
 
   int pe = xbrtime_mype();
-  printf( "PE %d: xBGAS is Initialized\n", pe );  
+  printf( "PE %d: xBGAS is Initialized", pe );  
   return rtn;
 }
 

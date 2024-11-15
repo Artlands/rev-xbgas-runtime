@@ -108,6 +108,7 @@ void xbrtime_##_typename##_wait_until_all(_type *ivars, size_t nelems, const int
     if(flag == 0){                                                                                                  \
       break;                                                                                                        \
     }                                                                                                               \
+  asm volatile("nop");                                                                                              \
   }                                                                                                                 \
 }
 
@@ -163,6 +164,7 @@ size_t xbrtime_##_typename##_wait_until_any(_type *ivars, size_t nelems, const i
         }                                                                                                         \
       }                                                                                                           \
     }                                                                                                             \
+    asm volatile("nop");                                                                                          \
   }                                                                                                               \
 }                                                                                                                
 
@@ -234,6 +236,7 @@ size_t xbrtime_##_typename##_wait_until_some(_type *ivars, size_t nelems, size_t
     if(flag == 0){                                                                                                                  \
       break;                                                                                                                        \
     }                                                                                                                               \
+    asm volatile("nop");                                                                                                            \
   }                                                                                                                                 \
   return j;                                                                                                                         \
 }
@@ -299,6 +302,7 @@ void xbrtime_##_typename##_wait_until_all_vector(_type *ivars, size_t nelems, co
     if(flag == 0){                                                                                                            \
       break;                                                                                                                  \
     }                                                                                                                         \
+    asm volatile("nop");                                                                                                      \
   }                                                                                                                           \
 }
 
@@ -362,6 +366,7 @@ size_t xbrtime_##_typename##_wait_until_any_vector(_type *ivars, size_t nelems, 
         }                                                                                                                       \
       }                                                                                                                         \
     }                                                                                                                           \
+    asm volatile("nop");                                                                                                        \
   }                                                                                                                             \
 }
 
@@ -433,6 +438,7 @@ size_t xbrtime_##_typename##_wait_until_some_vector(_type *ivars, size_t nelems,
     if(flag == 0){                                                                                                                              \
       break;                                                                                                                                    \
     }                                                                                                                                           \
+    asm volatile("nop");                                                                                                                        \
   }                                                                                                                                             \
   return j;                                                                                                                                     \
 }

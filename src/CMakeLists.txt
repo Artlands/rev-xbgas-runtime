@@ -30,7 +30,6 @@ xbrtime_api_asm.s
 xbrtime_atomics_asm.s
 xbrtime_wait.c
 xbrtime_test.c
-malloc.c
 )
 
 add_library( xbrtime STATIC ${XbrtimeSrcs} )

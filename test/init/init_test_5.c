@@ -10,25 +10,24 @@
  *
  */
 
-// #include <stdio.h>
 #include "xbrtime.h"
 
 int main( int argc, char **argv ){
   int rtn = 0;
 
-  printf( "Querying mype prior to initializaton\n" );
+  printf( "Querying mype prior to initializaton" );
   if( xbrtime_mype() != -1 ){
-    printf( "failed to catch error with xbrtime_mype() prior to init\n" );
+    printf( "failed to catch error with xbrtime_mype() prior to init" );
     return -1;
   }
-  printf( "Success; caught the error\n" );
+  printf( "Success; caught the error" );
 
-  printf( "Querying num_pes prior to initializaton\n" );
+  printf( "Querying num_pes prior to initializaton" );
   if( xbrtime_num_pes() != -1 ){
-    printf( "failed to catch error with xbrtime_num_pes() prior to init\n" );
+    printf( "failed to catch error with xbrtime_num_pes() prior to init" );
     return -1;
   }
-  printf( "Success; caught the error\n" );
+  printf( "Success; caught the error" );
 
   return rtn;
 }

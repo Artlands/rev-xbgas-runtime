@@ -1,4 +1,4 @@
-/* _ALLOC_TEST_KF_1_C_
+/* _ALLOC_TEST_2_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -10,39 +10,31 @@
  *
  */
 
-// #include <stdio.h>
 #include "xbrtime.h"
 
-#define _XBGAS_ALLOC_SIZE_ 0
+#define _XBGAS_ALLOC_SIZE_ 32
 
 int main( int argc, char **argv ){
   int rtn = 0;
   void *ptr = NULL;
   size_t sz = _XBGAS_ALLOC_SIZE_;
 
-  printf( "Initializing xBGAS Runtime\n" );
   rtn = xbrtime_init();
-  printf( "xBGAS is Initialized\n" );
 
-  printf( "Allocating %d bytes\n", (int)(sz) );
+  printf( "Allocating %d bytes on symmetric heaps", (int)(sz) );
   ptr = xbrtime_malloc( sz );
-  if( ptr == NULL ){
-    printf( "Successfully caught erroneous condition\n" );
-    xbrtime_close();
-    return 0;
-  }else{
-    printf( "Erroneously allocated 0 bytes of memory\n" );
-    rtn = -1;
-  }
 
-  printf( "PTR = %p\n", ptr );
+  printf( "PTR = %p", ptr );
 
+  printf( "Reallocating %d bytes on symmetric heaps", (int)(sz/2) );
+  ptr = xbrtime_realloc( ptr, sz/2 );
+
+  printf( "After reallocating, PTR = %p", ptr );
+
+  printf( "Freeing the memory" );
   xbrtime_free( ptr );
 
-  printf( "xBGAS is Closing\n" );
   xbrtime_close();
-  printf( "xBGAS is Closed\n" );
-
   return rtn;
 }
 

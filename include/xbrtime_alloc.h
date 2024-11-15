@@ -20,10 +20,32 @@ extern "C" {
 
 #include <stdlib.h>
 
+typedef struct mem_block
+{ 
+  // The order of the members should not be changed
+  int free;
+  size_t size;
+  struct mem_block *next;
+  struct mem_block *prev;
+} mem_block;
+
 typedef struct _XBRTIME_MEM_T{
   uint64_t start_addr;
   size_t size;
 }XBRTIME_MEM_T;
+
+#define _DEFAULT_ALIGNMENT_ 4
+#define _ALIGNED_META_ ( ( (sizeof(mem_block) - 1) >> 6 ) << 6 + 64 )
+
+extern void *malloc(size_t size);
+extern void *realloc(void* ptr, size_t new_size);
+extern void free(void *ptr);
+
+// Malloc on symmetric heap
+extern void *xbrtime_malloc(size_t size);
+extern void xbrtime_free(void *ptr);
+extern void *xbrtime_realloc(void *ptr, size_t new_size);
+extern void *xbrtime_align( size_t alignment, size_t size );
 
 #ifdef __cplusplus
 }

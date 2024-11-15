@@ -10,7 +10,6 @@
  *
  */
 
-// #include <stdio.h>
 #include "xbrtime.h"
 
 #define _XBGAS_ALLOC_SIZE_ 16
@@ -20,21 +19,17 @@ int main( int argc, char **argv ){
   void *ptr = NULL;
   size_t sz = _XBGAS_ALLOC_SIZE_;
 
-  printf( "Initializing xBGAS Runtime\n" );
   rtn = xbrtime_init();
-  printf( "xBGAS is Initialized\n" );
 
-  printf( "Allocating %d bytes\n", (int)(sz) );
+  printf( "Allocating %d bytes on symmetric heaps", (int)(sz) );
   ptr = xbrtime_malloc( sz );
 
-  printf( "PTR = %p\n", ptr );
+  printf( "PTR = %p", ptr );
 
+  printf( "Freeing the memory" );
   xbrtime_free( ptr );
 
-  printf( "xBGAS is Closing\n" );
   xbrtime_close();
-  printf( "xBGAS is Closed\n" );
-
   return rtn;
 }
 

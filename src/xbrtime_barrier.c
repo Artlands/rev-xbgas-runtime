@@ -49,7 +49,7 @@ extern void xbrtime_barrier(){
 		target 	= (mype + stride)%num_pe; 
 
 #ifdef XBRTIME_DEBUG
-  	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: BARRIER TARGET=%d\n", xbrtime_mype(),
+  	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: BARRIER TARGET=%d", xbrtime_mype(),
           (int)(target) );
 #endif
 
@@ -57,7 +57,7 @@ extern void xbrtime_barrier(){
   	addr 		= (uint64_t)(&__XBRTIME_CONFIG->_BARRIER[sense*10+i]);
 
 #ifdef XBRTIME_DEBUG
-  	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: TOUCHING REMOTE ADDRESS ON PHYSICAL TARGET=%d\n",
+  	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: TOUCHING REMOTE ADDRESS ON PHYSICAL TARGET=%d",
           xbrtime_mype(),
           (int)(target) );
 #endif
@@ -65,13 +65,13 @@ extern void xbrtime_barrier(){
   	__xbrtime_remote_touch( addr, target, stride);	
 
 #ifdef XBRTIME_DEBUG
-  	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: SUCCESS TOUCHING REMOTE ADDRESS\n", xbrtime_mype() );
+  	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: SUCCESS TOUCHING REMOTE ADDRESS", xbrtime_mype() );
 #endif
 
   	/* spinwait on local value */
  		while( __XBRTIME_CONFIG->_BARRIER[SENSE*10+i] != stride ){
 #ifdef XBRTIME_DEBUG
-			printf("\033[32mXBRTIME_DEBUG :\033[0m PE = %d, SENSE = %ld, LOCAL BARRIER = 0x%lx\n",xbrtime_mype(), sense, __XBRTIME_CONFIG->_BARRIER[SENSE]);
+			printf("\033[32mXBRTIME_DEBUG :\033[0m PE = %d, SENSE = %ld, LOCAL BARRIER = 0x%lx",xbrtime_mype(), sense, __XBRTIME_CONFIG->_BARRIER[SENSE]);
 #endif
 		}
 
@@ -103,7 +103,7 @@ extern void xbrtime_barrier(){
   SENSE = 1 - SENSE;
 
 #ifdef XBRTIME_DEBUG
-  printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: BARRIER COMPLETE\n", xbrtime_mype() );
+  printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: BARRIER COMPLETE", xbrtime_mype() );
 #endif
 }
 

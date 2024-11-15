@@ -46,7 +46,7 @@ int main( int argc, char **argv ){
   if( xbrtime_mype() == 1 ){
     for( int i=0; i<TEST_SIZE; i++ ){
       if( dest[i] != 'A' ){
-        printf("Error detected in dest array at index %d; expected %c, but received %c\n", i, 'A', dest[i]);
+        printf("Error detected in dest array at index %d; expected %c, but received %c", i, 'A', dest[i]);
       }
     }
   }
