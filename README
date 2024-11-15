@@ -16,7 +16,7 @@ To run and simulate xBGAS applications, the following components are required::
 - REV-xBGAS: https://github.com/artlands/rev-xbgas
 
 To build the xBGAS runtime library, you will need:
-- xBGAS RISC-V GNU Compiler Toolchain: https://github.com/Artlands/riscv-gnu-toolchain-xbgas
+- xBGAS RISC-V GNU Compiler Toolchain: https://github.com/artlands/riscv-gnu-toolchain-xbgas
 - CMake 2.6+
 
 Environment Variables: Ensure the following are set before building:
@@ -29,7 +29,7 @@ III.  Compiling
 
 To compile the xBGAS runtime library, follow these steps:
 
-$> git clone https://github.com/tactcomplabs/xbgas-runtime.git
+$> git clone https://github.com/artlands/rev-xbgas-runtime.git
 $> cd xbgas-runtime
 $> mkdir build
 $> cd build
@@ -56,9 +56,11 @@ To build and run tests, include the following CMake argument:
 - -DBUILD_ALL_TESTING=ON : Enable all tests.
 
 Alternatively, enable specific test blocks using the following options:
-- -DBUILD_INIT_TESTING=ON   : "init" tests
+- -DBUILD_INIT_TESTING=ON   : xBGAS runtime initialization/close tests
 - -DBUILD_ALLOC_TESTING=ON  : Allocation and free tests
-- -DBUILD_XFER_TESTING=ON   : Data transfer tests
+- -DBUILD_PUT_TESTING=ON   : Put tests
+- -DBUILD_GET_TESTING=ON   : Get tests
+- -DBUILD_AMO_TESTING=ON   : Atomic memory operation tests
 
 Once built, run the tests with:
 

@@ -17,12 +17,12 @@
 int main( int argc, char **argv ){
   int rtn = 0;
   void *ptr = NULL;
-  size_t sz = _XBGAS_ALLOC_SIZE_;
+  size_t size = _XBGAS_ALLOC_SIZE_;
 
   rtn = xbrtime_init();
 
-  printf( "Allocating %d bytes on symmetric heaps", (int)(sz) );
-  ptr = xbrtime_align( sizeof( uint64_t ), sz );
+  printf( "Allocating %d bytes on symmetric heaps", (int)(size) );
+  ptr = xbrtime_align( sizeof( uint64_t ), size );
 
   printf( "PTR = %p", ptr );
 

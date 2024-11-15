@@ -46,6 +46,7 @@ extern void *xbrtime_malloc(size_t size);
 extern void xbrtime_free(void *ptr);
 extern void *xbrtime_realloc(void *ptr, size_t new_size);
 extern void *xbrtime_align( size_t alignment, size_t size );
+extern void *xbrtime_calloc(size_t count, size_t size);
 
 #ifdef __cplusplus
 }

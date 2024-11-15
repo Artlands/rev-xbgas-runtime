@@ -12,7 +12,6 @@
  */
 
 #include "xbrtime.h"
-#include <inttypes.h>
 
 /* ------------------------------------------------- FUNCTION PROTOTYPES */
 void __xbrtime_asm_fence();

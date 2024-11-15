@@ -12,24 +12,19 @@
 
 #include "xbrtime.h"
 
-#define _XBGAS_ALLOC_SIZE_ 16
-
 int main( int argc, char **argv ){
   int rtn = 0;
-  void *ptr = NULL;
-  size_t size = _XBGAS_ALLOC_SIZE_;
+  size_t count = 120;
+  size_t size = 64;
 
+  void *ptr = NULL;
+  
   rtn = xbrtime_init();
 
-  printf( "Allocating %d bytes on symmetric heaps", (int)(size) );
-  ptr = xbrtime_malloc( size );
+  printf( "Allocating %d bytes on symmetric heaps", (int)(count * size) );
+  ptr = xbrtime_calloc( count, size );
 
   printf( "PTR = %p", ptr );
-
-  printf( "Reallocating %d bytes on symmetric heaps", (int)(size*2) );
-  ptr = xbrtime_realloc( ptr, size*2 );
-
-  printf( "After reallocating, PTR = %p", ptr );
 
   printf( "Freeing the memory" );
   xbrtime_free( ptr );

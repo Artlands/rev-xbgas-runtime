@@ -12,7 +12,6 @@
  */
 
 #include "xbrtime.h"
-#include <inttypes.h>
 
 // #define _ALLOC_DEBUG_
 
@@ -383,6 +382,31 @@ void *xbrtime_align(size_t alignment, size_t size ){
   }
 
   ptr = __xbrtime_shared_malloc( size, alignment );
+  return ptr;
+}
+
+void *xbrtime_calloc(size_t count, size_t size){
+  void *ptr = NULL;
+  size_t total_size = count * size;
+
+  if( __XBRTIME_CONFIG == NULL ){
+    return NULL;
+  }
+
+  if( total_size == 0 ){
+    return NULL;
+  }
+
+  ptr = __xbrtime_shared_malloc( total_size, _DEFAULT_ALIGNMENT_ );
+  if( ptr == NULL ){
+    return NULL;
+  }
+
+  // Initialize the memory block to zero
+  for( size_t i=0; i<total_size; i++ ){
+    ((char*)ptr)[i] = 0;
+  }
+
   return ptr;
 }
 

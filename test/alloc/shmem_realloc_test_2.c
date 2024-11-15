@@ -17,17 +17,17 @@
 int main( int argc, char **argv ){
   int rtn = 0;
   void *ptr = NULL;
-  size_t sz = _XBGAS_ALLOC_SIZE_;
+  size_t size = _XBGAS_ALLOC_SIZE_;
 
   rtn = xbrtime_init();
 
-  printf( "Allocating %d bytes on symmetric heaps", (int)(sz) );
-  ptr = xbrtime_malloc( sz );
+  printf( "Allocating %d bytes on symmetric heaps", (int)(size) );
+  ptr = xbrtime_malloc( size );
 
   printf( "PTR = %p", ptr );
 
-  printf( "Reallocating %d bytes on symmetric heaps", (int)(sz/2) );
-  ptr = xbrtime_realloc( ptr, sz/2 );
+  printf( "Reallocating %d bytes on symmetric heaps", (int)(size/2) );
+  ptr = xbrtime_realloc( ptr, size/2 );
 
   printf( "After reallocating, PTR = %p", ptr );
 

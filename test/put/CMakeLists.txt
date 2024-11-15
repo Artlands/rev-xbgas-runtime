@@ -11,7 +11,7 @@
 
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.c)
 
-if(BUILD_XFER_TESTING)
+if(BUILD_PUT_TESTING)
   set (passRegex "Simulation is complete")
 
   add_test(
