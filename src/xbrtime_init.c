@@ -13,6 +13,8 @@
 
 #include "xbrtime.h"
 
+// #define _INIT_DEBUG_
+
 /* ------------------------------------------------- GLOBALS */
 XBRTIME_DATA *__XBRTIME_CONFIG;
 
@@ -27,6 +29,10 @@ void     __xbrtime_asm_fence();
 extern void xbrtime_close(){
   int i = 0;
 
+#ifdef _INIT_DEBUG_
+  printf("XBGAS-RUNTIME: Closing the XBGAS-RUNTIME\n");
+#endif
+
   /* initiate a barrier */
   xbrtime_barrier();
 
@@ -36,6 +42,9 @@ extern void xbrtime_close(){
 
     /* free all the remaining shared blocks */
     for( i=0; i<_XBRTIME_MEM_SLOTS_; i++ ){
+#ifdef _INIT_DEBUG_
+      printf("XBGAS-RUNTIME: Freeing shared memory block %d\n", i);
+#endif
       if( __XBRTIME_CONFIG->_MMAP[i].size != 0 ){
         xbrtime_free((void *)(__XBRTIME_CONFIG->_MMAP[i].start_addr));
       }
@@ -48,6 +57,12 @@ extern void xbrtime_close(){
 
     free( __XBRTIME_CONFIG );
   }
+
+#ifdef _INIT_DEBUG_
+  printf("XBGAS-RUNTIME: Closing the XBGAS-RUNTIME\n");
+#endif
+  
+  return;
 }
 
 int xbrtime_init(){
@@ -65,13 +80,13 @@ int xbrtime_init(){
   __XBRTIME_CONFIG->_ID         = (int)(__xbrtime_asm_get_id());
   __XBRTIME_CONFIG->_NPES       = (int)(__xbrtime_asm_get_npes());
   __XBRTIME_CONFIG->_MEMSIZE    = (int)(__xbrtime_asm_get_memsize());
-  __XBRTIME_CONFIG->_START_ADDR = (uint64_t)(__xbrtime_asm_get_startaddr());
+  __XBRTIME_CONFIG->_START_ADDR = (uintptr_t)(__xbrtime_asm_get_startaddr());
   __XBRTIME_CONFIG->_SENSE      = 0x01ull;
   __XBRTIME_CONFIG->_BARRIER 		= (uint64_t*)(__xbrtime_asm_get_barrier_addr());
   __XBRTIME_CONFIG->_MMAP       = malloc(sizeof(XBRTIME_MEM_T) * _XBRTIME_MEM_SLOTS_);
 
 
-#ifdef XBRTIME_DEBUG
+#ifdef _INIT_DEBUG_
   printf( "\033[32mXBRTIME_DEBUG :\033[0m PE = %d, NPES = %d, MEMSIZE = %d, START_ADDR = 0x%lx, BARRIER_ADDR = 0x%lx",
          __XBRTIME_CONFIG->_ID,
          __XBRTIME_CONFIG->_NPES,
@@ -87,7 +102,7 @@ int xbrtime_init(){
   	__XBRTIME_CONFIG->_BARRIER[10+i] 	= (uint64_t)(0xaaaaaaaaaull);
 	}
 
-#ifdef XBRTIME_DEBUG
+#ifdef _INIT_DEBUG_
   printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[O] = 0x%lx", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[0]);
 	printf("\033[32mXBRTIME_DEBUG :\033[0m PE:%d----BARRIER[11] = 0x%lx", __XBRTIME_CONFIG->_ID, __XBRTIME_CONFIG->_BARRIER[11]);
 #endif

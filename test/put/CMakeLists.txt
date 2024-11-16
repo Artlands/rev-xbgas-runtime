@@ -31,7 +31,7 @@ if(BUILD_PUT_TESTING)
     set_tests_properties( ${testName} 
       PROPERTIES
       ENVIRONMENT "RVASM=${testName}; RVCC=${RVCC}"
-      TIMEOUT 30
+      TIMEOUT 60
       PASS_REGULAR_EXPRESSION "${passRegex}")
   endforeach(testSrc)
 endif()

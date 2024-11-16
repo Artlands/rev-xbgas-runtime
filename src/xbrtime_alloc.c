@@ -16,13 +16,13 @@
 // #define _ALLOC_DEBUG_
 
 // base stores the head of the memory block list
-void *shbase = NULL;
+void *shmem_base = NULL;
 
-mem_block *__merge_blocks(mem_block *block, size_t meta) {
+mem_block *__merge_blocks(mem_block *block) {
   // Merge the block with its next block
   if (block->next && block->next->free) {
     block->free = 1;
-    block->size += meta + block->next->size;
+    block->size = block->size + _MEM_META_SIZE_ + block->next->size;
     block->next = block->next->next;
     if (block->next) {
       block->next->prev = block;
@@ -34,28 +34,33 @@ mem_block *__merge_blocks(mem_block *block, size_t meta) {
   // Merge the block with its previous block
   if (block->prev && block->prev->free) {
     block->prev->free = 1;
-    block->prev->size += meta + block->size;
+    block->prev->size = block->prev->size + _MEM_META_SIZE_ + block->size;
     block->prev->next = block->next;
     if (block->next) {
       block->next->prev = block->prev;
     }
 #ifdef _ALLOC_DEBUG_
-  printf("Merge the block with the next block. Merged block Start: %p, Size: %ld", (void *)(block->prev), block->prev->size);
+  printf("Merge the block with the previous block. Merged block Start: %p, Size: %ld", (void *)(block->prev), block->prev->size);
 #endif
     return block->prev;
   }
+
+#ifdef _ALLOC_DEBUG_
+  printf("Block is merged. Block Start: %p, Size: %ld", (void *)block, block->size);
+#endif
   return block;
 }
 
-void __split_block(mem_block *block, size_t size, size_t meta) {
-  mem_block *new_block = (mem_block *)((uintptr_t)block + meta + size);
+void __split_block(mem_block *block, size_t aligned_size) {
+  // block size has been checked before calling this function
+  mem_block *new_block = (mem_block *)((uintptr_t)block + _MEM_META_SIZE_ + aligned_size);
   new_block->free = 1;
-  new_block->size = block->size - size - meta;
+  new_block->size = block->size - aligned_size - _MEM_META_SIZE_;
   new_block->next = block->next;
   new_block->prev = block;
 
   block->free = 0;
-  block->size = size;
+  block->size = aligned_size;
   block->next = new_block;
   if (new_block->next) {
     new_block->next->prev = new_block;
@@ -66,9 +71,9 @@ void __split_block(mem_block *block, size_t size, size_t meta) {
 #endif
 }
 
-mem_block *__find_block(mem_block *base, size_t size) {
+mem_block *__find_block(mem_block *base, size_t total_size) {
   mem_block *current = base;
-  while (current && !( current->free && current->size >= size)) {
+  while (current && !( current->free && current->size >= total_size)) {
     current = current->next;
   }
   return current;
@@ -137,41 +142,59 @@ void *__shmem_malloc_align(size_t size, size_t alignment) {
 
   // Align the size to achieve proper alignment
   size_t aligned_size = ( (size - 1)/alignment + 1 ) * alignment;
-  size_t total_size = _ALIGNED_META_ + aligned_size;
+  size_t total_size = _MEM_META_SIZE_ + aligned_size;
 
-  if( !shbase ) {
+  if( !shmem_base ) {
     // First time allocation, initialize a new block from the heap.
-    void *shbase_original = (void *)(__XBRTIME_CONFIG->_START_ADDR);
-    size_t shsize = __XBRTIME_CONFIG->_MEMSIZE;
-    size_t shsize_aligned = ( shsize/alignment ) * alignment;
+    void *shmem_base_original = (void *)(__XBRTIME_CONFIG->_START_ADDR);
 
     // Align the base original address to the alignment
-    shbase = (void *)( ((uintptr_t)shbase_original + alignment - 1) & ~(alignment - 1) );
-    block = (mem_block *)(shbase);
+    shmem_base = (void *)( ((uintptr_t)shmem_base_original + alignment - 1) & ~(alignment - 1) );
+
+    size_t shmem_size = (size_t)(__XBRTIME_CONFIG->_MEMSIZE) - (size_t)(shmem_base - shmem_base_original);
+
+    // Align the shmem_size to the alignment
+    shmem_size = (shmem_size / alignment) * alignment;
+
+    if( shmem_size < total_size ) {
+      return NULL;
+    }
+    
+    block = (mem_block *)(shmem_base);
     block->free = 1;
-    block->size = shsize_aligned - _ALIGNED_META_;
+    block->size = shmem_size - _MEM_META_SIZE_;
     block->next = NULL;
     block->prev = NULL;
     if( block->size > total_size ){
-      __split_block(block, aligned_size, _ALIGNED_META_);
+      __split_block(block, aligned_size);
     } else if (block->size == total_size) {
       block->free = 0;
     } else {
       return NULL;
     }
-    return (void *)((uintptr_t)block + _ALIGNED_META_);
+
+#ifdef _ALLOC_DEBUG_
+  printf("First allocate a symmetric heap, block address %p, ptr: %p", block, block + _MEM_META_SIZE_);
+#endif
+
+    return (void *)((uintptr_t)block + _MEM_META_SIZE_);
   } else {
     // Search the block list
-    block = __find_block(shbase, total_size);
+    block = __find_block(shmem_base, total_size);
     if (!block) {
       return NULL;
     } else {
       if( block->size > total_size ){
-        __split_block(block, aligned_size, _ALIGNED_META_);
+        __split_block(block, aligned_size);
       } else {
         block->free = 0;
       }
-      return (void *)((uintptr_t)block + _ALIGNED_META_);
+
+#ifdef _ALLOC_DEBUG_
+  printf("Allocate a symmetric heap, block address %p, ptr: %p", block, block + _MEM_META_SIZE_);
+#endif
+
+      return (void *)((uintptr_t)block + _MEM_META_SIZE_);
     }
   }
 }
@@ -188,13 +211,17 @@ void __shmem_free(void *ptr) {
   }
 
   // Find the block corresponding to the pointer
-  mem_block *block = (mem_block *)((uintptr_t)ptr - _ALIGNED_META_);
+  mem_block *block = (mem_block *)((uintptr_t)ptr - _MEM_META_SIZE_);
+
+#ifdef _ALLOC_DEBUG_
+  printf("Free a symmetric heap, block address %p, ptr: %p", block, block + _MEM_META_SIZE_);
+#endif
 
   // Mark the block as free
   block->free = 1;
 
   // Merge the block with the neighbor blocks, block will be updated to the start of the merged block
-  block = __merge_blocks(block, _ALIGNED_META_);
+  block = __merge_blocks(block);
 
   return;
 }
@@ -226,7 +253,7 @@ void *__xbrtime_shared_malloc( size_t size, size_t alignment ){
   }
 
   /* memory is good, register the block */
-#ifdef XBRTIME_DEBUG
+#ifdef _ALLOC_DEBUG_
   printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: ALLOCATING MEMORY IN SLOT=%d AT ADDRESS 0x%"PRIx64", SIZE %d",
           xbrtime_mype(), slot, ptr, size );
 #endif
@@ -308,6 +335,7 @@ void *xbrtime_malloc( size_t size ){
   }
 
   ptr = __xbrtime_shared_malloc( size, _DEFAULT_ALIGNMENT_ );
+  __xbrtime_asm_quiet_fence();
   return ptr;
 }
 
@@ -329,7 +357,7 @@ void xbrtime_free( void *ptr ){
 void *xbrtime_realloc(void *ptr, size_t new_size){
   void *new_ptr = NULL;
   size_t old_size = 0;
-  mem_block *block = (mem_block *)((uintptr_t)ptr - _ALIGNED_META_);
+  mem_block *block = (mem_block *)((uintptr_t)ptr - _MEM_META_SIZE_);
 
   if( ptr == NULL ){
     return xbrtime_malloc(new_size);
@@ -406,7 +434,7 @@ void *xbrtime_calloc(size_t count, size_t size){
   for( size_t i=0; i<total_size; i++ ){
     ((char*)ptr)[i] = 0;
   }
-
+  __xbrtime_asm_quiet_fence();
   return ptr;
 }
 

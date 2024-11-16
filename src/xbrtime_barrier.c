@@ -14,6 +14,7 @@
 #include "xbrtime.h"
 #define SENSE __XBRTIME_CONFIG->_SENSE
 
+// #define _BARRIER_DEBUG_
 
 /* ------------------------------------------------- FUNCTION PROTOTYPES */
 void __xbrtime_asm_fence();
@@ -48,7 +49,7 @@ extern void xbrtime_barrier(){
   	/* derive the correct target pe */
 		target 	= (mype + stride)%num_pe; 
 
-#ifdef XBRTIME_DEBUG
+#ifdef _BARRIER_DEBUG_
   	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: BARRIER TARGET=%d", xbrtime_mype(),
           (int)(target) );
 #endif
@@ -56,7 +57,7 @@ extern void xbrtime_barrier(){
   	target 	= (uint64_t)(xbrtime_decode_pe((int)(target)));
   	addr 		= (uint64_t)(&__XBRTIME_CONFIG->_BARRIER[sense*10+i]);
 
-#ifdef XBRTIME_DEBUG
+#ifdef _BARRIER_DEBUG_
   	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: TOUCHING REMOTE ADDRESS ON PHYSICAL TARGET=%d",
           xbrtime_mype(),
           (int)(target) );
@@ -64,7 +65,7 @@ extern void xbrtime_barrier(){
 
   	__xbrtime_remote_touch( addr, target, stride);	
 
-#ifdef XBRTIME_DEBUG
+#ifdef _BARRIER_DEBUG_
   	printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: SUCCESS TOUCHING REMOTE ADDRESS", xbrtime_mype() );
 #endif
 

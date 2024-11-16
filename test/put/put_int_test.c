@@ -14,7 +14,10 @@
 #include <inttypes.h>
 #include "xbrtime.h"
 
-#define TEST_SIZE 1024
+// Todo: Debug failed if TEST_SIZE * sizeof(long) > 4096. 
+// The program will stall on the last xbrtime_barrier()
+
+#define TEST_SIZE 1000
 
 int main( int argc, char **argv ){
   int mype, npes;

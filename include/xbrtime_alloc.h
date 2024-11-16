@@ -34,8 +34,8 @@ typedef struct _XBRTIME_MEM_T{
   size_t size;
 }XBRTIME_MEM_T;
 
-#define _DEFAULT_ALIGNMENT_ 4
-#define _ALIGNED_META_ ( ( (sizeof(mem_block) - 1) >> 6 ) << 6 + 64 )
+#define _DEFAULT_ALIGNMENT_ 8
+#define _MEM_META_SIZE_  32
 
 extern void *malloc(size_t size);
 extern void *realloc(void* ptr, size_t new_size);
