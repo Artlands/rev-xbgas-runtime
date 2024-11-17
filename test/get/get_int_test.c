@@ -14,7 +14,7 @@
 #include <inttypes.h>
 #include "xbrtime.h"
 
-#define TEST_SIZE 24
+#define TEST_SIZE 2048
 
 int main( int argc, char **argv ){
   int mype, npes;
