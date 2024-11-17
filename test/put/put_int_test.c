@@ -14,10 +14,7 @@
 #include <inttypes.h>
 #include "xbrtime.h"
 
-// Todo: Debug failed if TEST_SIZE * sizeof(long) > 4096. 
-// The program will stall on the last xbrtime_barrier()
-
-#define TEST_SIZE 1000
+#define TEST_SIZE 1024
 
 int main( int argc, char **argv ){
   int mype, npes;
@@ -31,7 +28,7 @@ int main( int argc, char **argv ){
 
   // Initialize the source and dest array
   for( int i=0; i<TEST_SIZE; i++ ){
-    source[i] = mype;
+    source[i] = mype + i;
     dest[i] = 99;
   }
 
@@ -48,7 +45,7 @@ int main( int argc, char **argv ){
   // Validate the results
   if( xbrtime_mype() == 1 ){
     for( int i=0; i<TEST_SIZE; i++ ){
-      if( dest[i] != 0 ){
+      if( dest[i] != 0 + i ){
         printf( "Error detected in dest[%d] = %d", i, dest[i] );
       }
     }
