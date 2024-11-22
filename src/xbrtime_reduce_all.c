@@ -893,3 +893,5 @@ void xbrtime_##_typename##_reduce_all_##_funcname(_type *dest, const _type *src,
 
 #undef MAX
 #undef MIN
+
+/* EOF */

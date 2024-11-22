@@ -115,3 +115,5 @@ void xbrtime_##_typename##_scatter(_type *dest, const _type *src, int *pe_msg_sz
     //  XBGAS_SCATTER(long double, longdouble)
 
 #undef XBGAS_SCATTER
+
+/* EOF */

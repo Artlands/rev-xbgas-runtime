@@ -42,6 +42,7 @@ extern "C" {
 #include "xbrtime_collectives.h"
 #include "xbrtime_atomics.h"
 #include "xbrtime_wait.h"
+#include "xbrtime_lock.h"
 
 #define printf rev_fast_printf
 

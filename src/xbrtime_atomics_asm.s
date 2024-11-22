@@ -220,7 +220,7 @@
     .type __xbrtime_atomic_set_s4, @function
   __xbrtime_atomic_set_s4:
     eaddie e10, a2, 0
-    eamoswap.w x0, a1, (a0)
+    eamoswap.w.aqrl x0, a1, (a0)
     ret
     .size __xbrtime_atomic_set_s4, .-__xbrtime_atomic_set_s4
 
@@ -230,7 +230,7 @@
     .type __xbrtime_atomic_set_s8, @function
   __xbrtime_atomic_set_s8:
     eaddie e10, a2, 0
-    eamoswap.d x0, a1, (a0)
+    eamoswap.d.aqrl x0, a1, (a0)
     ret
     .size __xbrtime_atomic_set_s8, .-__xbrtime_atomic_set_s8
 
@@ -240,7 +240,7 @@
     .type __xbrtime_atomic_set_u4, @function
   __xbrtime_atomic_set_u4:
     eaddie e10, a2, 0
-    eamoswap.w x0, a1, (a0)
+    eamoswap.w.aqrl x0, a1, (a0)
     ret
     .size __xbrtime_atomic_set_u4, .-__xbrtime_atomic_set_u4
 
@@ -250,7 +250,7 @@
     .type __xbrtime_atomic_set_u8, @function
   __xbrtime_atomic_set_u8:
     eaddie e10, a2, 0
-    eamoswap.d x0, a1, (a0)
+    eamoswap.d.aqrl x0, a1, (a0)
     ret
     .size __xbrtime_atomic_set_u8, .-__xbrtime_atomic_set_u8
 
@@ -324,7 +324,7 @@
     .type __xbrtime_atomic_swap_s4, @function
   __xbrtime_atomic_swap_s4:
     eaddie e10, a2, 0
-    eamoswap.w a0, a1, (a0)
+    eamoswap.w.aqrl a0, a1, (a0)
     ret
     .size __xbrtime_atomic_swap_s4, .-__xbrtime_atomic_swap_s4
 
@@ -334,7 +334,7 @@
     .type __xbrtime_atomic_swap_s8, @function
   __xbrtime_atomic_swap_s8:
     eaddie e10, a2, 0
-    eamoswap.d a0, a1, (a0)
+    eamoswap.d.aqrl a0, a1, (a0)
     ret
     .size __xbrtime_atomic_swap_s8, .-__xbrtime_atomic_swap_s8
 
@@ -344,7 +344,7 @@
     .type __xbrtime_atomic_swap_u4, @function
   __xbrtime_atomic_swap_u4:
     eaddie e10, a2, 0
-    eamoswap.w a0, a1, (a0)
+    eamoswap.w.aqrl a0, a1, (a0)
     ret
     .size __xbrtime_atomic_swap_u4, .-__xbrtime_atomic_swap_u4
 
@@ -354,7 +354,7 @@
     .type __xbrtime_atomic_swap_u8, @function
   __xbrtime_atomic_swap_u8:
     eaddie e10, a2, 0
-    eamoswap.d a0, a1, (a0)
+    eamoswap.d.aqrl a0, a1, (a0)
     ret
     .size __xbrtime_atomic_swap_u8, .-__xbrtime_atomic_swap_u8
 

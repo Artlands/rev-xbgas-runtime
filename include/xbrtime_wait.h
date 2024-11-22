@@ -217,6 +217,15 @@ size_t xbrtime_##_typename##_wait_until_some_vector(_type *ivars, size_t nelems,
 
 #undef XBGAS_DECL_WAIT_UNTIL_SOME_VECTOR
 
+/*!   \fn xbrtime_signal_wait_until( uint64_t *sig_addr, int cmp, uint64_t cmp_value )
+      \brief The signal_wait_until operation waits for a variable on the local PE to change from a signaling operation.
+      \param sig_addr is the local address of the source signal variable.
+      \param cmp is the compare operator that compares sig_addr with cmp_value
+      \param cmp_value is the value against which the object pointed by sig_addr will be compared.
+      \return uint64_t returns the contents of the signal data object, sig_addr, at the calling PE that satisfies the wait condition.
+*/
+uint64_t xbrtime_signal_wait_until(uint64_t *sig_addr, int cmp, uint64_t cmp_value);
+
 #ifdef __cplusplus
 }
 #endif /* extern "C" */

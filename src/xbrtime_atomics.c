@@ -324,3 +324,4 @@ _type xbrtime_##_typename##_atomic_fetch_##_op(_type *dest, _type value, int pe)
 
 #undef XBGAS_ATOMIC_FETCH_OP
 
+/* EOF */

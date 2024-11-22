@@ -742,3 +742,5 @@ void xbrtime_##_typename##_reduce_##_funcname(_type *dest, const _type *src, siz
 
 #undef MAX
 #undef MIN
+
+/* EOF */

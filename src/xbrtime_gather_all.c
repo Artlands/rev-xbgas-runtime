@@ -141,3 +141,5 @@ void xbrtime_##_typename##_gather_all(_type *dest, const _type *src, int *pe_msg
     //  XBGAS_GATHER_ALL(long double, longdouble)
 
 #undef XBGAS_GATHER_ALL
+
+/* EOF */

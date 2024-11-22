@@ -139,3 +139,5 @@
 //  XBGAS_BROADCAST(long double, longdouble)
 
 #undef XBGAS_BROADCAST
+
+/* EOF */

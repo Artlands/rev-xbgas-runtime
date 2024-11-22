@@ -81,3 +81,5 @@ void xbrtime_##_typename##_alltoall(_type *dest, const _type *src, int src_strid
     //  XBGAS_ALLTOALL(long double, longdouble)
 
 #undef XBGAS_ALLTOALL
+
+/* EOF */

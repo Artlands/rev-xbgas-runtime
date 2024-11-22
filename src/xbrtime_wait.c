@@ -458,3 +458,38 @@ size_t xbrtime_##_typename##_wait_until_some_vector(_type *ivars, size_t nelems,
     XBGAS_WAIT_UNTIL_SOME_VECTOR(ptrdiff_t, ptrdiff)
 
 #undef XBGAS_WAIT_UNTIL_SOME_VECTOR
+
+uint64_t xbrtime_signal_wait_until(uint64_t *sig_addr, int cmp, uint64_t cmp_value) {
+  uint64_t sig = *sig_addr;
+  while (1) {
+    if (cmp == XBRTIME_CMP_EQ) {
+      if (sig == cmp_value) {
+        break;
+      }
+    } else if (cmp == XBRTIME_CMP_NE) {
+      if (sig != cmp_value) {
+        break;
+      }
+    } else if (cmp == XBRTIME_CMP_GT) {
+      if (sig > cmp_value) {
+        break;
+      }
+    } else if (cmp == XBRTIME_CMP_LE) {
+      if (sig <= cmp_value) {
+        break;
+      }
+    } else if (cmp == XBRTIME_CMP_LT) {
+      if (sig < cmp_value) {
+        break;
+      }
+    } else if (cmp == XBRTIME_CMP_GE) {
+      if (sig >= cmp_value) {
+        break;
+      }
+    }
+    asm volatile("nop");
+  }
+  return sig;
+}
+
+/* EOF */

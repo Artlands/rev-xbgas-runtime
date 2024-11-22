@@ -385,3 +385,5 @@ size_t xbrtime_##_typename##_test_some_vector(_type *ivars, size_t nelems, size_
     XBGAS_TEST_SOME_VECTOR(ptrdiff_t, ptrdiff)
 
 #undef XBGAS_TEST_SOME_VECTOR
+
+/* EOF */
