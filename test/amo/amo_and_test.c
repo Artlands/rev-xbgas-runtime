@@ -24,7 +24,7 @@ int main(void) {
   if ( mype == 1 ) {
     xbrtime_uint32_atomic_and(&dest[0], 0b000111, 0);
   }
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   printf("%d: dst = %" PRIu32 "", mype, dest[0]);
 
   xbrtime_free(dest);

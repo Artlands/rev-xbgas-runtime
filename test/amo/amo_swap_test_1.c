@@ -25,7 +25,7 @@ int main(void) {
   dest = (int *)xbrtime_malloc(1 * sizeof(int));
   dest[0] = mype;
   
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   int new_val = mype;
   if ( mype & 1 ) {
     int swapped_val = xbrtime_int_atomic_swap(&dest[0], new_val, (mype + 1) % npes);

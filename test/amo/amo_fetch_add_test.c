@@ -26,7 +26,7 @@ int main(void) {
   if ( mype == 1 ) {
     old = xbrtime_int_atomic_fetch_add(&dest[0], 44, 0);
   }
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   printf("%d: old = %d, dst = %d", mype, old, dest[0]);
 
   xbrtime_free(dest);

@@ -18,7 +18,7 @@ xbrtime_barrier.c
 xbrtime_fence.c
 xbrtime_quiet.c
 xbrtime_atomics.c
-# xbrtime_alltoall.c
+xbrtime_alltoall.c
 # xbrtime_broadcast.c
 # xbrtime_gather.c
 # xbrtime_gather_all.c

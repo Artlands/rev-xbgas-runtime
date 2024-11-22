@@ -33,7 +33,7 @@ void xbrtime_##_typename##_gather_all_bruck_concat(_type *dest, const _type *src
     counter = pe_msg_sz[my_rpe];                                                                                                    \
                                                                                                                                     \
     /* Ensure local values have been loaded to temp */                                                                              \
-    xbrtime_barrier();                                                                                                              \
+    xbrtime_barrier_all();                                                                                                              \
                                                                                                                                     \
     /* Perform get of concatenated segments */                                                                                      \
     for(i = 0; i < numpes_log - 1; i++)                                                                                             \
@@ -50,13 +50,13 @@ void xbrtime_##_typename##_gather_all_bruck_concat(_type *dest, const _type *src
         xbrtime_##_typename##_get(&(temp[counter]), temp, iter_msg_size, 1, r_partner);                                             \
         counter += iter_msg_size;                                                                                                   \
         stride *= 2;                                                                                                                \
-        xbrtime_barrier();                                                                                                          \
+        xbrtime_barrier_all();                                                                                                          \
     }                                                                                                                               \
                                                                                                                                     \
     /* Perform final iteration */                                                                                                   \
     r_partner = (my_rpe + stride) % numpes;                                                                                         \
     xbrtime_##_typename##_get(&(temp[counter]), temp, (nelems-counter), 1, r_partner);                                              \
-    xbrtime_barrier();                                                                                                              \
+    xbrtime_barrier_all();                                                                                                              \
                                                                                                                                     \
     /* Calculate adjusted displacement */                                                                                           \
     counter = 0;                                                                                                                    \
@@ -98,7 +98,7 @@ void xbrtime_##_typename##_gather_all_ring(_type *dest, const _type *src, int *p
         src_pe = (src_pe == 0 ? numpes-1 : src_pe - 1);                                                                             \
                                                                                                                                     \
         /* Ensure values received for next communication round */                                                                   \
-        xbrtime_barrier();                                                                                                          \
+        xbrtime_barrier_all();                                                                                                          \
     }                                                                                                                               \
 }                                                                                                                                   \
                                                                                                                                     \

@@ -61,7 +61,6 @@ void xbrtime_##_typename##_broadcast(_type *dest, const _type *src, size_t nelem
     XBGAS_DECL_BROADCAST(int64_t, int64)
     XBGAS_DECL_BROADCAST(size_t, size)
     XBGAS_DECL_BROADCAST(ptrdiff_t, ptrdiff)
-    //  XBGAS_DECL_BROADCAST(long double, longdouble)
 
 #undef XBGAS_DECL_BROADCAST
 
@@ -103,7 +102,6 @@ void xbrtime_##_typename##_reduce_##_funcname(_type *dest, const _type *src, siz
     XBGAS_DECL_REDUCE(int64_t, int64, sum)
     XBGAS_DECL_REDUCE(size_t, size, sum)
     XBGAS_DECL_REDUCE(ptrdiff_t, ptrdiff, sum)
-    //  XBGAS_DECL_REDUCE(long double, longdouble, sum)
 
     /* Product */
     XBGAS_DECL_REDUCE(float, float, product)
@@ -129,7 +127,6 @@ void xbrtime_##_typename##_reduce_##_funcname(_type *dest, const _type *src, siz
     XBGAS_DECL_REDUCE(int64_t, int64, product)
     XBGAS_DECL_REDUCE(size_t, size, product)
     XBGAS_DECL_REDUCE(ptrdiff_t, ptrdiff, product)
-    //  XBGAS_DECL_REDUCE(long double, longdouble, product)
 
     /* Binary AND */
     XBGAS_DECL_REDUCE(char, char, and)
@@ -224,7 +221,6 @@ void xbrtime_##_typename##_reduce_##_funcname(_type *dest, const _type *src, siz
     XBGAS_DECL_REDUCE(int64_t, int64, max)
     XBGAS_DECL_REDUCE(size_t, size, max)
     XBGAS_DECL_REDUCE(ptrdiff_t, ptrdiff, max)
-    //  XBGAS_DECL_REDUCE(long double, longdouble, max)
 
     /* Min */
     XBGAS_DECL_REDUCE(float, float, min)
@@ -250,7 +246,6 @@ void xbrtime_##_typename##_reduce_##_funcname(_type *dest, const _type *src, siz
     XBGAS_DECL_REDUCE(int64_t, int64, min)
     XBGAS_DECL_REDUCE(size_t, size, min)
     XBGAS_DECL_REDUCE(ptrdiff_t, ptrdiff, min)
-    //  XBGAS_DECL_REDUCE(long double, longdouble, min)
 
 #undef XBGAS_DECL_REDUCE
 
@@ -291,7 +286,6 @@ void xbrtime_##_typename##_reduce_all_##_funcname(_type *dest, const _type *src,
     XBGAS_DECL_REDUCE_ALL(int64_t, int64, sum)
     XBGAS_DECL_REDUCE_ALL(size_t, size, sum)
     XBGAS_DECL_REDUCE_ALL(ptrdiff_t, ptrdiff, sum)
-    //  XBGAS_DECL_REDUCE_ALL(long double, longdouble, sum)
 
     /* Product */
     XBGAS_DECL_REDUCE_ALL(float, float, product)
@@ -317,7 +311,6 @@ void xbrtime_##_typename##_reduce_all_##_funcname(_type *dest, const _type *src,
     XBGAS_DECL_REDUCE_ALL(int64_t, int64, product)
     XBGAS_DECL_REDUCE_ALL(size_t, size, product)
     XBGAS_DECL_REDUCE_ALL(ptrdiff_t, ptrdiff, product)
-    //  XBGAS_DECL_REDUCE_ALL(long double, longdouble, product)
 
     /* Binary AND */
     XBGAS_DECL_REDUCE_ALL(char, char, and)
@@ -412,7 +405,6 @@ void xbrtime_##_typename##_reduce_all_##_funcname(_type *dest, const _type *src,
     XBGAS_DECL_REDUCE_ALL(int64_t, int64, max)
     XBGAS_DECL_REDUCE_ALL(size_t, size, max)
     XBGAS_DECL_REDUCE_ALL(ptrdiff_t, ptrdiff, max)
-    //  XBGAS_DECL_REDUCE_ALL(long double, longdouble, max)
 
     /* Min */
     XBGAS_DECL_REDUCE_ALL(float, float, min)
@@ -438,7 +430,6 @@ void xbrtime_##_typename##_reduce_all_##_funcname(_type *dest, const _type *src,
     XBGAS_DECL_REDUCE_ALL(int64_t, int64, min)
     XBGAS_DECL_REDUCE_ALL(size_t, size, min)
     XBGAS_DECL_REDUCE_ALL(ptrdiff_t, ptrdiff, min)
-    //  XBGAS_DECL_REDUCE_ALL(long double, longdouble, min)
 
 #undef XBGAS_DECL_REDUCE_ALL
 
@@ -479,7 +470,6 @@ void xbrtime_##_typename##_scatter(_type *dest, const _type *src, int *pe_msg_sz
     XBGAS_DECL_SCATTER(int64_t, int64)
     XBGAS_DECL_SCATTER(size_t, size)
     XBGAS_DECL_SCATTER(ptrdiff_t, ptrdiff)
-    //  XBGAS_DECL_SCATTER(long double, longdouble)
 
 #undef XBGAS_DECL_SCATTER
 
@@ -520,7 +510,6 @@ void xbrtime_##_typename##_gather(_type *dest, const _type *src, int *pe_msg_sz,
     XBGAS_DECL_GATHER(int64_t, int64)
     XBGAS_DECL_GATHER(size_t, size)
     XBGAS_DECL_GATHER(ptrdiff_t, ptrdiff)
-    //  XBGAS_DECL_GATHER(long double, longdouble)
 
 #undef XBGAS_DECL_GATHER
 
@@ -561,7 +550,6 @@ void xbrtime_##_typename##_gather_all(_type *dest, const _type *src, int *pe_msg
     XBGAS_DECL_GATHER_ALL(int64_t, int64)
     XBGAS_DECL_GATHER_ALL(size_t, size)
     XBGAS_DECL_GATHER_ALL(ptrdiff_t, ptrdiff)
-    //  XBGAS_DECL_GATHER_ALL(long double, longdouble)
 
 #undef XBGAS_DECL_GATHER_ALL
 
@@ -569,14 +557,12 @@ void xbrtime_##_typename##_gather_all(_type *dest, const _type *src, int *pe_msg
       \brief Performs a personalized all-to-all exchange of values of type TYPE between PEs
       \param dest is a pointer to the base shared address on each PE where exchanged values are to be stored (indexed by PE id)
       \param src is a pointer to the base shared address on each PE where values to be exchanged are initially located (indexed by PE id)
-      \param src_stride is the stride size between elements at src
-      \param dest_stride is the stride size between elements at dest
       \param nelems is the number of elements being exchanged with each PE
       \return void
 */
-#define XBGAS_DECL_ALLTOALL(_type, _typename)                                                                                           \
-void xbrtime_##_typename##_alltoall_shift_exchange(_type *dest, const _type *src, int src_stride, int dest_stride, size_t nelems);      \
-void xbrtime_##_typename##_alltoall(_type *dest, const _type *src, int src_stride, int dest_stride, size_t nelems);
+#define XBGAS_DECL_ALLTOALL(_type, _typename)                                                          \
+void xbrtime_##_typename##_alltoall_shift_exchange(_type *dest, const _type *src, size_t nelems);      \
+void xbrtime_##_typename##_alltoall(_type *dest, const _type *src, size_t nelems);
 
     XBGAS_DECL_ALLTOALL(float, float)
     XBGAS_DECL_ALLTOALL(double, double)
@@ -601,9 +587,47 @@ void xbrtime_##_typename##_alltoall(_type *dest, const _type *src, int src_strid
     XBGAS_DECL_ALLTOALL(int64_t, int64)
     XBGAS_DECL_ALLTOALL(size_t, size)
     XBGAS_DECL_ALLTOALL(ptrdiff_t, ptrdiff)
-    //  XBGAS_DECL_ALLTOALL(long double, longdouble)
 
 #undef XBGAS_DECL_ALLTOALL
+
+/*!   \fn xbrtime_TYPENAME_alltoalls( TYPE *dest, const TYPE *src, size_t nelems, int stride )
+      \brief Performs a personalized all-to-all exchange of values of type TYPE between PEs
+      \param dest is a pointer to the base shared address on each PE where exchanged values are to be stored (indexed by PE id)
+      \param src is a pointer to the base shared address on each PE where values to be exchanged are initially located (indexed by PE id)
+      \param src_stride is the stride size between elements at src
+      \param dest_stride is the stride size between elements at dest
+      \param nelems is the number of elements being exchanged with each PE
+      \return void
+*/
+#define XBGAS_DECL_ALLTOALLS(_type, _typename)                                                                                                       \
+void xbrtime_##_typename##_alltoalls_shift_exchange(_type *dest, const _type *src, ptrdiff_t src_stride, ptrdiff_t dest_stride, size_t nelems);      \
+void xbrtime_##_typename##_alltoalls(_type *dest, const _type *src, ptrdiff_t src_stride, ptrdiff_t dest_stride, size_t nelems);
+
+    XBGAS_DECL_ALLTOALLS(float, float)
+    XBGAS_DECL_ALLTOALLS(double, double)
+    XBGAS_DECL_ALLTOALLS(char, char)
+    XBGAS_DECL_ALLTOALLS(unsigned char, uchar)
+    XBGAS_DECL_ALLTOALLS(signed char, schar)
+    XBGAS_DECL_ALLTOALLS(unsigned short, ushort)
+    XBGAS_DECL_ALLTOALLS(short, short)
+    XBGAS_DECL_ALLTOALLS(unsigned int, uint)
+    XBGAS_DECL_ALLTOALLS(int, int)
+    XBGAS_DECL_ALLTOALLS(unsigned long, ulong)
+    XBGAS_DECL_ALLTOALLS(long, long)
+    XBGAS_DECL_ALLTOALLS(unsigned long long, ulonglong)
+    XBGAS_DECL_ALLTOALLS(long long, longlong)
+    XBGAS_DECL_ALLTOALLS(uint8_t, uint8)
+    XBGAS_DECL_ALLTOALLS(int8_t, int8)
+    XBGAS_DECL_ALLTOALLS(uint16_t, uint16)
+    XBGAS_DECL_ALLTOALLS(int16_t, int16)
+    XBGAS_DECL_ALLTOALLS(uint32_t, uint32)
+    XBGAS_DECL_ALLTOALLS(int32_t, int32)
+    XBGAS_DECL_ALLTOALLS(uint64_t, uint64)
+    XBGAS_DECL_ALLTOALLS(int64_t, int64)
+    XBGAS_DECL_ALLTOALLS(size_t, size)
+    XBGAS_DECL_ALLTOALLS(ptrdiff_t, ptrdiff)
+
+#undef XBGAS_DECL_ALLTOALLS
 
 #ifdef __cplusplus
 }

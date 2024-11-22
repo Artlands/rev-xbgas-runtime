@@ -24,7 +24,7 @@ int main(void) {
   if ( mype == 0 ) {
     xbrtime_int_atomic_inc(&dest[0], 1);
   }
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   printf("%d: dst = %d", mype, dest[0]);
 
   xbrtime_free(dest);

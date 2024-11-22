@@ -49,7 +49,7 @@ void xbrtime_##_typename##_scatter_tree(_type *dest, const _type *src, int *pe_m
     }                                                                                                                                   \
                                                                                                                                         \
     /* Ensure all PEs are ready for communication */                                                                                    \
-    xbrtime_barrier();                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                  \
                                                                                                                                         \
     /* Perform communication if PE active at stage i and has valid partner */                                                           \
     for(i = numpes_log-1; i >= 0; i--)                                                                                                  \
@@ -72,7 +72,7 @@ void xbrtime_##_typename##_scatter_tree(_type *dest, const _type *src, int *pe_m
                 xbrtime_##_typename##_put(&temp[(adj_disp[v_partner])], &temp[(adj_disp[v_partner])], iter_msg_size, 1, r_partner);     \
             }                                                                                                                           \
         }                                                                                                                               \
-        xbrtime_barrier();                                                                                                              \
+        xbrtime_barrier_all();                                                                                                              \
    }                                                                                                                                    \
                                                                                                                                         \
    /* Copy data to destination */                                                                                                       \

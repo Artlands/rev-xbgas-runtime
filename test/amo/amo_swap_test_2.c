@@ -25,7 +25,7 @@ int main(void) {
   dest = (int *)xbrtime_malloc(1 * sizeof(int));
   dest[0] = mype;
   
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   int new_val = mype + 1;
 
   printf("PE %d : Atomic swap %p on PE 0 with %d", mype, &dest[0], new_val);
@@ -34,7 +34,7 @@ int main(void) {
     
   printf("PE %d: swapped value is %d", mype, swapped_val);
   
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if ( mype == 0 )
     printf("Dest value is %d", dest[0]);

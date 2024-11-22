@@ -47,7 +47,7 @@
                  xbrtime_##_typename##_put(temp, temp, nelems, 1, r_partner);                                               \
              }                                                                                                              \
          }                                                                                                                  \
-         xbrtime_barrier();                                                                                                 \
+         xbrtime_barrier_all();                                                                                                 \
      }                                                                                                                      \
 															    \
      /* Migrate from buffer to dest with stride */                                                                          \
@@ -84,7 +84,7 @@
      }                                                                                                                      \
                                                                                                                             \
      /* Ensure buffer is ready */                                                                                           \
-     xbrtime_barrier();                                                                                                     \
+     xbrtime_barrier_all();                                                                                                     \
                                                                                                                             \
      /* Scatter data using binomial tree */                                                                                 \
      xbrtime_##_typename##_scatter_tree(&(temp[(pe_disp[my_rpe])]), temp, pe_msg_sz, pe_disp, nelems, root);                \

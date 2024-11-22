@@ -26,7 +26,7 @@ int main( int argc, char **argv ){
   if( mype == 0 )
     xbrtime_char_p( dest, source, 1 );
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if (mype == 1) 
     printf("Dest[0]: %c", dest[0]);

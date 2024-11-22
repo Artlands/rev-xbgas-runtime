@@ -37,7 +37,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_tree(_type *dest, const _type *s
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure accumulate buffer is ready */                                                                                                             \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     /* Perform communication if PE active at stage i and has valid partner */                                                                           \
     for(i = 0; i < numpes_log; i++)                                                                                                                     \
@@ -57,7 +57,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_tree(_type *dest, const _type *s
                 }                                                                                                                                       \
             }                                                                                                                                           \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy data to destination on root*/                                                                                                               \
@@ -104,7 +104,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     int num_exchange = p_prime/2;                                                                                                                       \
     int msg_size = 0;                                                                                                                                   \
@@ -170,7 +170,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_lpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - ReduceScatter Recursive Doubling/Halving */                                                                                            \
@@ -230,7 +230,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
         }                                                                                                                                               \
         num_exchange >>= 1;                                                                                                                             \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 3 - Gather to root PE */                                                                                                                   \
@@ -260,7 +260,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
         num_exchange <<= 1;                                                                                                                             \
         pe_stride >>= 1;                                                                                                                                \
         active_pes >>= 1;                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride on root */                                                                                                  \
@@ -432,7 +432,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_tree(_type *dest, const _type *s
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure accumulate buffer is ready */                                                                                                             \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     /* Perform communication if PE active at stage i and has valid partner */                                                                           \
     for(i = 0; i < numpes_log; i++)                                                                                                                     \
@@ -452,7 +452,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_tree(_type *dest, const _type *s
                 }                                                                                                                                       \
             }                                                                                                                                           \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy data to destination on root*/                                                                                                               \
@@ -499,7 +499,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     int num_exchange = p_prime/2;                                                                                                                       \
     int msg_size = 0;                                                                                                                                   \
@@ -566,7 +566,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_lpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - ReduceScatter Recursive Doubling/Halving */                                                                                            \
@@ -626,7 +626,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
         }                                                                                                                                               \
         num_exchange >>= 1;                                                                                                                             \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 3 - Gather to root PE */                                                                                                                   \
@@ -657,7 +657,7 @@ void xbrtime_##_typename##_reduce_##_funcname##_rabenseifner(_type *dest, const 
         num_exchange <<= 1;                                                                                                                             \
         pe_stride >>= 1;                                                                                                                                \
         active_pes >>= 1;                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride on root rpe */                                                                                              \

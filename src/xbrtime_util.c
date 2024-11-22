@@ -29,7 +29,7 @@ uint64_t __xbrtime_ltor(uint64_t local_addr, int pe){
     /* perform the address translation */
 
 #ifdef XBRTIME_DEBUG
-    printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: Translating local address at pe=%d from 0x%x",
+    printf( "XBRTIME_DEBUG : PE=%d: Translating local address at pe=%d from 0x%x",
             xbrtime_mype(), pe, local_addr );
 #endif
 
@@ -46,7 +46,7 @@ uint64_t __xbrtime_ltor(uint64_t local_addr, int pe){
         remote_addr = __xbrtime_get_remote_alloc(base_slot, xbrtime_decode_pe(pe)) + offset;
 
 #ifdef XBRTIME_DEBUG
-        printf( "\033[32mXBRTIME_DEBUG :\033[0m PE=%d: REMOTE ADDRESS IN SLOT=%d AT PE=%d IS 0x%x",
+        printf( "XBRTIME_DEBUG : PE=%d: REMOTE ADDRESS IN SLOT=%d AT PE=%d IS 0x%x",
                 i, xbrtime_mype(), pe, remote_addr );
 #endif
         return remote_addr;

@@ -125,11 +125,11 @@ extern int xbrtime_mype();
 */
 extern int xbrtime_num_pes();
 
-/*!   \fn void xbrtime_barrier()
+/*!   \fn void xbrtime_barrier_all()
       \brief Performs a global barrier operation of all configured PEs
       \return Void
 */
-extern void xbrtime_barrier();
+extern void xbrtime_barrier_all();
 
 /*!   \fn void xbrtime_fence()
       \brief Ensures ordering of delivery of operations on symmetric data objects.

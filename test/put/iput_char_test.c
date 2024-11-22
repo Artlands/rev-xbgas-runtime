@@ -28,14 +28,14 @@ int main( int argc, char **argv ){
     dest[i] = '\0';
   }
 
-  xbrtime_barrier(); 
+  xbrtime_barrier_all(); 
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
     xbrtime_char_iput(dest, source, 1, 2, 5, 1);
   }
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if (mype == 1) {
     for (int i = 0; i < 10; i++) {

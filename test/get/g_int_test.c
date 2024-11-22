@@ -26,12 +26,12 @@ int main( int argc, char **argv ){
   else
     source[0] = 0;
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if( mype == 0 )
     dest = xbrtime_int_g( source, 1 );
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if (mype == 0) 
     printf("Dest: %d", dest);

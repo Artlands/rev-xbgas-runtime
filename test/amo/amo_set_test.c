@@ -27,12 +27,12 @@ int main(void) {
   
   printf("Before atomic set: %d: dest = %ld", mype, dest[0]);
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   int new_val = mype + 99;
   if ( mype & 1 ) {
     xbrtime_int_atomic_set(&dest[0], new_val, (mype + 1) % npes);
   }
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   printf("After atomic set: %d: dest = %ld", mype, dest[0]);
 
   xbrtime_free(dest);

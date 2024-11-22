@@ -34,7 +34,7 @@ int main( int argc, char **argv ){
   }
 
   /* perform a barrier */
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
@@ -43,7 +43,7 @@ int main( int argc, char **argv ){
 
   printf("PE %d: flag=%d", xbrtime_mype(), flag);
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   // Validate the results
   if( xbrtime_mype() == 1 ){

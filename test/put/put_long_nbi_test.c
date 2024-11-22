@@ -33,14 +33,14 @@ int main( int argc, char **argv ){
   }
 
   /* perform a barrier */
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
     xbrtime_long_put_nbi(dest, source, TEST_SIZE, 1);
   }
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   // Validate the results
   if( xbrtime_mype() == 1 ){

@@ -34,7 +34,7 @@ int main(void) {
   int *count = (int *)xbrtime_malloc(1 * sizeof(int));
   count[0] = 0;
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
   
   xbrtime_init_lock(lock);
 
@@ -46,7 +46,7 @@ int main(void) {
 
   xbrtime_clear_lock(lock); /* ensures count update completes before clearing the lock */
 
-  xbrtime_barrier();
+  xbrtime_barrier_all();
 
   if (mype == 0)
     printf("Result: PE %d: count is %d", mype, count[0]);

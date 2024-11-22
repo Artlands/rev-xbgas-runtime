@@ -37,7 +37,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     /* Stage 1 (only if NumPEs is not a power of two) */                                                                                                \
     if(numpes_log_floor != (log(numpes)/log(2)))                                                                                                        \
@@ -72,7 +72,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - Recursive Doubling */                                                                                                                  \
@@ -96,7 +96,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             xbrtime_##_typename##_get(temp, accumulate, nelems, 1, r_partner);                                                                          \
         }                                                                                                                                               \
         /* Ensure get is complete */                                                                                                                    \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
                                                                                                                                                         \
         /* Perform reduction op */                                                                                                                      \
         if(my_vpe != -1)                                                                                                                                \
@@ -107,7 +107,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             }                                                                                                                                           \
         }                                                                                                                                               \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -118,7 +118,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
         {                                                                                                                                               \
             xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride */                                                                                                          \
@@ -162,7 +162,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     int num_exchange = p_prime/2;                                                                                                                       \
     int msg_size = 0;                                                                                                                                   \
@@ -225,7 +225,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - ReduceScatter Recursive Doubling/Halving */                                                                                            \
@@ -283,7 +283,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         }                                                                                                                                               \
         num_exchange >>= 1;                                                                                                                             \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 3 - GatherAll */                                                                                                                           \
@@ -328,7 +328,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         }                                                                                                                                               \
         num_exchange <<= 1;                                                                                                                             \
         pe_stride >>= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -339,7 +339,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         {                                                                                                                                               \
             xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride */                                                                                                          \
@@ -509,7 +509,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     /* Stage 1 (only if NumPEs is not a power of two) */                                                                                                \
     if(numpes_log_floor != (log(numpes)/log(2)))                                                                                                        \
@@ -544,7 +544,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - Recursive Doubling */                                                                                                                  \
@@ -568,7 +568,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             xbrtime_##_typename##_get(temp, accumulate, nelems, 1, r_partner);                                                                          \
         }                                                                                                                                               \
         /* Ensure get is complete */                                                                                                                    \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
                                                                                                                                                         \
         /* Perform reduction op */                                                                                                                      \
         if(my_vpe != -1)                                                                                                                                \
@@ -579,7 +579,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             }                                                                                                                                           \
         }                                                                                                                                               \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -590,7 +590,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
         {                                                                                                                                               \
             xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride */                                                                                                          \
@@ -634,7 +634,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                                  \
                                                                                                                                                         \
     int num_exchange = p_prime/2;                                                                                                                       \
     int msg_size = 0;                                                                                                                                   \
@@ -697,7 +697,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - ReduceScatter Recursive Doubling/Halving */                                                                                            \
@@ -755,7 +755,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         }                                                                                                                                               \
         num_exchange >>= 1;                                                                                                                             \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 3 - GatherAll */                                                                                                                           \
@@ -800,7 +800,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         }                                                                                                                                               \
         num_exchange <<= 1;                                                                                                                             \
         pe_stride >>= 1;                                                                                                                                \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -811,7 +811,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         {                                                                                                                                               \
             xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
         }                                                                                                                                               \
-        xbrtime_barrier();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                              \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride */                                                                                                          \

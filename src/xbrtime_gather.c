@@ -41,7 +41,7 @@ void xbrtime_##_typename##_gather_tree(_type *dest, const _type *src, int *pe_ms
     }                                                                                                                                       \
                                                                                                                                             \
     /* Ensure all PEs are ready for communication */                                                                                        \
-    xbrtime_barrier();                                                                                                                      \
+    xbrtime_barrier_all();                                                                                                                      \
                                                                                                                                             \
     /* Perform communication if PE active at stage i and has valid partner */                                                               \
     for(i = 0; i < numpes_log; i++)                                                                                                         \
@@ -64,7 +64,7 @@ void xbrtime_##_typename##_gather_tree(_type *dest, const _type *src, int *pe_ms
                 xbrtime_##_typename##_get(&temp[(adj_disp[v_partner])], &temp[(adj_disp[v_partner])], iter_msg_size, 1, r_partner);         \
             }                                                                                                                               \
         }                                                                                                                                   \
-        xbrtime_barrier();                                                                                                                  \
+        xbrtime_barrier_all();                                                                                                                  \
    }                                                                                                                                        \
                                                                                                                                             \
    /* Copy data ordered by rpe to destination on root*/                                                                                     \
