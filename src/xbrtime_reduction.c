@@ -1,5 +1,5 @@
 /*
- * _XBRTIME_REDUCE_ALL_C_
+ * _XBRTIME_REDUCTION_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -17,8 +17,8 @@
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-#define XBGAS_REDUCE_ALL(_type, _typename, _funcname, _op)                                                                                              \
-void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *dest, const _type *src, size_t nelems, int stride)                        \
+#define REDUCTION_ALGORITHMS(_type, _typename, _funcname, _op)                                                                                          \
+int xbrtime_##_typename##_funcname##_recursive_doubling(_type *dest, const _type *src, size_t nreduce)                                                  \
 {                                                                                                                                                       \
     int i, j, numpes, my_rpe, my_vpe, r_partner, numpes_log_floor, p_prime, remainder;                                                                  \
     numpes = xbrtime_num_pes();                                                                                                                         \
@@ -27,17 +27,17 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
     numpes_log_floor = (int) (log(numpes)/log(2));                                                                                                      \
     p_prime = 1 << numpes_log_floor;                                                                                                                    \
     remainder = numpes - p_prime;                                                                                                                       \
-    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                \
-    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                      \
+    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                               \
+    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                                     \
                                                                                                                                                         \
-    /* Load reduction values into accumulate buffer and remove stride */                                                                                \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    /* Load reduction values into accumulate buffer */                                                                                                  \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        accumulate[i] = src[i*stride];                                                                                                                  \
+        accumulate[i] = src[i];                                                                                                                         \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier_all();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                              \
                                                                                                                                                         \
     /* Stage 1 (only if NumPEs is not a power of two) */                                                                                                \
     if(numpes_log_floor != (log(numpes)/log(2)))                                                                                                        \
@@ -49,10 +49,10 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             if(my_rpe % 2 == 0)                                                                                                                         \
             {                                                                                                                                           \
                 /* Get values from my_rpe + 1 */                                                                                                        \
-                xbrtime_##_typename##_get(temp, accumulate, nelems, 1, my_rpe + 1);                                                                     \
+                xbrtime_##_typename##_get(temp, accumulate, nreduce, my_rpe + 1);                                                                       \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
-                for(j = 0; j < nelems; j++)                                                                                                             \
+                for(j = 0; j < nreduce; j++)                                                                                                            \
                 {                                                                                                                                       \
                     accumulate[j] = accumulate[j] _op temp[j];                                                                                          \
                 }                                                                                                                                       \
@@ -72,7 +72,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - Recursive Doubling */                                                                                                                  \
@@ -93,21 +93,21 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
                             ((my_vpe-pe_stride+p_prime)%p_prime)+remainder);                                                                            \
             }                                                                                                                                           \
                                                                                                                                                         \
-            xbrtime_##_typename##_get(temp, accumulate, nelems, 1, r_partner);                                                                          \
+            xbrtime_##_typename##_get(temp, accumulate, nreduce, r_partner);                                                                            \
         }                                                                                                                                               \
         /* Ensure get is complete */                                                                                                                    \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
                                                                                                                                                         \
         /* Perform reduction op */                                                                                                                      \
         if(my_vpe != -1)                                                                                                                                \
         {                                                                                                                                               \
-            for(j = 0; j < nelems; j++)                                                                                                                 \
+            for(j = 0; j < nreduce; j++)                                                                                                                \
             {                                                                                                                                           \
                 accumulate[j] = accumulate[j] _op temp[j];                                                                                              \
             }                                                                                                                                           \
         }                                                                                                                                               \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -116,22 +116,23 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
         /* First r even rpe ranks*/                                                                                                                     \
         if((my_rpe < 2*remainder) && (my_rpe % 2 == 0))                                                                                                 \
         {                                                                                                                                               \
-            xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
+            xbrtime_##_typename##_put(accumulate, accumulate, nreduce, my_rpe + 1);                                                                     \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
-    /* Copy from buffer to dest with stride */                                                                                                          \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    /* Copy from buffer to dest */                                                                                                                      \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        dest[i*stride] = accumulate[i];                                                                                                                 \
+        dest[i] = accumulate[i];                                                                                                                        \
     }                                                                                                                                                   \
                                                                                                                                                         \
     xbrtime_free(accumulate);                                                                                                                           \
     xbrtime_free(temp);                                                                                                                                 \
+    return 0;                                                                                                                                           \
 }                                                                                                                                                       \
                                                                                                                                                         \
-void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, const _type *src, size_t nelems, int stride)                              \
+int xbrtime_##_typename##_funcname##_rabenseifner(_type *dest, const _type *src, size_t nreduce)                                                        \
 {                                                                                                                                                       \
     int i, j, numpes, my_rpe, my_vpe, r_partner, numpes_log_floor, p_prime, remainder, counter;                                                         \
     numpes = xbrtime_num_pes();                                                                                                                         \
@@ -140,13 +141,13 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
     numpes_log_floor = (int) (log(numpes)/log(2));                                                                                                      \
     p_prime = 1 << numpes_log_floor;                                                                                                                    \
     remainder = numpes - p_prime;                                                                                                                       \
-    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                \
-    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                      \
+    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                               \
+    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                                     \
                                                                                                                                                         \
-    /* Load reduction values into accumulate buffer and remove stride */                                                                                \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    /* Load reduction values into accumulate buffer */                                                                                                  \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        accumulate[i] = src[i*stride];                                                                                                                  \
+        accumulate[i] = src[i];                                                                                                                         \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Divide buffers into p_prime partitions */                                                                                                        \
@@ -155,14 +156,14 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
     for(i = 0; i < p_prime; i++)                                                                                                                        \
     {                                                                                                                                                   \
         partition_sizes[i] = ( (i == p_prime-1) ?                                                                                                       \
-                             (((int)(nelems/p_prime)) + (nelems%p_prime)) :                                                                             \
-                             ((int)(nelems/p_prime)) );                                                                                                 \
+                             (((int)(nreduce/p_prime)) + (nreduce%p_prime)) :                                                                           \
+                             ((int)(nreduce/p_prime)) );                                                                                                \
         partition_disp[i] = counter;                                                                                                                    \
         counter += partition_sizes[i];                                                                                                                  \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier_all();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                              \
                                                                                                                                                         \
     int num_exchange = p_prime/2;                                                                                                                       \
     int msg_size = 0;                                                                                                                                   \
@@ -182,7 +183,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                     msg_size += partition_sizes[j];                                                                                                     \
                 }                                                                                                                                       \
                                                                                                                                                         \
-                xbrtime_##_typename##_get(temp, accumulate, msg_size, 1, my_rpe + 1);                                                                   \
+                xbrtime_##_typename##_get(temp, accumulate, msg_size, my_rpe + 1);                                                                      \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -203,7 +204,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                 }                                                                                                                                       \
                                                                                                                                                         \
                 xbrtime_##_typename##_get(&(temp[(partition_disp[num_exchange])]), &(accumulate[(partition_disp[num_exchange])]),                       \
-                                            msg_size, 1, my_rpe - 1);                                                                                   \
+                                            msg_size, my_rpe - 1);                                                                                      \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -214,7 +215,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                                                                                                                                                         \
                 /* Put calculated second half values back to even partner */                                                                            \
                 xbrtime_##_typename##_put(&(accumulate[(partition_disp[num_exchange])]), &(accumulate[(partition_disp[num_exchange])]),                 \
-                                            msg_size, 1, my_rpe - 1);                                                                                   \
+                                            msg_size, my_rpe - 1);                                                                                      \
                                                                                                                                                         \
                 /* Assign new vpe ranks */                                                                                                              \
                 my_vpe = -1;                                                                                                                            \
@@ -225,7 +226,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - ReduceScatter Recursive Doubling/Halving */                                                                                            \
@@ -247,7 +248,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                     msg_size += partition_sizes[offset+j];                                                                                              \
                 }                                                                                                                                       \
                                                                                                                                                         \
-                xbrtime_##_typename##_get(&(temp[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, 1, r_partner);          \
+                xbrtime_##_typename##_get(&(temp[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, r_partner);             \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -268,7 +269,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                 }                                                                                                                                       \
                                                                                                                                                         \
                 xbrtime_##_typename##_get(&(temp[(partition_disp[offset+num_exchange])]), &(accumulate[(partition_disp[offset+num_exchange])]),         \
-                                            msg_size, 1, r_partner);                                                                                    \
+                                            msg_size, r_partner);                                                                                       \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -283,7 +284,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         }                                                                                                                                               \
         num_exchange >>= 1;                                                                                                                             \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 3 - GatherAll */                                                                                                                           \
@@ -305,7 +306,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                     msg_size += partition_sizes[offset+j];                                                                                              \
                 }                                                                                                                                       \
                                                                                                                                                         \
-                xbrtime_##_typename##_put(&(accumulate[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, 1, r_partner);    \
+                xbrtime_##_typename##_put(&(accumulate[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, r_partner);       \
             }                                                                                                                                           \
             /* PEs perform put*/                                                                                                                        \
             else                                                                                                                                        \
@@ -323,12 +324,12 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                 }                                                                                                                                       \
                                                                                                                                                         \
                 xbrtime_##_typename##_put(&(accumulate[(partition_disp[offset+num_exchange])]), &(accumulate[(partition_disp[offset+num_exchange])]),   \
-                                          msg_size, 1, r_partner);                                                                                      \
+                                          msg_size, r_partner);                                                                                         \
             }                                                                                                                                           \
         }                                                                                                                                               \
         num_exchange <<= 1;                                                                                                                             \
         pe_stride >>= 1;                                                                                                                                \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -337,160 +338,239 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         /* First r even rpe ranks*/                                                                                                                     \
         if((my_rpe < 2*remainder) && (my_rpe % 2 == 0))                                                                                                 \
         {                                                                                                                                               \
-            xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
+            xbrtime_##_typename##_put(accumulate, accumulate, nreduce, my_rpe + 1);                                                                     \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride */                                                                                                          \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        dest[i*stride] = accumulate[i];                                                                                                                 \
+        dest[i] = accumulate[i];                                                                                                                        \
     }                                                                                                                                                   \
                                                                                                                                                         \
     xbrtime_free(accumulate);                                                                                                                           \
     xbrtime_free(temp);                                                                                                                                 \
-}                                                                                                                                                       \
-                                                                                                                                                        \
-                                                                                                                                                        \
+    return 0;                                                                                                                                           \
+}
+
+    /* Sum */
+    REDUCTION_ALGORITHMS(float, float, sum, +)
+    REDUCTION_ALGORITHMS(double, double, sum, +)
+    REDUCTION_ALGORITHMS(char, char, sum, +)
+    REDUCTION_ALGORITHMS(unsigned char, uchar, sum, +)
+    REDUCTION_ALGORITHMS(signed char, schar, sum, +)
+    REDUCTION_ALGORITHMS(unsigned short, ushort, sum, +)
+    REDUCTION_ALGORITHMS(short, short, sum, +)
+    REDUCTION_ALGORITHMS(unsigned int, uint, sum, +)
+    REDUCTION_ALGORITHMS(int, int, sum, +)
+    REDUCTION_ALGORITHMS(unsigned long, ulong, sum, +)
+    REDUCTION_ALGORITHMS(long, long, sum, +)
+    REDUCTION_ALGORITHMS(unsigned long long, ulonglong, sum, +)
+    REDUCTION_ALGORITHMS(long long, longlong, sum, +)
+    REDUCTION_ALGORITHMS(uint8_t, uint8, sum, +)
+    REDUCTION_ALGORITHMS(int8_t, int8, sum, +)
+    REDUCTION_ALGORITHMS(uint16_t, uint16, sum, +)
+    REDUCTION_ALGORITHMS(int16_t, int16, sum, +)
+    REDUCTION_ALGORITHMS(uint32_t, uint32, sum, +)
+    REDUCTION_ALGORITHMS(int32_t, int32, sum, +)
+    REDUCTION_ALGORITHMS(uint64_t, uint64, sum, +)
+    REDUCTION_ALGORITHMS(int64_t, int64, sum, +)
+    REDUCTION_ALGORITHMS(size_t, size, sum, +)
+    REDUCTION_ALGORITHMS(ptrdiff_t, ptrdiff, sum, +)
+
+    /* Product */
+    REDUCTION_ALGORITHMS(float, float, product, *)
+    REDUCTION_ALGORITHMS(double, double, product, *)
+    REDUCTION_ALGORITHMS(char, char, product, *)
+    REDUCTION_ALGORITHMS(unsigned char, uchar, product, *)
+    REDUCTION_ALGORITHMS(signed char, schar, product, *)
+    REDUCTION_ALGORITHMS(unsigned short, ushort, product, *)
+    REDUCTION_ALGORITHMS(short, short, product, *)
+    REDUCTION_ALGORITHMS(unsigned int, uint, product, *)
+    REDUCTION_ALGORITHMS(int, int, product, *)
+    REDUCTION_ALGORITHMS(unsigned long, ulong, product, *)
+    REDUCTION_ALGORITHMS(long, long, product, *)
+    REDUCTION_ALGORITHMS(unsigned long long, ulonglong, product, *)
+    REDUCTION_ALGORITHMS(long long, longlong, product, *)
+    REDUCTION_ALGORITHMS(uint8_t, uint8, product, *)
+    REDUCTION_ALGORITHMS(int8_t, int8, product, *)
+    REDUCTION_ALGORITHMS(uint16_t, uint16, product, *)
+    REDUCTION_ALGORITHMS(int16_t, int16, product, *)
+    REDUCTION_ALGORITHMS(uint32_t, uint32, product, *)
+    REDUCTION_ALGORITHMS(int32_t, int32, product, *)
+    REDUCTION_ALGORITHMS(uint64_t, uint64, product, *)
+    REDUCTION_ALGORITHMS(int64_t, int64, product, *)
+    REDUCTION_ALGORITHMS(size_t, size, product, *)
+    REDUCTION_ALGORITHMS(ptrdiff_t, ptrdiff, product, *)
+
+    /* Binary AND */
+    REDUCTION_ALGORITHMS(unsigned char, uchar, and, &)
+    REDUCTION_ALGORITHMS(unsigned short, ushort, and, &)
+    REDUCTION_ALGORITHMS(unsigned int, uint, and, &)
+    REDUCTION_ALGORITHMS(unsigned long, ulong, and, &)
+    REDUCTION_ALGORITHMS(unsigned long long, ulonglong, and, &)
+    REDUCTION_ALGORITHMS(uint8_t, uint8, and, &)
+    REDUCTION_ALGORITHMS(int8_t, int8, and, &)
+    REDUCTION_ALGORITHMS(uint16_t, uint16, and, &)
+    REDUCTION_ALGORITHMS(int16_t, int16, and, &)
+    REDUCTION_ALGORITHMS(uint32_t, uint32, and, &)
+    REDUCTION_ALGORITHMS(int32_t, int32, and, &)
+    REDUCTION_ALGORITHMS(uint64_t, uint64, and, &)
+    REDUCTION_ALGORITHMS(int64_t, int64, and, &)
+    REDUCTION_ALGORITHMS(size_t, size, and, &)
+
+    /* Binary OR */
+    REDUCTION_ALGORITHMS(unsigned char, uchar, or, |)
+    REDUCTION_ALGORITHMS(unsigned short, ushort, or, |)
+    REDUCTION_ALGORITHMS(unsigned int, uint, or, |)
+    REDUCTION_ALGORITHMS(unsigned long, ulong, or, |)
+    REDUCTION_ALGORITHMS(unsigned long long, ulonglong, or, |)
+    REDUCTION_ALGORITHMS(uint8_t, uint8, or, |)
+    REDUCTION_ALGORITHMS(int8_t, int8, or, |)
+    REDUCTION_ALGORITHMS(uint16_t, uint16, or, |)
+    REDUCTION_ALGORITHMS(int16_t, int16, or, |)
+    REDUCTION_ALGORITHMS(uint32_t, uint32, or, |)
+    REDUCTION_ALGORITHMS(int32_t, int32, or, |)
+    REDUCTION_ALGORITHMS(uint64_t, uint64, or, |)
+    REDUCTION_ALGORITHMS(int64_t, int64, or, |)
+    REDUCTION_ALGORITHMS(size_t, size, or, |)
+
+    /* Binary XOR */
+    REDUCTION_ALGORITHMS(unsigned char, uchar, xor, ^)
+    REDUCTION_ALGORITHMS(unsigned short, ushort, xor, ^)
+    REDUCTION_ALGORITHMS(unsigned int, uint, xor, ^)
+    REDUCTION_ALGORITHMS(unsigned long, ulong, xor, ^)
+    REDUCTION_ALGORITHMS(unsigned long long, ulonglong, xor, ^)
+    REDUCTION_ALGORITHMS(uint8_t, uint8, xor, ^)
+    REDUCTION_ALGORITHMS(int8_t, int8, xor, ^)
+    REDUCTION_ALGORITHMS(uint16_t, uint16, xor, ^)
+    REDUCTION_ALGORITHMS(int16_t, int16, xor, ^)
+    REDUCTION_ALGORITHMS(uint32_t, uint32, xor, ^)
+    REDUCTION_ALGORITHMS(int32_t, int32, xor, ^)
+    REDUCTION_ALGORITHMS(uint64_t, uint64, xor, ^)
+    REDUCTION_ALGORITHMS(int64_t, int64, xor, ^)
+    REDUCTION_ALGORITHMS(size_t, size, xor, ^)
+
+#undef REDUCTION_ALGORITHMS
+
+
+#define XBGAS_REDUCTION(_type, _typename, _funcname, _op)                                                                                               \
 /* Wrapper function - recursive doubling for small messages, rabenseifner for large messages */                                                         \
-void xbrtime_##_typename##_reduce_all_##_funcname(_type *dest, const _type *src, size_t nelems, int stride)                                             \
+int xbrtime_##_typename##_##_funcname##_reduce(_type *dest, const _type *src, size_t nreduce)                                                           \
 {                                                                                                                                                       \
-    if((sizeof(_type)*nelems) < LARGE_REDUCE_ALL)                                                                                                       \
+    if((sizeof(_type)*nreduce) < LARGE_REDUCE_ALL)                                                                                                      \
     {                                                                                                                                                   \
-        xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(dest, src, nelems, stride);                                                   \
+        return xbrtime_##_typename##_funcname##_recursive_doubling(dest, src, nreduce);                                                                 \
     }                                                                                                                                                   \
     else                                                                                                                                                \
     {                                                                                                                                                   \
-        xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(dest, src, nelems, stride);                                                         \
+        return xbrtime_##_typename##_funcname##_rabenseifner(dest, src, nreduce);                                                                       \
     }                                                                                                                                                   \
 }
 
     /* Sum */
-    XBGAS_REDUCE_ALL(float, float, sum, +)
-    XBGAS_REDUCE_ALL(double, double, sum, +)
-    XBGAS_REDUCE_ALL(char, char, sum, +)
-    XBGAS_REDUCE_ALL(unsigned char, uchar, sum, +)
-    XBGAS_REDUCE_ALL(signed char, schar, sum, +)
-    XBGAS_REDUCE_ALL(unsigned short, ushort, sum, +)
-    XBGAS_REDUCE_ALL(short, short, sum, +)
-    XBGAS_REDUCE_ALL(unsigned int, uint, sum, +)
-    XBGAS_REDUCE_ALL(int, int, sum, +)
-    XBGAS_REDUCE_ALL(unsigned long, ulong, sum, +)
-    XBGAS_REDUCE_ALL(long, long, sum, +)
-    XBGAS_REDUCE_ALL(unsigned long long, ulonglong, sum, +)
-    XBGAS_REDUCE_ALL(long long, longlong, sum, +)
-    XBGAS_REDUCE_ALL(uint8_t, uint8, sum, +)
-    XBGAS_REDUCE_ALL(int8_t, int8, sum, +)
-    XBGAS_REDUCE_ALL(uint16_t, uint16, sum, +)
-    XBGAS_REDUCE_ALL(int16_t, int16, sum, +)
-    XBGAS_REDUCE_ALL(uint32_t, uint32, sum, +)
-    XBGAS_REDUCE_ALL(int32_t, int32, sum, +)
-    XBGAS_REDUCE_ALL(uint64_t, uint64, sum, +)
-    XBGAS_REDUCE_ALL(int64_t, int64, sum, +)
-    XBGAS_REDUCE_ALL(size_t, size, sum, +)
-    XBGAS_REDUCE_ALL(ptrdiff_t, ptrdiff, sum, +)
-    //  XBGAS_REDUCE_ALL(long double, longdouble, sum, +)
+    XBGAS_REDUCTION(float, float, sum, +)
+    XBGAS_REDUCTION(double, double, sum, +)
+    XBGAS_REDUCTION(char, char, sum, +)
+    XBGAS_REDUCTION(unsigned char, uchar, sum, +)
+    XBGAS_REDUCTION(signed char, schar, sum, +)
+    XBGAS_REDUCTION(unsigned short, ushort, sum, +)
+    XBGAS_REDUCTION(short, short, sum, +)
+    XBGAS_REDUCTION(unsigned int, uint, sum, +)
+    XBGAS_REDUCTION(int, int, sum, +)
+    XBGAS_REDUCTION(unsigned long, ulong, sum, +)
+    XBGAS_REDUCTION(long, long, sum, +)
+    XBGAS_REDUCTION(unsigned long long, ulonglong, sum, +)
+    XBGAS_REDUCTION(long long, longlong, sum, +)
+    XBGAS_REDUCTION(uint8_t, uint8, sum, +)
+    XBGAS_REDUCTION(int8_t, int8, sum, +)
+    XBGAS_REDUCTION(uint16_t, uint16, sum, +)
+    XBGAS_REDUCTION(int16_t, int16, sum, +)
+    XBGAS_REDUCTION(uint32_t, uint32, sum, +)
+    XBGAS_REDUCTION(int32_t, int32, sum, +)
+    XBGAS_REDUCTION(uint64_t, uint64, sum, +)
+    XBGAS_REDUCTION(int64_t, int64, sum, +)
+    XBGAS_REDUCTION(size_t, size, sum, +)
+    XBGAS_REDUCTION(ptrdiff_t, ptrdiff, sum, +)
 
     /* Product */
-    XBGAS_REDUCE_ALL(float, float, product, *)
-    XBGAS_REDUCE_ALL(double, double, product, *)
-    XBGAS_REDUCE_ALL(char, char, product, *)
-    XBGAS_REDUCE_ALL(unsigned char, uchar, product, *)
-    XBGAS_REDUCE_ALL(signed char, schar, product, *)
-    XBGAS_REDUCE_ALL(unsigned short, ushort, product, *)
-    XBGAS_REDUCE_ALL(short, short, product, *)
-    XBGAS_REDUCE_ALL(unsigned int, uint, product, *)
-    XBGAS_REDUCE_ALL(int, int, product, *)
-    XBGAS_REDUCE_ALL(unsigned long, ulong, product, *)
-    XBGAS_REDUCE_ALL(long, long, product, *)
-    XBGAS_REDUCE_ALL(unsigned long long, ulonglong, product, *)
-    XBGAS_REDUCE_ALL(long long, longlong, product, *)
-    XBGAS_REDUCE_ALL(uint8_t, uint8, product, *)
-    XBGAS_REDUCE_ALL(int8_t, int8, product, *)
-    XBGAS_REDUCE_ALL(uint16_t, uint16, product, *)
-    XBGAS_REDUCE_ALL(int16_t, int16, product, *)
-    XBGAS_REDUCE_ALL(uint32_t, uint32, product, *)
-    XBGAS_REDUCE_ALL(int32_t, int32, product, *)
-    XBGAS_REDUCE_ALL(uint64_t, uint64, product, *)
-    XBGAS_REDUCE_ALL(int64_t, int64, product, *)
-    XBGAS_REDUCE_ALL(size_t, size, product, *)
-    XBGAS_REDUCE_ALL(ptrdiff_t, ptrdiff, product, *)
-    //  XBGAS_REDUCE_ALL(long double, longdouble, product, *)
+    XBGAS_REDUCTION(float, float, product, *)
+    XBGAS_REDUCTION(double, double, product, *)
+    XBGAS_REDUCTION(char, char, product, *)
+    XBGAS_REDUCTION(unsigned char, uchar, product, *)
+    XBGAS_REDUCTION(signed char, schar, product, *)
+    XBGAS_REDUCTION(unsigned short, ushort, product, *)
+    XBGAS_REDUCTION(short, short, product, *)
+    XBGAS_REDUCTION(unsigned int, uint, product, *)
+    XBGAS_REDUCTION(int, int, product, *)
+    XBGAS_REDUCTION(unsigned long, ulong, product, *)
+    XBGAS_REDUCTION(long, long, product, *)
+    XBGAS_REDUCTION(unsigned long long, ulonglong, product, *)
+    XBGAS_REDUCTION(long long, longlong, product, *)
+    XBGAS_REDUCTION(uint8_t, uint8, product, *)
+    XBGAS_REDUCTION(int8_t, int8, product, *)
+    XBGAS_REDUCTION(uint16_t, uint16, product, *)
+    XBGAS_REDUCTION(int16_t, int16, product, *)
+    XBGAS_REDUCTION(uint32_t, uint32, product, *)
+    XBGAS_REDUCTION(int32_t, int32, product, *)
+    XBGAS_REDUCTION(uint64_t, uint64, product, *)
+    XBGAS_REDUCTION(int64_t, int64, product, *)
+    XBGAS_REDUCTION(size_t, size, product, *)
+    XBGAS_REDUCTION(ptrdiff_t, ptrdiff, product, *)
 
     /* Binary AND */
-    XBGAS_REDUCE_ALL(char, char, and, &)
-    XBGAS_REDUCE_ALL(unsigned char, uchar, and, &)
-    XBGAS_REDUCE_ALL(signed char, schar, and, &)
-    XBGAS_REDUCE_ALL(unsigned short, ushort, and, &)
-    XBGAS_REDUCE_ALL(short, short, and, &)
-    XBGAS_REDUCE_ALL(unsigned int, uint, and, &)
-    XBGAS_REDUCE_ALL(int, int, and, &)
-    XBGAS_REDUCE_ALL(unsigned long, ulong, and, &)
-    XBGAS_REDUCE_ALL(long, long, and, &)
-    XBGAS_REDUCE_ALL(unsigned long long, ulonglong, and, &)
-    XBGAS_REDUCE_ALL(long long, longlong, and, &)
-    XBGAS_REDUCE_ALL(uint8_t, uint8, and, &)
-    XBGAS_REDUCE_ALL(int8_t, int8, and, &)
-    XBGAS_REDUCE_ALL(uint16_t, uint16, and, &)
-    XBGAS_REDUCE_ALL(int16_t, int16, and, &)
-    XBGAS_REDUCE_ALL(uint32_t, uint32, and, &)
-    XBGAS_REDUCE_ALL(int32_t, int32, and, &)
-    XBGAS_REDUCE_ALL(uint64_t, uint64, and, &)
-    XBGAS_REDUCE_ALL(int64_t, int64, and, &)
-    XBGAS_REDUCE_ALL(size_t, size, and, &)
-    XBGAS_REDUCE_ALL(ptrdiff_t, ptrdiff, and, &)
+    XBGAS_REDUCTION(unsigned char, uchar, and, &)
+    XBGAS_REDUCTION(unsigned short, ushort, and, &)
+    XBGAS_REDUCTION(unsigned int, uint, and, &)
+    XBGAS_REDUCTION(unsigned long, ulong, and, &)
+    XBGAS_REDUCTION(unsigned long long, ulonglong, and, &)
+    XBGAS_REDUCTION(uint8_t, uint8, and, &)
+    XBGAS_REDUCTION(int8_t, int8, and, &)
+    XBGAS_REDUCTION(uint16_t, uint16, and, &)
+    XBGAS_REDUCTION(int16_t, int16, and, &)
+    XBGAS_REDUCTION(uint32_t, uint32, and, &)
+    XBGAS_REDUCTION(int32_t, int32, and, &)
+    XBGAS_REDUCTION(uint64_t, uint64, and, &)
+    XBGAS_REDUCTION(int64_t, int64, and, &)
+    XBGAS_REDUCTION(size_t, size, and, &)
 
     /* Binary OR */
-    XBGAS_REDUCE_ALL(char, char, or, |)
-    XBGAS_REDUCE_ALL(unsigned char, uchar, or, |)
-    XBGAS_REDUCE_ALL(signed char, schar, or, |)
-    XBGAS_REDUCE_ALL(unsigned short, ushort, or, |)
-    XBGAS_REDUCE_ALL(short, short, or, |)
-    XBGAS_REDUCE_ALL(unsigned int, uint, or, |)
-    XBGAS_REDUCE_ALL(int, int, or, |)
-    XBGAS_REDUCE_ALL(unsigned long, ulong, or, |)
-    XBGAS_REDUCE_ALL(long, long, or, |)
-    XBGAS_REDUCE_ALL(unsigned long long, ulonglong, or, |)
-    XBGAS_REDUCE_ALL(long long, longlong, or, |)
-    XBGAS_REDUCE_ALL(uint8_t, uint8, or, |)
-    XBGAS_REDUCE_ALL(int8_t, int8, or, |)
-    XBGAS_REDUCE_ALL(uint16_t, uint16, or, |)
-    XBGAS_REDUCE_ALL(int16_t, int16, or, |)
-    XBGAS_REDUCE_ALL(uint32_t, uint32, or, |)
-    XBGAS_REDUCE_ALL(int32_t, int32, or, |)
-    XBGAS_REDUCE_ALL(uint64_t, uint64, or, |)
-    XBGAS_REDUCE_ALL(int64_t, int64, or, |)
-    XBGAS_REDUCE_ALL(size_t, size, or, |)
-    XBGAS_REDUCE_ALL(ptrdiff_t, ptrdiff, or, |)
+    XBGAS_REDUCTION(unsigned char, uchar, or, |)
+    XBGAS_REDUCTION(unsigned short, ushort, or, |)
+    XBGAS_REDUCTION(unsigned int, uint, or, |)
+    XBGAS_REDUCTION(unsigned long, ulong, or, |)
+    XBGAS_REDUCTION(unsigned long long, ulonglong, or, |)
+    XBGAS_REDUCTION(uint8_t, uint8, or, |)
+    XBGAS_REDUCTION(int8_t, int8, or, |)
+    XBGAS_REDUCTION(uint16_t, uint16, or, |)
+    XBGAS_REDUCTION(int16_t, int16, or, |)
+    XBGAS_REDUCTION(uint32_t, uint32, or, |)
+    XBGAS_REDUCTION(int32_t, int32, or, |)
+    XBGAS_REDUCTION(uint64_t, uint64, or, |)
+    XBGAS_REDUCTION(int64_t, int64, or, |)
+    XBGAS_REDUCTION(size_t, size, or, |)
 
     /* Binary XOR */
-    XBGAS_REDUCE_ALL(char, char, xor, ^)
-    XBGAS_REDUCE_ALL(unsigned char, uchar, xor, ^)
-    XBGAS_REDUCE_ALL(signed char, schar, xor, ^)
-    XBGAS_REDUCE_ALL(unsigned short, ushort, xor, ^)
-    XBGAS_REDUCE_ALL(short, short, xor, ^)
-    XBGAS_REDUCE_ALL(unsigned int, uint, xor, ^)
-    XBGAS_REDUCE_ALL(int, int, xor, ^)
-    XBGAS_REDUCE_ALL(unsigned long, ulong, xor, ^)
-    XBGAS_REDUCE_ALL(long, long, xor, ^)
-    XBGAS_REDUCE_ALL(unsigned long long, ulonglong, xor, ^)
-    XBGAS_REDUCE_ALL(long long, longlong, xor, ^)
-    XBGAS_REDUCE_ALL(uint8_t, uint8, xor, ^)
-    XBGAS_REDUCE_ALL(int8_t, int8, xor, ^)
-    XBGAS_REDUCE_ALL(uint16_t, uint16, xor, ^)
-    XBGAS_REDUCE_ALL(int16_t, int16, xor, ^)
-    XBGAS_REDUCE_ALL(uint32_t, uint32, xor, ^)
-    XBGAS_REDUCE_ALL(int32_t, int32, xor, ^)
-    XBGAS_REDUCE_ALL(uint64_t, uint64, xor, ^)
-    XBGAS_REDUCE_ALL(int64_t, int64, xor, ^)
-    XBGAS_REDUCE_ALL(size_t, size, xor, ^)
-    XBGAS_REDUCE_ALL(ptrdiff_t, ptrdiff, xor, ^)
+    XBGAS_REDUCTION(unsigned char, uchar, xor, ^)
+    XBGAS_REDUCTION(unsigned short, ushort, xor, ^)
+    XBGAS_REDUCTION(unsigned int, uint, xor, ^)
+    XBGAS_REDUCTION(unsigned long, ulong, xor, ^)
+    XBGAS_REDUCTION(unsigned long long, ulonglong, xor, ^)
+    XBGAS_REDUCTION(uint8_t, uint8, xor, ^)
+    XBGAS_REDUCTION(int8_t, int8, xor, ^)
+    XBGAS_REDUCTION(uint16_t, uint16, xor, ^)
+    XBGAS_REDUCTION(int16_t, int16, xor, ^)
+    XBGAS_REDUCTION(uint32_t, uint32, xor, ^)
+    XBGAS_REDUCTION(int32_t, int32, xor, ^)
+    XBGAS_REDUCTION(uint64_t, uint64, xor, ^)
+    XBGAS_REDUCTION(int64_t, int64, xor, ^)
+    XBGAS_REDUCTION(size_t, size, xor, ^)
 
-#undef XBGAS_REDUCE_ALL
+#undef XBGAS_REDUCTION
 
-#define XBGAS_REDUCE_ALL_MM(_type, _typename, _funcname, _op)                                                                                           \
-void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *dest, const _type *src, size_t nelems, int stride)                        \
+#define REDUCTION_ALGORITHMS_MM(_type, _typename, _funcname, _op)                                                                                       \
+int xbrtime_##_typename##_funcname##_recursive_doubling(_type *dest, const _type *src, size_t nreduce)                                                  \
 {                                                                                                                                                       \
     int i, j, numpes, my_rpe, my_vpe, r_partner, numpes_log_floor, p_prime, remainder;                                                                  \
     numpes = xbrtime_num_pes();                                                                                                                         \
@@ -499,17 +579,17 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
     numpes_log_floor = (int) (log(numpes)/log(2));                                                                                                      \
     p_prime = 1 << numpes_log_floor;                                                                                                                    \
     remainder = numpes - p_prime;                                                                                                                       \
-    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                \
-    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                      \
+    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                               \
+    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                                     \
                                                                                                                                                         \
-    /* Load reduction values into accumulate buffer and remove stride */                                                                                \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    /* Load reduction values into accumulate buffer */                                                                                                  \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        accumulate[i] = src[i*stride];                                                                                                                  \
+        accumulate[i] = src[i];                                                                                                                         \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier_all();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                              \
                                                                                                                                                         \
     /* Stage 1 (only if NumPEs is not a power of two) */                                                                                                \
     if(numpes_log_floor != (log(numpes)/log(2)))                                                                                                        \
@@ -521,10 +601,10 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             if(my_rpe % 2 == 0)                                                                                                                         \
             {                                                                                                                                           \
                 /* Get values from my_rpe + 1 */                                                                                                        \
-                xbrtime_##_typename##_get(temp, accumulate, nelems, 1, my_rpe + 1);                                                                     \
+                xbrtime_##_typename##_get(temp, accumulate, nreduce, my_rpe + 1);                                                                       \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
-                for(j = 0; j < nelems; j++)                                                                                                             \
+                for(j = 0; j < nreduce; j++)                                                                                                            \
                 {                                                                                                                                       \
                     accumulate[j] = _op(accumulate[j], temp[j]);                                                                                        \
                 }                                                                                                                                       \
@@ -544,7 +624,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - Recursive Doubling */                                                                                                                  \
@@ -565,21 +645,21 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
                             ((my_vpe-pe_stride+p_prime)%p_prime)+remainder);                                                                            \
             }                                                                                                                                           \
                                                                                                                                                         \
-            xbrtime_##_typename##_get(temp, accumulate, nelems, 1, r_partner);                                                                          \
+            xbrtime_##_typename##_get(temp, accumulate, nreduce, r_partner);                                                                            \
         }                                                                                                                                               \
         /* Ensure get is complete */                                                                                                                    \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
                                                                                                                                                         \
         /* Perform reduction op */                                                                                                                      \
         if(my_vpe != -1)                                                                                                                                \
         {                                                                                                                                               \
-            for(j = 0; j < nelems; j++)                                                                                                                 \
+            for(j = 0; j < nreduce; j++)                                                                                                                \
             {                                                                                                                                           \
                 accumulate[j] = _op(accumulate[j], temp[j]);                                                                                            \
             }                                                                                                                                           \
         }                                                                                                                                               \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -588,22 +668,23 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(_type *de
         /* First r even rpe ranks*/                                                                                                                     \
         if((my_rpe < 2*remainder) && (my_rpe % 2 == 0))                                                                                                 \
         {                                                                                                                                               \
-            xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
+            xbrtime_##_typename##_put(accumulate, accumulate, nreduce, my_rpe + 1);                                                                     \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride */                                                                                                          \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        dest[i*stride] = accumulate[i];                                                                                                                 \
+        dest[i] = accumulate[i];                                                                                                                        \
     }                                                                                                                                                   \
                                                                                                                                                         \
     xbrtime_free(accumulate);                                                                                                                           \
     xbrtime_free(temp);                                                                                                                                 \
+    return 0;                                                                                                                                           \
 }                                                                                                                                                       \
                                                                                                                                                         \
-void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, const _type *src, size_t nelems, int stride)                              \
+int xbrtime_##_typename##_funcname##_rabenseifner(_type *dest, const _type *src, size_t nreduce)                                                        \
 {                                                                                                                                                       \
     int i, j, numpes, my_rpe, my_vpe, r_partner, numpes_log_floor, p_prime, remainder, counter;                                                         \
     numpes = xbrtime_num_pes();                                                                                                                         \
@@ -612,13 +693,13 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
     numpes_log_floor = (int) (log(numpes)/log(2));                                                                                                      \
     p_prime = 1 << numpes_log_floor;                                                                                                                    \
     remainder = numpes - p_prime;                                                                                                                       \
-    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                \
-    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nelems);                                                                                      \
+    _type *accumulate = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                               \
+    _type *temp = (_type*) xbrtime_malloc(sizeof(_type) * nreduce);                                                                                     \
                                                                                                                                                         \
     /* Load reduction values into accumulate buffer and remove stride */                                                                                \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        accumulate[i] = src[i*stride];                                                                                                                  \
+        accumulate[i] = src[i];                                                                                                                         \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Divide buffers into p_prime partitions */                                                                                                        \
@@ -627,14 +708,14 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
     for(i = 0; i < p_prime; i++)                                                                                                                        \
     {                                                                                                                                                   \
         partition_sizes[i] = ( (i == p_prime-1) ?                                                                                                       \
-                             (((int)(nelems/p_prime)) + (nelems%p_prime)) :                                                                             \
-                             ((int)(nelems/p_prime)) );                                                                                                 \
+                             (((int)(nreduce/p_prime)) + (nreduce%p_prime)) :                                                                           \
+                             ((int)(nreduce/p_prime)) );                                                                                                \
         partition_disp[i] = counter;                                                                                                                    \
         counter += partition_sizes[i];                                                                                                                  \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Ensure buffer is ready */                                                                                                                        \
-    xbrtime_barrier_all();                                                                                                                                  \
+    xbrtime_barrier_all();                                                                                                                              \
                                                                                                                                                         \
     int num_exchange = p_prime/2;                                                                                                                       \
     int msg_size = 0;                                                                                                                                   \
@@ -654,7 +735,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                     msg_size += partition_sizes[j];                                                                                                     \
                 }                                                                                                                                       \
                                                                                                                                                         \
-                xbrtime_##_typename##_get(temp, accumulate, msg_size, 1, my_rpe + 1);                                                                   \
+                xbrtime_##_typename##_get(temp, accumulate, msg_size, my_rpe + 1);                                                                      \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -675,7 +756,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                 }                                                                                                                                       \
                                                                                                                                                         \
                 xbrtime_##_typename##_get(&(temp[(partition_disp[num_exchange])]), &(accumulate[(partition_disp[num_exchange])]),                       \
-                                            msg_size, 1, my_rpe - 1);                                                                                   \
+                                            msg_size, my_rpe - 1);                                                                                      \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -686,7 +767,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                                                                                                                                                         \
                 /* Put calculated second half values back to even partner */                                                                            \
                 xbrtime_##_typename##_put(&(accumulate[(partition_disp[num_exchange])]), &(accumulate[(partition_disp[num_exchange])]),                 \
-                                            msg_size, 1, my_rpe - 1);                                                                                   \
+                                            msg_size, my_rpe - 1);                                                                                      \
                                                                                                                                                         \
                 /* Assign new vpe ranks */                                                                                                              \
                 my_vpe = -1;                                                                                                                            \
@@ -697,7 +778,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
             /* Assign new vpe ranks */                                                                                                                  \
             my_vpe = my_rpe - remainder;                                                                                                                \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 2 - ReduceScatter Recursive Doubling/Halving */                                                                                            \
@@ -719,7 +800,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                     msg_size += partition_sizes[offset+j];                                                                                              \
                 }                                                                                                                                       \
                                                                                                                                                         \
-                xbrtime_##_typename##_get(&(temp[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, 1, r_partner);          \
+                xbrtime_##_typename##_get(&(temp[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, r_partner);             \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -740,7 +821,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                 }                                                                                                                                       \
                                                                                                                                                         \
                 xbrtime_##_typename##_get(&(temp[(partition_disp[offset+num_exchange])]), &(accumulate[(partition_disp[offset+num_exchange])]),         \
-                                            msg_size, 1, r_partner);                                                                                    \
+                                            msg_size, r_partner);                                                                                       \
                                                                                                                                                         \
                 /* Perform reduction op */                                                                                                              \
                 for(j = 0; j < msg_size; j++)                                                                                                           \
@@ -755,7 +836,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         }                                                                                                                                               \
         num_exchange >>= 1;                                                                                                                             \
         pe_stride <<= 1;                                                                                                                                \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Stage 3 - GatherAll */                                                                                                                           \
@@ -777,7 +858,7 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                     msg_size += partition_sizes[offset+j];                                                                                              \
                 }                                                                                                                                       \
                                                                                                                                                         \
-                xbrtime_##_typename##_put(&(accumulate[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, 1, r_partner);    \
+                xbrtime_##_typename##_put(&(accumulate[(partition_disp[offset])]), &(accumulate[(partition_disp[offset])]), msg_size, r_partner);       \
             }                                                                                                                                           \
             /* PEs perform put*/                                                                                                                        \
             else                                                                                                                                        \
@@ -795,12 +876,12 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
                 }                                                                                                                                       \
                                                                                                                                                         \
                 xbrtime_##_typename##_put(&(accumulate[(partition_disp[offset+num_exchange])]), &(accumulate[(partition_disp[offset+num_exchange])]),   \
-                                          msg_size, 1, r_partner);                                                                                      \
+                                          msg_size, r_partner);                                                                                         \
             }                                                                                                                                           \
         }                                                                                                                                               \
         num_exchange <<= 1;                                                                                                                             \
         pe_stride >>= 1;                                                                                                                                \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Put all reduced values to remainder PEs if not a power of two */                                                                                 \
@@ -809,87 +890,138 @@ void xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(_type *dest, co
         /* First r even rpe ranks*/                                                                                                                     \
         if((my_rpe < 2*remainder) && (my_rpe % 2 == 0))                                                                                                 \
         {                                                                                                                                               \
-            xbrtime_##_typename##_put(accumulate, accumulate, nelems, 1, my_rpe + 1);                                                                   \
+            xbrtime_##_typename##_put(accumulate, accumulate, nreduce, my_rpe + 1);                                                                     \
         }                                                                                                                                               \
-        xbrtime_barrier_all();                                                                                                                              \
+        xbrtime_barrier_all();                                                                                                                          \
     }                                                                                                                                                   \
                                                                                                                                                         \
     /* Copy from buffer to dest with stride */                                                                                                          \
-    for(i = 0; i < nelems; i++)                                                                                                                         \
+    for(i = 0; i < nreduce; i++)                                                                                                                        \
     {                                                                                                                                                   \
-        dest[i*stride] = accumulate[i];                                                                                                                 \
+        dest[i] = accumulate[i];                                                                                                                        \
     }                                                                                                                                                   \
                                                                                                                                                         \
     xbrtime_free(accumulate);                                                                                                                           \
     xbrtime_free(temp);                                                                                                                                 \
+    return 0;                                                                                                                                           \
 }                                                                                                                                                       \
-                                                                                                                                                        \
+/* Max */
+    REDUCTION_ALGORITHMS_MM(float, float, max, MAX)
+    REDUCTION_ALGORITHMS_MM(double, double, max, MAX)
+    REDUCTION_ALGORITHMS_MM(char, char, max, MAX)
+    REDUCTION_ALGORITHMS_MM(unsigned char, uchar, max, MAX)
+    REDUCTION_ALGORITHMS_MM(signed char, schar, max, MAX)
+    REDUCTION_ALGORITHMS_MM(unsigned short, ushort, max, MAX)
+    REDUCTION_ALGORITHMS_MM(short, short, max, MAX)
+    REDUCTION_ALGORITHMS_MM(unsigned int, uint, max, MAX)
+    REDUCTION_ALGORITHMS_MM(int, int, max, MAX)
+    REDUCTION_ALGORITHMS_MM(unsigned long, ulong, max, MAX)
+    REDUCTION_ALGORITHMS_MM(long, long, max, MAX)
+    REDUCTION_ALGORITHMS_MM(unsigned long long, ulonglong, max, MAX)
+    REDUCTION_ALGORITHMS_MM(long long, longlong, max, MAX)
+    REDUCTION_ALGORITHMS_MM(uint8_t, uint8, max, MAX)
+    REDUCTION_ALGORITHMS_MM(int8_t, int8, max, MAX)
+    REDUCTION_ALGORITHMS_MM(uint16_t, uint16, max, MAX)
+    REDUCTION_ALGORITHMS_MM(int16_t, int16, max, MAX)
+    REDUCTION_ALGORITHMS_MM(uint32_t, uint32, max, MAX)
+    REDUCTION_ALGORITHMS_MM(int32_t, int32, max, MAX)
+    REDUCTION_ALGORITHMS_MM(uint64_t, uint64, max, MAX)
+    REDUCTION_ALGORITHMS_MM(int64_t, int64, max, MAX)
+    REDUCTION_ALGORITHMS_MM(size_t, size, max, MAX)
+    REDUCTION_ALGORITHMS_MM(ptrdiff_t, ptrdiff, max, MAX)
+
+    /* Min */
+    REDUCTION_ALGORITHMS_MM(float, float, min, MIN)
+    REDUCTION_ALGORITHMS_MM(double, double, min, MIN)
+    REDUCTION_ALGORITHMS_MM(char, char, min, MIN)
+    REDUCTION_ALGORITHMS_MM(unsigned char, uchar, min, MIN)
+    REDUCTION_ALGORITHMS_MM(signed char, schar, min, MIN)
+    REDUCTION_ALGORITHMS_MM(unsigned short, ushort, min, MIN)
+    REDUCTION_ALGORITHMS_MM(short, short, min, MIN)
+    REDUCTION_ALGORITHMS_MM(unsigned int, uint, min, MIN)
+    REDUCTION_ALGORITHMS_MM(int, int, min, MIN)
+    REDUCTION_ALGORITHMS_MM(unsigned long, ulong, min, MIN)
+    REDUCTION_ALGORITHMS_MM(long, long, min, MIN)
+    REDUCTION_ALGORITHMS_MM(unsigned long long, ulonglong, min, MIN)
+    REDUCTION_ALGORITHMS_MM(long long, longlong, min, MIN)
+    REDUCTION_ALGORITHMS_MM(uint8_t, uint8, min, MIN)
+    REDUCTION_ALGORITHMS_MM(int8_t, int8, min, MIN)
+    REDUCTION_ALGORITHMS_MM(uint16_t, uint16, min, MIN)
+    REDUCTION_ALGORITHMS_MM(int16_t, int16, min, MIN)
+    REDUCTION_ALGORITHMS_MM(uint32_t, uint32, min, MIN)
+    REDUCTION_ALGORITHMS_MM(int32_t, int32, min, MIN)
+    REDUCTION_ALGORITHMS_MM(uint64_t, uint64, min, MIN)
+    REDUCTION_ALGORITHMS_MM(int64_t, int64, min, MIN)
+    REDUCTION_ALGORITHMS_MM(size_t, size, min, MIN)
+    REDUCTION_ALGORITHMS_MM(ptrdiff_t, ptrdiff, min, MIN)
+
+#undef REDUCTION_ALGORITHMS_MM
+
+#define XBGAS_REDUCTION_MM(_type, _typename, _funcname, _op)                                                                                            \
 /* Wrapper function - recursive doubling for small messages, rabenseifner for large messages */                                                         \
-void xbrtime_##_typename##_reduce_all_##_funcname(_type *dest, const _type *src, size_t nelems, int stride)                                             \
+int xbrtime_##_typename##_##_funcname##_reduce(_type *dest, const _type *src, size_t nreduce)                                                           \
 {                                                                                                                                                       \
-    if((sizeof(_type)*nelems) < LARGE_REDUCE_ALL)                                                                                                       \
+    if((sizeof(_type)*nreduce) < LARGE_REDUCE_ALL)                                                                                                      \
     {                                                                                                                                                   \
-        xbrtime_##_typename##_reduce_all_##_funcname##_recursive_doubling(dest, src, nelems, stride);                                                   \
+        return xbrtime_##_typename##_funcname##_recursive_doubling(dest, src, nreduce);                                                                 \
     }                                                                                                                                                   \
     else                                                                                                                                                \
     {                                                                                                                                                   \
-        xbrtime_##_typename##_reduce_all_##_funcname##_rabenseifner(dest, src, nelems, stride);                                                         \
+        return xbrtime_##_typename##_funcname##_rabenseifner(dest, src, nreduce);                                                                       \
     }                                                                                                                                                   \
 }
 
     /* Max */
-    XBGAS_REDUCE_ALL_MM(float, float, max, MAX)
-    XBGAS_REDUCE_ALL_MM(double, double, max, MAX)
-    XBGAS_REDUCE_ALL_MM(char, char, max, MAX)
-    XBGAS_REDUCE_ALL_MM(unsigned char, uchar, max, MAX)
-    XBGAS_REDUCE_ALL_MM(signed char, schar, max, MAX)
-    XBGAS_REDUCE_ALL_MM(unsigned short, ushort, max, MAX)
-    XBGAS_REDUCE_ALL_MM(short, short, max, MAX)
-    XBGAS_REDUCE_ALL_MM(unsigned int, uint, max, MAX)
-    XBGAS_REDUCE_ALL_MM(int, int, max, MAX)
-    XBGAS_REDUCE_ALL_MM(unsigned long, ulong, max, MAX)
-    XBGAS_REDUCE_ALL_MM(long, long, max, MAX)
-    XBGAS_REDUCE_ALL_MM(unsigned long long, ulonglong, max, MAX)
-    XBGAS_REDUCE_ALL_MM(long long, longlong, max, MAX)
-    XBGAS_REDUCE_ALL_MM(uint8_t, uint8, max, MAX)
-    XBGAS_REDUCE_ALL_MM(int8_t, int8, max, MAX)
-    XBGAS_REDUCE_ALL_MM(uint16_t, uint16, max, MAX)
-    XBGAS_REDUCE_ALL_MM(int16_t, int16, max, MAX)
-    XBGAS_REDUCE_ALL_MM(uint32_t, uint32, max, MAX)
-    XBGAS_REDUCE_ALL_MM(int32_t, int32, max, MAX)
-    XBGAS_REDUCE_ALL_MM(uint64_t, uint64, max, MAX)
-    XBGAS_REDUCE_ALL_MM(int64_t, int64, max, MAX)
-    XBGAS_REDUCE_ALL_MM(size_t, size, max, MAX)
-    XBGAS_REDUCE_ALL_MM(ptrdiff_t, ptrdiff, max, MAX)
-    //  XBGAS_REDUCE_ALL_MM(long double, longdouble, max, MAX)
+    XBGAS_REDUCTION_MM(float, float, max, MAX)
+    XBGAS_REDUCTION_MM(double, double, max, MAX)
+    XBGAS_REDUCTION_MM(char, char, max, MAX)
+    XBGAS_REDUCTION_MM(unsigned char, uchar, max, MAX)
+    XBGAS_REDUCTION_MM(signed char, schar, max, MAX)
+    XBGAS_REDUCTION_MM(unsigned short, ushort, max, MAX)
+    XBGAS_REDUCTION_MM(short, short, max, MAX)
+    XBGAS_REDUCTION_MM(unsigned int, uint, max, MAX)
+    XBGAS_REDUCTION_MM(int, int, max, MAX)
+    XBGAS_REDUCTION_MM(unsigned long, ulong, max, MAX)
+    XBGAS_REDUCTION_MM(long, long, max, MAX)
+    XBGAS_REDUCTION_MM(unsigned long long, ulonglong, max, MAX)
+    XBGAS_REDUCTION_MM(long long, longlong, max, MAX)
+    XBGAS_REDUCTION_MM(uint8_t, uint8, max, MAX)
+    XBGAS_REDUCTION_MM(int8_t, int8, max, MAX)
+    XBGAS_REDUCTION_MM(uint16_t, uint16, max, MAX)
+    XBGAS_REDUCTION_MM(int16_t, int16, max, MAX)
+    XBGAS_REDUCTION_MM(uint32_t, uint32, max, MAX)
+    XBGAS_REDUCTION_MM(int32_t, int32, max, MAX)
+    XBGAS_REDUCTION_MM(uint64_t, uint64, max, MAX)
+    XBGAS_REDUCTION_MM(int64_t, int64, max, MAX)
+    XBGAS_REDUCTION_MM(size_t, size, max, MAX)
+    XBGAS_REDUCTION_MM(ptrdiff_t, ptrdiff, max, MAX)
 
     /* Min */
-    XBGAS_REDUCE_ALL_MM(float, float, min, MIN)
-    XBGAS_REDUCE_ALL_MM(double, double, min, MIN)
-    XBGAS_REDUCE_ALL_MM(char, char, min, MIN)
-    XBGAS_REDUCE_ALL_MM(unsigned char, uchar, min, MIN)
-    XBGAS_REDUCE_ALL_MM(signed char, schar, min, MIN)
-    XBGAS_REDUCE_ALL_MM(unsigned short, ushort, min, MIN)
-    XBGAS_REDUCE_ALL_MM(short, short, min, MIN)
-    XBGAS_REDUCE_ALL_MM(unsigned int, uint, min, MIN)
-    XBGAS_REDUCE_ALL_MM(int, int, min, MIN)
-    XBGAS_REDUCE_ALL_MM(unsigned long, ulong, min, MIN)
-    XBGAS_REDUCE_ALL_MM(long, long, min, MIN)
-    XBGAS_REDUCE_ALL_MM(unsigned long long, ulonglong, min, MIN)
-    XBGAS_REDUCE_ALL_MM(long long, longlong, min, MIN)
-    XBGAS_REDUCE_ALL_MM(uint8_t, uint8, min, MIN)
-    XBGAS_REDUCE_ALL_MM(int8_t, int8, min, MIN)
-    XBGAS_REDUCE_ALL_MM(uint16_t, uint16, min, MIN)
-    XBGAS_REDUCE_ALL_MM(int16_t, int16, min, MIN)
-    XBGAS_REDUCE_ALL_MM(uint32_t, uint32, min, MIN)
-    XBGAS_REDUCE_ALL_MM(int32_t, int32, min, MIN)
-    XBGAS_REDUCE_ALL_MM(uint64_t, uint64, min, MIN)
-    XBGAS_REDUCE_ALL_MM(int64_t, int64, min, MIN)
-    XBGAS_REDUCE_ALL_MM(size_t, size, min, MIN)
-    XBGAS_REDUCE_ALL_MM(ptrdiff_t, ptrdiff, min, MIN)
-    //  XBGAS_REDUCE_ALL_MM(long double, longdouble, min, MIN)
+    XBGAS_REDUCTION_MM(float, float, min, MIN)
+    XBGAS_REDUCTION_MM(double, double, min, MIN)
+    XBGAS_REDUCTION_MM(char, char, min, MIN)
+    XBGAS_REDUCTION_MM(unsigned char, uchar, min, MIN)
+    XBGAS_REDUCTION_MM(signed char, schar, min, MIN)
+    XBGAS_REDUCTION_MM(unsigned short, ushort, min, MIN)
+    XBGAS_REDUCTION_MM(short, short, min, MIN)
+    XBGAS_REDUCTION_MM(unsigned int, uint, min, MIN)
+    XBGAS_REDUCTION_MM(int, int, min, MIN)
+    XBGAS_REDUCTION_MM(unsigned long, ulong, min, MIN)
+    XBGAS_REDUCTION_MM(long, long, min, MIN)
+    XBGAS_REDUCTION_MM(unsigned long long, ulonglong, min, MIN)
+    XBGAS_REDUCTION_MM(long long, longlong, min, MIN)
+    XBGAS_REDUCTION_MM(uint8_t, uint8, min, MIN)
+    XBGAS_REDUCTION_MM(int8_t, int8, min, MIN)
+    XBGAS_REDUCTION_MM(uint16_t, uint16, min, MIN)
+    XBGAS_REDUCTION_MM(int16_t, int16, min, MIN)
+    XBGAS_REDUCTION_MM(uint32_t, uint32, min, MIN)
+    XBGAS_REDUCTION_MM(int32_t, int32, min, MIN)
+    XBGAS_REDUCTION_MM(uint64_t, uint64, min, MIN)
+    XBGAS_REDUCTION_MM(int64_t, int64, min, MIN)
+    XBGAS_REDUCTION_MM(size_t, size, min, MIN)
+    XBGAS_REDUCTION_MM(ptrdiff_t, ptrdiff, min, MIN)
 
-#undef XBGAS_REDUCE_ALL_MM
+#undef XBGAS_REDUCTION_MM
 
 #undef MAX
 #undef MIN

@@ -41,7 +41,7 @@ void xbrtime_##_typename##_gather_tree(_type *dest, const _type *src, int *pe_ms
     }                                                                                                                                       \
                                                                                                                                             \
     /* Ensure all PEs are ready for communication */                                                                                        \
-    xbrtime_barrier_all();                                                                                                                      \
+    xbrtime_barrier_all();                                                                                                                  \
                                                                                                                                             \
     /* Perform communication if PE active at stage i and has valid partner */                                                               \
     for(i = 0; i < numpes_log; i++)                                                                                                         \
@@ -61,10 +61,10 @@ void xbrtime_##_typename##_gather_tree(_type *dest, const _type *src, int *pe_ms
                     temp_rpe = (j+root) % numpes;                                                                                           \
                     iter_msg_size = iter_msg_size + pe_msg_sz[temp_rpe];                                                                    \
                 }                                                                                                                           \
-                xbrtime_##_typename##_get(&temp[(adj_disp[v_partner])], &temp[(adj_disp[v_partner])], iter_msg_size, 1, r_partner);         \
+                xbrtime_##_typename##_get(&temp[(adj_disp[v_partner])], &temp[(adj_disp[v_partner])], iter_msg_size, r_partner);            \
             }                                                                                                                               \
         }                                                                                                                                   \
-        xbrtime_barrier_all();                                                                                                                  \
+        xbrtime_barrier_all();                                                                                                              \
    }                                                                                                                                        \
                                                                                                                                             \
    /* Copy data ordered by rpe to destination on root*/                                                                                     \
@@ -108,7 +108,6 @@ void xbrtime_##_typename##_gather(_type *dest, const _type *src, int *pe_msg_sz,
     XBGAS_GATHER(int64_t, int64)
     XBGAS_GATHER(size_t, size)
     XBGAS_GATHER(ptrdiff_t, ptrdiff)
-    //  XBGAS_GATHER(long double, longdouble)
 
 #undef XBGAS_GATHER
 

@@ -1,4 +1,4 @@
-/* _LOCK_TEST_1_C_
+/* _LOCK_TEST_3_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -20,12 +20,15 @@ int main(void) {
   long *lock = (long *)xbrtime_malloc(1 * sizeof(long));
   lock[0] = 0;
   int *count = (int *)xbrtime_malloc(1 * sizeof(int));
+  int *count2 = (int *)xbrtime_malloc(1 * sizeof(int));
   count[0] = 0;
+  count2[0] = 0;
 
   xbrtime_barrier_all();
   
   xbrtime_init_lock(lock);
 
+  /* First lock */
   xbrtime_set_lock(lock);
 
   int val = xbrtime_int_g(count, 0); /* get count value on PE 0 */
@@ -37,10 +40,26 @@ int main(void) {
   xbrtime_barrier_all();
 
   if (mype == 0)
-    printf("Result: PE %d: count is %d", mype, count[0]);
+    printf("First Lock - Result: PE %d: count is %d", mype, count[0]);
+
+  /* Second lock */
+  /* FIXME: hanging when PE > 2 */
+  xbrtime_set_lock(lock);
+
+  val = xbrtime_int_g(count2, 0); /* get count value on PE 0 */
+  val +=2; /* incrementing and updating count on PE 0 */
+  xbrtime_int_p(count2, val, 0);
+
+  xbrtime_clear_lock(lock); /* ensures count update completes before clearing the lock */
+
+  xbrtime_barrier_all();
+
+  if (mype == 0)
+    printf("Second Lock - Result: PE %d: count is %d", mype, count2[0]);
 
   xbrtime_free(lock);
   xbrtime_free(count);
+  xbrtime_free(count2);
   xbrtime_close();
   return 0;
 }

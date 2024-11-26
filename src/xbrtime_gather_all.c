@@ -33,7 +33,7 @@ void xbrtime_##_typename##_gather_all_bruck_concat(_type *dest, const _type *src
     counter = pe_msg_sz[my_rpe];                                                                                                    \
                                                                                                                                     \
     /* Ensure local values have been loaded to temp */                                                                              \
-    xbrtime_barrier_all();                                                                                                              \
+    xbrtime_barrier_all();                                                                                                          \
                                                                                                                                     \
     /* Perform get of concatenated segments */                                                                                      \
     for(i = 0; i < numpes_log - 1; i++)                                                                                             \
@@ -47,16 +47,16 @@ void xbrtime_##_typename##_gather_all_bruck_concat(_type *dest, const _type *src
             temp_rpe =  j % numpes;                                                                                                 \
             iter_msg_size = iter_msg_size + pe_msg_sz[temp_rpe];                                                                    \
         }                                                                                                                           \
-        xbrtime_##_typename##_get(&(temp[counter]), temp, iter_msg_size, 1, r_partner);                                             \
+        xbrtime_##_typename##_get(&(temp[counter]), temp, iter_msg_size, r_partner);                                                \
         counter += iter_msg_size;                                                                                                   \
         stride *= 2;                                                                                                                \
-        xbrtime_barrier_all();                                                                                                          \
+        xbrtime_barrier_all();                                                                                                      \
     }                                                                                                                               \
                                                                                                                                     \
     /* Perform final iteration */                                                                                                   \
     r_partner = (my_rpe + stride) % numpes;                                                                                         \
-    xbrtime_##_typename##_get(&(temp[counter]), temp, (nelems-counter), 1, r_partner);                                              \
-    xbrtime_barrier_all();                                                                                                              \
+    xbrtime_##_typename##_get(&(temp[counter]), temp, (nelems-counter), r_partner);                                                 \
+    xbrtime_barrier_all();                                                                                                          \
                                                                                                                                     \
     /* Calculate adjusted displacement */                                                                                           \
     counter = 0;                                                                                                                    \
@@ -94,11 +94,11 @@ void xbrtime_##_typename##_gather_all_ring(_type *dest, const _type *src, int *p
     /* Put PE data to neighbor PE using ring algorithm */                                                                           \
     for(i = 0; i < numpes-1; i++)                                                                                                   \
     {                                                                                                                               \
-        xbrtime_##_typename##_put(&(dest[(pe_disp[src_pe])]), &(dest[(pe_disp[src_pe])]), pe_msg_sz[src_pe], 1, (my_rpe+1)%numpes); \
+        xbrtime_##_typename##_put(&(dest[(pe_disp[src_pe])]), &(dest[(pe_disp[src_pe])]), pe_msg_sz[src_pe], (my_rpe+1)%numpes);    \
         src_pe = (src_pe == 0 ? numpes-1 : src_pe - 1);                                                                             \
                                                                                                                                     \
         /* Ensure values received for next communication round */                                                                   \
-        xbrtime_barrier_all();                                                                                                          \
+        xbrtime_barrier_all();                                                                                                      \
     }                                                                                                                               \
 }                                                                                                                                   \
                                                                                                                                     \
@@ -138,7 +138,6 @@ void xbrtime_##_typename##_gather_all(_type *dest, const _type *src, int *pe_msg
     XBGAS_GATHER_ALL(int64_t, int64)
     XBGAS_GATHER_ALL(size_t, size)
     XBGAS_GATHER_ALL(ptrdiff_t, ptrdiff)
-    //  XBGAS_GATHER_ALL(long double, longdouble)
 
 #undef XBGAS_GATHER_ALL
 

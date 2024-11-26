@@ -1,4 +1,4 @@
-/* _LOCK_TEST_C_
+/* _LOCK_TEST_2_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -13,17 +13,6 @@
 #include "xbrtime.h"
 #include <stdio.h>
 
-inline static int lock_owner( void *addr ) {
-  const uint64_t ad = (uint64_t)addr;
-  int num_pes = xbrtime_num_pes();
-  int owner;
-  owner = (ad >> 3) % num_pes;
-  if ( owner == 0 ) {
-    // Do not choose PE 0, as it is often used for work allocation
-    owner = num_pes - 1;
-  }
-  return owner;
-}
 
 int main(void) {
   xbrtime_init();
