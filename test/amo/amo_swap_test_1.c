@@ -26,11 +26,14 @@ int main(void) {
   dest[0] = mype;
   
   xbrtime_barrier_all();
+  
   int new_val = mype;
   if ( mype & 1 ) {
     int swapped_val = xbrtime_int_atomic_swap(&dest[0], new_val, (mype + 1) % npes);
     printf("%d: dest = %ld, swapped = %ld", mype, dest[0], swapped_val);
   }
+
+  xbrtime_barrier_all();
 
   xbrtime_free(dest);
   xbrtime_close();

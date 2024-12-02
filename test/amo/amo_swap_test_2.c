@@ -39,7 +39,7 @@ int main(void) {
   if ( mype == 0 )
     printf("Dest value is %d", dest[0]);
 
-  
+  xbrtime_free(dest);
   xbrtime_close();
   return 0;
 }
