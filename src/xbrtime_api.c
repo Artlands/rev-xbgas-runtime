@@ -13,6 +13,8 @@
 
 #include "xbrtime.h"
 
+#define _PUT_DEBUG_
+
 /* ------------------------------------------------- FUNCTION PROTOTYPES */
 void __xbrtime_asm_fence();
 void __xbrtime_asm_quiet_fence();
@@ -34,20 +36,20 @@ uint64_t __xbrtime_get_f8( uint64_t source, uint32_t pe );
 uint64_t __xbrtime_get_4( uint64_t source, uint32_t pe );
 uint64_t __xbrtime_get_8( uint64_t source, uint32_t pe );
 
-bool __xbrtime_put_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
-bool __xbrtime_put_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
-bool __xbrtime_put_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
-bool __xbrtime_put_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_put_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_put_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_put_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_put_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 
 void __xbrtime_put_1_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 void __xbrtime_put_2_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 void __xbrtime_put_4_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 void __xbrtime_put_8_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 
-bool __xbrtime_get_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
-bool __xbrtime_get_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
-bool __xbrtime_get_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
-bool __xbrtime_get_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_get_1_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_get_2_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_get_4_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
+void __xbrtime_get_8_agg( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 
 void __xbrtime_get_1_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
 void __xbrtime_get_2_agg_nbi( uint64_t dest, uint64_t source, uint32_t nelems, uint32_t pe );
@@ -70,10 +72,10 @@ void __xbrtime_get_8_seq( uint64_t dest, uint64_t source, uint64_t d_stride, uin
 
 #define XBGAS_P(_type, _typename, _typesize )                                               \
 void xbrtime_##_typename##_p(_type *dest, _type value, int pe)                              \
-{                                                                                           \ 
-  return ((void)__xbrtime_put_##_typesize(__xbrtime_ltor((uint64_t)(dest),pe),              \
-                                          (_type)(value),                                   \
-                                          xbrtime_decode_pe(pe)));                          \
+{                                                                                           \
+  return __xbrtime_put_##_typesize(__xbrtime_ltor((uint64_t)(dest),pe),                     \
+                                  (_type)(value),                                           \
+                                  xbrtime_decode_pe(pe));                                   \
 }                                                                                                   
 
   XBGAS_P(float, float, 4)
@@ -105,7 +107,7 @@ void xbrtime_##_typename##_p(_type *dest, _type value, int pe)                  
 
 #define XBGAS_G(_type, _typename, _typesize )                                                                           \
 _type xbrtime_##_typename##_g(const _type *source, int pe)                                                              \
-{                                                                                                                       \ 
+{                                                                                                                       \
                                                                                                                         \
     return ((_type)__xbrtime_get_##_typesize(__xbrtime_ltor((uint64_t)(source), pe),                                    \
                                              xbrtime_decode_pe(pe)));                                                   \
@@ -139,27 +141,27 @@ _type xbrtime_##_typename##_g(const _type *source, int pe)                      
 #undef XBGAS_G
 
 #define XBGAS_PUT(_type, _typename, _typesize )                                                     \
-bool xbrtime_##_typename##_put(_type *dest, const _type *source, size_t nelems, int pe)             \
-{                                                                                                   \ 
+void xbrtime_##_typename##_put(_type *dest, const _type *source, size_t nelems, int pe)             \
+{                                                                                                   \
   if(nelems == 0){                                                                                  \
-    return 0;                                                                                       \
+    return;                                                                                         \
   }else{                                                                                            \
-    return ((bool)__xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),              \
-                                                  (uint64_t)(source),                               \
-                                                  (uint32_t)(nelems),                               \
-                                                  xbrtime_decode_pe(pe)));                          \
+    return __xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),                     \
+                                          (uint64_t)(source),                                       \
+                                          (uint32_t)(nelems),                                       \
+                                          xbrtime_decode_pe(pe));                                   \
   }                                                                                                 \
 }                                                                                                   \
                                                                                                     \
 void xbrtime_##_typename##_put_nbi(_type *dest, const _type *source, size_t nelems, int pe)         \
-{                                                                                                   \ 
+{                                                                                                   \
   if(nelems == 0){                                                                                  \
     return;                                                                                         \
   }else{                                                                                            \
-    return ((void)__xbrtime_put_##_typesize##_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),          \
-                                                      (uint64_t)(source),                           \
-                                                      (uint32_t)(nelems),                           \
-                                                      xbrtime_decode_pe(pe)));                      \
+    return __xbrtime_put_##_typesize##_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),                 \
+                                              (uint64_t)(source),                                   \
+                                              (uint32_t)(nelems),                                   \
+                                              xbrtime_decode_pe(pe));                               \
   }                                                                                                 \
 }   
 
@@ -191,28 +193,86 @@ void xbrtime_##_typename##_put_nbi(_type *dest, const _type *source, size_t nele
 
 #undef XBGAS_PUT
 
-#define XBGAS_GET(_type, _typename, _typesize )                                                     \
-bool xbrtime_##_typename##_get(_type *dest, const _type *source, size_t nelems, int pe)             \
-{                                                                                                   \ 
+#define XBGAS_PUT_SIZE( _size )                                                                     \
+void xbrtime_put##_size(void *dest, const void *source, size_t nelems, int pe)                      \
+{                                                                                                   \
   if(nelems == 0){                                                                                  \
-    return 0;                                                                                       \
+    return;                                                                                         \
   }else{                                                                                            \
-    return ((bool)__xbrtime_get_##_typesize##_agg((uint64_t)(dest),                                 \
-                                                   __xbrtime_ltor((uint64_t)(source), pe),          \
-                                                   (uint32_t)(nelems),                              \
-                                                   xbrtime_decode_pe(pe)));                         \
+    size_t total_nelems = nelems * _size;                                                           \
+    return __xbrtime_put_1_agg(__xbrtime_ltor((uint64_t)(dest),pe),                                 \
+                                          (uint64_t)(source),                                       \
+                                          (uint32_t)(total_nelems),                                 \
+                                          xbrtime_decode_pe(pe));                                   \
+  }                                                                                                 \
+}                                                                                                   \
+                                                                                                    \
+void xbrtime_put##_size##_nbi(void *dest, const void *source, size_t nelems, int pe)                \
+{                                                                                                   \
+  if(nelems == 0){                                                                                  \
+    return;                                                                                         \
+  }else{                                                                                            \
+    size_t total_nelems = nelems * _size;                                                           \
+    return __xbrtime_put_1_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),                             \
+                                              (uint64_t)(source),                                   \
+                                              (uint32_t)(total_nelems),                             \
+                                              xbrtime_decode_pe(pe));                               \
+  }                                                                                                 \
+}
+  XBGAS_PUT_SIZE(8)
+  XBGAS_PUT_SIZE(16)
+  XBGAS_PUT_SIZE(32)
+  XBGAS_PUT_SIZE(64)
+  XBGAS_PUT_SIZE(128)
+
+#undef XBGAS_PUT_SIZE
+
+void xbrtime_putmem(void *dest, const void *source, size_t nelems, int pe)
+{
+  if(nelems == 0){
+    return;
+  }else{
+    return __xbrtime_put_1_agg(__xbrtime_ltor((uint64_t)(dest),pe),
+                               (uint64_t)(source),
+                               (uint32_t)(nelems),
+                               xbrtime_decode_pe(pe));
+  }
+}
+
+void xbrtime_putmem_nbi(void *dest, const void *source, size_t nelems, int pe)
+{
+  if(nelems == 0){
+    return;
+  }else{
+    return __xbrtime_put_1_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),
+                                   (uint64_t)(source),
+                                   (uint32_t)(nelems),
+                                   xbrtime_decode_pe(pe));
+  }
+}
+
+#define XBGAS_GET(_type, _typename, _typesize )                                                     \
+void xbrtime_##_typename##_get(_type *dest, const _type *source, size_t nelems, int pe)             \
+{                                                                                                   \
+  if(nelems == 0){                                                                                  \
+    return;                                                                                         \
+  }else{                                                                                            \
+    return __xbrtime_get_##_typesize##_agg((uint64_t)(dest),                                        \
+                                           __xbrtime_ltor((uint64_t)(source), pe),                  \
+                                           (uint32_t)(nelems),                                      \
+                                           xbrtime_decode_pe(pe));                                  \
   }                                                                                                 \
 }                                                                                                   \
                                                                                                     \
 void xbrtime_##_typename##_get_nbi(_type *dest, const _type *source, size_t nelems, int pe)         \
-{                                                                                                   \ 
+{                                                                                                   \
   if(nelems == 0){                                                                                  \
     return;                                                                                         \
   }else{                                                                                            \
-    return ((void)__xbrtime_get_##_typesize##_agg_nbi((uint64_t)(dest),                             \
-                                                       __xbrtime_ltor((uint64_t)(source), pe),      \
-                                                       (uint32_t)(nelems),                          \
-                                                       xbrtime_decode_pe(pe)));                     \
+    return __xbrtime_get_##_typesize##_agg_nbi((uint64_t)(dest),                                    \
+                                                __xbrtime_ltor((uint64_t)(source), pe),             \
+                                                (uint32_t)(nelems),                                 \
+                                                xbrtime_decode_pe(pe));                             \
   }                                                                                                 \
 } 
 
@@ -244,20 +304,78 @@ void xbrtime_##_typename##_get_nbi(_type *dest, const _type *source, size_t nele
 
 #undef XBGAS_GET
 
+#define XBGAS_GET_SIZE( _size )                                                                     \
+void xbrtime_get##_size(void *dest, const void *source, size_t nelems, int pe)                      \
+{                                                                                                   \
+  if(nelems == 0){                                                                                  \
+    return;                                                                                         \
+  }else{                                                                                            \
+    size_t total_nelems = nelems * _size;                                                           \
+    return __xbrtime_get_1_agg((uint64_t)(dest),                                                    \
+                               __xbrtime_ltor((uint64_t)(source), pe),                              \
+                               (uint32_t)(total_nelems),                                            \
+                               xbrtime_decode_pe(pe));                                              \
+  }                                                                                                 \
+}                                                                                                   \
+                                                                                                    \
+void xbrtime_get##_size##_nbi(void *dest, const void *source, size_t nelems, int pe)                \
+{                                                                                                   \
+  if(nelems == 0){                                                                                  \
+    return;                                                                                         \
+  }else{                                                                                            \
+    size_t total_nelems = nelems * _size;                                                           \
+    return __xbrtime_get_1_agg_nbi((uint64_t)(dest),                                                \
+                                   __xbrtime_ltor((uint64_t)(source), pe),                          \
+                                   (uint32_t)(total_nelems),                                        \
+                                   xbrtime_decode_pe(pe));                                          \
+  }                                                                                                 \
+}
+  XBGAS_GET_SIZE(8)
+  XBGAS_GET_SIZE(16)
+  XBGAS_GET_SIZE(32)
+  XBGAS_GET_SIZE(64)
+  XBGAS_GET_SIZE(128)
+
+#undef XBGAS_GET_SIZE
+
+void xbrtime_getmem(void *dest, const void *source, size_t nelems, int pe)
+{
+  if(nelems == 0){
+    return;
+  }else{
+    return __xbrtime_get_1_agg((uint64_t)(dest),
+                               __xbrtime_ltor((uint64_t)(source), pe),
+                               (uint32_t)(nelems),
+                               xbrtime_decode_pe(pe));
+  }
+}
+
+void xbrtime_getmem_nbi(void *dest, const void *source, size_t nelems, int pe)
+{
+  if(nelems == 0){
+    return;
+  }else{
+    return __xbrtime_get_1_agg_nbi((uint64_t)(dest),
+                                   __xbrtime_ltor((uint64_t)(source), pe),
+                                   (uint32_t)(nelems),
+                                   xbrtime_decode_pe(pe));
+  }
+}
+
 #define XBGAS_I_PUT(_type, _typename, _typesize )                                                                       \
 void xbrtime_##_typename##_iput(_type *dest, const _type *source, ptrdiff_t dst, ptrdiff_t sst, size_t nelems, int pe)  \
-{                                                                                                                       \ 
+{                                                                                                                       \
   if(nelems == 0){                                                                                                      \
     return;                                                                                                             \
   }else{                                                                                                                \
     uint64_t d_stride = (uint64_t)(dst * sizeof(_type) );                                                               \
-    uint64_t s_stride = (uint64_t)(sst * sizeof(_type) );                                                               \                                                          
-    return ((void)__xbrtime_put_##_typesize##_seq(__xbrtime_ltor((uint64_t)(dest),pe),                                  \
-                                                  (uint64_t)(source),                                                   \
-                                                  d_stride,                                                             \
-                                                  s_stride,                                                             \
-                                                  (uint32_t)(nelems),                                                   \
-                                                  xbrtime_decode_pe(pe)));                                              \
+    uint64_t s_stride = (uint64_t)(sst * sizeof(_type) );                                                               \
+    return __xbrtime_put_##_typesize##_seq(__xbrtime_ltor((uint64_t)(dest),pe),                                         \
+                                          (uint64_t)(source),                                                           \
+                                          d_stride,                                                                     \
+                                          s_stride,                                                                     \
+                                          (uint32_t)(nelems),                                                           \
+                                          xbrtime_decode_pe(pe));                                                       \
   }                                                                                                                     \
 }                                                                                                   
                                                                                                     
@@ -291,21 +409,22 @@ void xbrtime_##_typename##_iput(_type *dest, const _type *source, ptrdiff_t dst,
 
 #define XBGAS_I_GET(_type, _typename, _typesize )                                                                       \
 void xbrtime_##_typename##_iget(_type *dest, const _type *source, ptrdiff_t dst, ptrdiff_t sst, size_t nelems, int pe)  \
-{                                                                                                                       \ 
+{                                                                                                                       \
   if(nelems == 0){                                                                                                      \
     return;                                                                                                             \
   }else{                                                                                                                \
     uint64_t d_stride = (uint64_t)(dst * sizeof(_type) );                                                               \
     uint64_t s_stride = (uint64_t)(sst * sizeof(_type) );                                                               \
-    return ((void)__xbrtime_get_##_typesize##_seq((uint64_t)(dest),                                                     \
-                                                   __xbrtime_ltor((uint64_t)(source), pe),                              \
-                                                   d_stride,                                                            \
-                                                   s_stride,                                                            \
-                                                   (uint32_t)(nelems),                                                  \
-                                                   xbrtime_decode_pe(pe)));                                             \
+    __xbrtime_get_##_typesize##_seq((uint64_t)(dest),                                                                   \
+                                    __xbrtime_ltor((uint64_t)(source), pe),                                             \
+                                    d_stride,                                                                           \
+                                    s_stride,                                                                           \
+                                    (uint32_t)(nelems),                                                                 \
+                                    xbrtime_decode_pe(pe));                                                             \
+    __xbrtime_asm_fence();                                                                                              \
+    return;                                                                                                             \
   }                                                                                                                     \
-  __xbrtime_asm_fence();                                                                                                \
-}                                                                                                   
+}
 
   /* Strided-Get operation */
   XBGAS_I_GET(float, float, 4)
@@ -343,26 +462,24 @@ void xbrtime_##_typename##_put_signal( _type *dest,                             
                                       uint64_t signal,                                        \
                                       int sig_op,                                             \
                                       int pe )                                                \
-{                                                                                             \   
-  bool flag = (bool)__xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),      \
-                                                     (uint64_t)(source),                      \
-                                                     (uint32_t)(nelems),                      \
-                                                     xbrtime_decode_pe(pe));                  \
-  if(flag){                                                                                   \
-    switch ( sig_op ) {                                                                       \
-      case XBRTIME_SIGNAL_SET:                                                                \
-        __xbrtime_atomic_set_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),                      \
-                                signal,                                                       \
-                                xbrtime_decode_pe(pe));                                       \
-        break;                                                                                \
-      case XBRTIME_SIGNAL_ADD:                                                                \
-        __xbrtime_atomic_add_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),                      \
-                                signal,                                                       \
-                                xbrtime_decode_pe(pe));                                       \
-        break;                                                                                \
-      default:                                                                                \
-        break;                                                                                \
-    }                                                                                         \
+{                                                                                             \
+  __xbrtime_put_##_typesize##_agg(__xbrtime_ltor((uint64_t)(dest),pe),                        \
+                                                 (uint64_t)(source),                          \
+                                                 (uint32_t)(nelems),                          \
+                                                 xbrtime_decode_pe(pe));                      \
+  switch ( sig_op ) {                                                                         \
+    case XBRTIME_SIGNAL_SET:                                                                  \
+      __xbrtime_atomic_set_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),                        \
+                              signal,                                                         \
+                              xbrtime_decode_pe(pe));                                         \
+      break;                                                                                  \
+    case XBRTIME_SIGNAL_ADD:                                                                  \
+      __xbrtime_atomic_add_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),                        \
+                              signal,                                                         \
+                              xbrtime_decode_pe(pe));                                         \
+      break;                                                                                  \
+    default:                                                                                  \
+      break;                                                                                  \
   }                                                                                           \
   return;                                                                                     \
 }
@@ -402,11 +519,11 @@ void xbrtime_##_typename##_put_signal_nbi( _type *dest,                         
                                           uint64_t signal,                           \
                                           int sig_op,                                \
                                           int pe )                                   \
-{                                                                                    \   
-  (void)__xbrtime_put_##_typesize##_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),     \
-                                            (uint64_t)(source),                      \
-                                            (uint32_t)(nelems),                      \
-                                            xbrtime_decode_pe(pe));                  \
+{                                                                                    \
+  __xbrtime_put_##_typesize##_agg_nbi(__xbrtime_ltor((uint64_t)(dest),pe),           \
+                                     (uint64_t)(source),                             \
+                                     (uint32_t)(nelems),                             \
+                                      xbrtime_decode_pe(pe));                        \
   switch ( sig_op ) {                                                                \
     case XBRTIME_SIGNAL_SET:                                                         \
       __xbrtime_atomic_set_u8(__xbrtime_ltor((uint64_t)(sig_addr),pe),               \

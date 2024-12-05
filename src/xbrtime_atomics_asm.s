@@ -261,11 +261,11 @@
   __xbrtime_atomic_compare_swap_s4:
     eaddie e10, a3, 0
     elr.w t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_s4   # Doesn't match, so fail
+    bne t0, a1, .cas_fail_s4   # Doesn't match, so fail
     esc.w x0, a2, (a0)         # Update
     mv a0, t0                  # Move the returned value to the return register
     ret
-  _cas_fail_s4:
+  .cas_fail_s4:
     mv a0, t0                  # Move the returned value to the return register
     ret                        # Return
     .size __xbrtime_atomic_compare_swap_s4, .-__xbrtime_atomic_compare_swap_s4
@@ -277,11 +277,11 @@
   __xbrtime_atomic_compare_swap_s8:
     eaddie e10, a3, 0
     elr.d t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_s8   # Doesn't match, so fail
+    bne t0, a1, .cas_fail_s8   # Doesn't match, so fail
     esc.d x0, a2, (a0)         # Update
     mv a0, t0                  # Move the returned value to the return register
     ret
-  _cas_fail_s8:
+  .cas_fail_s8:
     mv a0, t0                  # Move the returned value to the return register
     ret                        # Return
     .size __xbrtime_atomic_compare_swap_s8, .-__xbrtime_atomic_compare_swap_s8
@@ -293,11 +293,11 @@
   __xbrtime_atomic_compare_swap_u4:
     eaddie e10, a3, 0
     elr.w t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_u4   # Doesn't match, so fail
+    bne t0, a1, .cas_fail_u4   # Doesn't match, so fail
     esc.w x0, a2, (a0)         # Update
     mv a0, t0                  # Move the returned value to the return register
     ret
-  _cas_fail_u4:
+  .cas_fail_u4:
     mv a0, t0                  # Move the returned value to the return register
     ret                        # Return
     .size __xbrtime_atomic_compare_swap_u4, .-__xbrtime_atomic_compare_swap_u4
@@ -309,11 +309,11 @@
   __xbrtime_atomic_compare_swap_u8:
     eaddie e10, a3, 0
     elr.d t0, (a0)             # Load original value
-    bne t0, a1, _cas_fail_u8   # Doesn't match, so fail
+    bne t0, a1, .cas_fail_u8   # Doesn't match, so fail
     esc.d x0, a2, (a0)         # Update
     mv a0, t0                  # Move the returned value to the return register
     ret
-  _cas_fail_u8:
+  .cas_fail_u8:
     mv a0, t0                  # Move the returned value to the return register
     ret                        # Return
     .size __xbrtime_atomic_compare_swap_u8, .-__xbrtime_atomic_compare_swap_u8

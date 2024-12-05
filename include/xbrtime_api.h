@@ -32,7 +32,7 @@ extern "C" {
 #include <stdbool.h>
 
 /**
- * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE *src, size_t nelems, int pe)
+ * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE value, int pe)
  *
  */
 
@@ -108,7 +108,7 @@ extern "C" {
 #undef XBGAS_DECL_G
 
 /**
- * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE *src, size_t nelems, int pe)
+ * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE *source, size_t nelems, int pe)
  *
  */
 
@@ -116,7 +116,7 @@ extern "C" {
   /**                                                          \
    * @see xbrtime_TYPE_OP                                      \
    */                                                          \
-  bool xbrtime_##_typename##_##_op(_type *dest,                \
+  void xbrtime_##_typename##_##_op(_type *dest,                \
                                    const _type *source,        \
                                    size_t nelems,              \
                                    int pe);                    \
@@ -182,6 +182,49 @@ extern "C" {
   XBGAS_DECL_PUTGET(ptrdiff_t, ptrdiff, get)
 
 #undef XBGAS_DECL_PUTGET
+
+/**
+ * xbrtime_TYPE_MEMOP_SIZE(TYPE *dest, TYPE *source, size_t nelems, int pe)
+ *
+ */
+
+#define XBGAS_DECL_PUTGET_SIZE(_size, _op)                     \
+  /**                                                          \
+   * @see xbrtime_TYPE_OP                                      \
+   */                                                          \
+  void xbrtime_##_op##_size(void *dest,                        \
+                            const void *source,                \
+                            size_t nelems,                     \
+                            int pe);                           \
+                                                               \
+  /**                                                          \
+   * @see xbrtime_TYPE_OP_NBI                                  \
+   */                                                          \
+  void xbrtime_##_op##_size##_nbi(void *dest,                  \
+                                  const void *source,          \
+                                  size_t nelems,               \
+                                  int pe);
+
+  /* Put operation */
+  XBGAS_DECL_PUTGET_SIZE(8, put)
+  XBGAS_DECL_PUTGET_SIZE(16, put)
+  XBGAS_DECL_PUTGET_SIZE(32, put)
+  XBGAS_DECL_PUTGET_SIZE(64, put)
+  XBGAS_DECL_PUTGET_SIZE(128, put)
+
+  /* Get operation */
+  XBGAS_DECL_PUTGET_SIZE(8, get)
+  XBGAS_DECL_PUTGET_SIZE(16, get)
+  XBGAS_DECL_PUTGET_SIZE(32, get)
+  XBGAS_DECL_PUTGET_SIZE(64, get)
+  XBGAS_DECL_PUTGET_SIZE(128, get)
+
+#undef XBGAS_DECL_PUTGET_SIZE
+
+void xbrtime_putmem(void *dest, const void *source, size_t nelems, int pe);
+void xbrtime_putmem_nbi(void *dest, const void *source, size_t nelems, int pe);
+void xbrtime_getmem(void *dest, const void *source, size_t nelems, int pe); 
+void xbrtime_getmem_nbi(void *dest, const void *source, size_t nelems, int pe);
 
 /**
  * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE *source, ptrdiff_t dst, ptrdiff_t sst, size_t nelems, int pe)
@@ -254,6 +297,10 @@ extern "C" {
 
 #undef XBGAS_DECL_I_PUTGET
 
+/**
+ * xbrtime_TYPE_MEMOP(TYPE *dest, TYPE *source, size_t nelems, uint64_t *sig_addr, uint64_t signal, int sig_op, int pe)
+ *
+ */
 
 #define XBGAS_DECL_PUT_SIGNAL(_type, _typename)             \
   /**                                                       \
@@ -313,6 +360,6 @@ extern "C" {
 /* Signal Fetch */
 uint64_t xbrtime_signal_fetch(const uint64_t *sig_addr);
 
-#endif /* _XBRTIME_TYPES_H_ */
+#endif /* _XBRTIME_API_H_ */
 
 /* EOF */

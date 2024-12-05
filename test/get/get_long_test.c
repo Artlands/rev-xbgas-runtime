@@ -40,6 +40,8 @@ int main( int argc, char **argv ){
     xbrtime_long_get(dest, source, TEST_SIZE, 1);
   }
 
+  xbrtime_barrier_all();
+
   // Validate the results
   if( xbrtime_mype() == 0 ){
     for( int i=0; i<TEST_SIZE; i++ ){

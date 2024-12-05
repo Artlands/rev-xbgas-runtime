@@ -39,9 +39,10 @@ int main( int argc, char **argv ){
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
     xbrtime_long_get_nbi(dest, source, TEST_SIZE, 1);
+    xbrtime_quiet();
   }
 
-  xbrtime_quiet();
+  xbrtime_barrier_all();
 
   // Validate the results
   if( xbrtime_mype() == 0 ){

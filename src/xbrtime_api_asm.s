@@ -175,6 +175,8 @@ __xbrtime_get_f8:
 __xbrtime_put_1_agg:
   eaddie e10, a3, 0
   ebsb a0, a1, a0, a2
+.put_1_agg_wait:
+  beq a0, x0, .put_1_agg_wait
   ret
   .size __xbrtime_put_1_agg, .-__xbrtime_put_1_agg
 
@@ -185,6 +187,8 @@ __xbrtime_put_1_agg:
 __xbrtime_put_2_agg:
   eaddie e10, a3, 0
   ebsh a0, a1, a0, a2
+.put_2_agg_wait:
+  beq a0, x0, .put_2_agg_wait
   ret
   .size __xbrtime_put_2_agg, .-__xbrtime_put_2_agg
 
@@ -195,6 +199,8 @@ __xbrtime_put_2_agg:
 __xbrtime_put_4_agg:
   eaddie e10, a3, 0
   ebsw a0, a1, a0, a2
+.put_4_agg_wait:
+  beq a0, x0, .put_4_agg_wait
   ret
   .size __xbrtime_put_4_agg, .-__xbrtime_put_4_agg
 
@@ -205,6 +211,8 @@ __xbrtime_put_4_agg:
 __xbrtime_put_8_agg:
   eaddie e10, a3, 0
   ebsd a0, a1, a0, a2
+.put_8_agg_wait:
+  beq a0, x0, .put_8_agg_wait
   ret
   .size __xbrtime_put_8_agg, .-__xbrtime_put_8_agg
 
@@ -255,6 +263,8 @@ __xbrtime_put_8_agg_nbi:
 __xbrtime_get_1_agg:
   eaddie e11, a3, 0
   eblb a0, a0, a1, a2
+.get_1_agg_wait:
+  beq a0, x0, .get_1_agg_wait
   ret
   .size __xbrtime_get_1_agg, .-__xbrtime_get_1_agg
 
@@ -265,6 +275,8 @@ __xbrtime_get_1_agg:
 __xbrtime_get_2_agg:
   eaddie e11, a3, 0
   eblh a0, a0, a1, a2
+.get_2_agg_wait:
+  beq a0, x0, .get_2_agg_wait
   ret
   .size __xbrtime_get_2_agg, .-__xbrtime_get_2_agg
 
@@ -275,6 +287,8 @@ __xbrtime_get_2_agg:
 __xbrtime_get_4_agg:
   eaddie e11, a3, 0
   eblw a0, a0, a1, a2
+.get_4_agg_wait:
+  beq a0, x0, .get_4_agg_wait
   ret
   .size __xbrtime_get_4_agg, .-__xbrtime_get_4_agg
 
@@ -285,6 +299,8 @@ __xbrtime_get_4_agg:
 __xbrtime_get_8_agg:
   eaddie e11, a3, 0
   ebld a0, a0, a1, a2
+.get_8_agg_wait:
+  beq a0, x0, .get_8_agg_wait
   ret
   .size __xbrtime_get_8_agg, .-__xbrtime_get_8_agg
 
