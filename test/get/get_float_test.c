@@ -10,7 +10,6 @@
  *
  */
 
-#include <stdio.h>
 #include "xbrtime.h"
 
 #define TEST_SIZE 4
@@ -27,27 +26,27 @@ int main( int argc, char **argv ){
 
   // Initialize the source and dest array
   for( int i=0; i<TEST_SIZE; i++ ){
-    source[i] = (float) (i + 0.5);
+    source[i] = (float) (i + 0.55 + mype);
     dest[i] = 0.0;
   }
 
   /* perform a barrier */
   xbrtime_barrier_all();
 
-  if( xbrtime_mype() == 1 ){
+  if( xbrtime_mype() == 0 ){
     /* perform an operation */
-    xbrtime_float_get(dest, source, TEST_SIZE, 0);
+    xbrtime_float_get(dest, source, TEST_SIZE, 1);
   }
 
   xbrtime_barrier_all();
 
   // Validate the results
-  if( xbrtime_mype() == 1 ){
+  if( xbrtime_mype() == 0 ){
     for( int i=0; i<TEST_SIZE; i++ ){
       // if( dest[i] != i ){
       //   printf( "Error detected in get_int_test: dest[%d] = %d", i, dest[i] );
       // }
-      printf( "Dest[%d]: %f", i, dest[i] );
+      printf( "Dest[%d]: %.3f\n", i, dest[i] );
     }
   }
   xbrtime_free( source );

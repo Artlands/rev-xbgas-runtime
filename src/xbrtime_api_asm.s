@@ -68,6 +68,18 @@ __xbrtime_put_4:
 
   #---------------------------------------------------
 
+  .global __xbrtime_put_f4
+  .type __xbrtime_put_f4, @function
+__xbrtime_put_f4:
+  eaddie e10, a2, 0
+  flw ft0, 0(a1)
+  fmv.x.w t0, ft0
+  esw t0, 0(a0)
+  ret
+  .size __xbrtime_put_f4, .-__xbrtime_put_f4
+
+  #---------------------------------------------------
+
   .global __xbrtime_put_8
   .type __xbrtime_put_8, @function
 __xbrtime_put_8:
@@ -75,6 +87,18 @@ __xbrtime_put_8:
   esd a1, 0(a0)
   ret
   .size __xbrtime_put_8, .-__xbrtime_put_8
+
+  #---------------------------------------------------
+
+  .global __xbrtime_put_f8
+  .type __xbrtime_put_f8, @function
+__xbrtime_put_f8:
+  eaddie e10, a2, 0
+  fld ft0, 0(a1)
+  fmv.x.d t0, ft0
+  esd t0, 0(a0)
+  ret
+  .size __xbrtime_put_f8, .-__xbrtime_put_f8
 
   #---------------------------------------------------
   # Get Calling Convention

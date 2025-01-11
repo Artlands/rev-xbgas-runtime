@@ -15,9 +15,9 @@
 int main( int argc, char **argv ){
   int rtn = 0;
 
-  printf( "Initializing xBGAS Runtime" );
+  printf( "Initializing xBGAS Runtime\n" );
   rtn = xbrtime_init();
-  printf( "xBGAS is Initialized; Closing xBGAS" );
+  printf( "xBGAS is Initialized; Closing xBGAS\n" );
 
   return rtn;
 }

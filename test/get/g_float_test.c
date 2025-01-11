@@ -10,9 +10,9 @@
  *
  */
 
-#include <stdio.h>
 #include "xbrtime.h"
 
+// TODO: the floating-point value is not being transferred correctly
 int main( int argc, char **argv ){
   float *source;
   float dest = 0.01;
@@ -22,7 +22,7 @@ int main( int argc, char **argv ){
   source = (float *)xbrtime_malloc( sizeof(float) );
 
   if (mype == 1)
-    source[0] = 0.999;
+    source[0] = 0.555;
   else
     source[0] = 0.0;
 
@@ -34,7 +34,7 @@ int main( int argc, char **argv ){
   xbrtime_barrier_all();
 
   if (mype == 0) 
-    printf("Dest: %f", dest);
+    printf("Dest: %.3f\n", dest);
 
   xbrtime_free( source );
   xbrtime_close();

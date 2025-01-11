@@ -10,8 +10,6 @@
  *
  */
 
-#include <stdio.h>
-#include <inttypes.h>
 #include "xbrtime.h"
 
 #define TEST_SIZE 16
@@ -46,7 +44,7 @@ int main( int argc, char **argv ){
   if( xbrtime_mype() == 0 ){
     for( int i=0; i<TEST_SIZE; i++ ){
       if( dest[i] != 0xdeadbeef ){
-        printf("Error detected in get_long_test: dest[%d]=%x", i, dest[i]);
+        printf("Error detected in get_long_test: dest[%d]=%x\n", i, dest[i]);
       }
     }
   }

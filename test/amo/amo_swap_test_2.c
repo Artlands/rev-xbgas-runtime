@@ -12,8 +12,6 @@
 
 
 #include "xbrtime.h"
-#include <stdio.h>
-
 
 int main(void) {
   int *dest;
@@ -28,16 +26,16 @@ int main(void) {
   xbrtime_barrier_all();
   int new_val = mype + 1;
 
-  printf("PE %d : Atomic swap %p on PE 0 with %d", mype, &dest[0], new_val);
+  printf("PE %d: Atomic swap %p on PE 0 with %d\n", mype, &dest[0], new_val);
 
   int swapped_val = xbrtime_int_atomic_swap(&dest[0], new_val, 0);
     
-  printf("PE %d: swapped value is %d", mype, swapped_val);
+  printf("PE %d: swapped value is %d\n", mype, swapped_val);
   
   xbrtime_barrier_all();
 
   if ( mype == 0 )
-    printf("Dest value is %d", dest[0]);
+    printf("Dest value is %d\n", dest[0]);
 
   xbrtime_free(dest);
   xbrtime_close();

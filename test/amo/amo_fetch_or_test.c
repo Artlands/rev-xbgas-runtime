@@ -11,7 +11,6 @@
  */
 
 #include "xbrtime.h"
-#include <stdio.h>
 
 int main(void) {
   uint32_t *dest;
@@ -26,7 +25,7 @@ int main(void) {
     old = xbrtime_uint32_atomic_fetch_or(&dest[0], 0b000111, 0);
   }
   xbrtime_barrier_all();
-  printf("%d: dst = %" PRIu32 ", old = %d", mype, dest[0], old);
+  printf("PE %d: dst = %" PRIu32 ", old = %d\n", mype, dest[0], old);
 
   xbrtime_free(dest);
   xbrtime_close();

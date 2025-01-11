@@ -30,6 +30,10 @@ extern "C" {
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdarg.h>
+#include <limits.h>
 #include <inttypes.h>
 #include "syscalls.h"
 
@@ -43,8 +47,9 @@ extern "C" {
 #include "xbrtime_atomics.h"
 #include "xbrtime_wait.h"
 #include "xbrtime_lock.h"
-
-#define printf rev_fast_printf
+// #include "xbrtime_test.h"
+#include "xbrtime_print.h"
+// #define printf rev_fast_printf
 
 enum xbgas_cmp_ops {
     XBRTIME_CMP_EQ,

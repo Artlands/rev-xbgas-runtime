@@ -22,7 +22,7 @@ int main()
   int npes = xbrtime_num_pes();
 
   if (npes != NPES) {
-    printf("This test requires %d PEs", NPES);
+    printf("This test requires %d PEs\n", NPES);
     xbrtime_close();
     return 0;
   }
@@ -49,11 +49,11 @@ int main()
   xbrtime_int_sum_reduce(maximal_values_total, maximal_values_count, 1);
 
   if (mype == 0) {
-    printf("Found %d maximal random numbers across all PEs.", maximal_values_total[0]);
-    printf("A maximal number occured (at least once) at the following indices:");
+    printf("Found %d maximal random numbers across all PEs.\n", maximal_values_total[0]);
+    printf("A maximal number occured (at least once) at the following indices:\n");
     for (int i = 0; i < NELEMS; i++) {
       if (value_is_maximal_all[i] == 1) {
-        printf("%d ", i);
+        printf("%d\n", i);
       }
     }
   }

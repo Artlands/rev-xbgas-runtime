@@ -10,9 +10,6 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "xbrtime.h"
 
 
@@ -38,20 +35,20 @@ int main( int argc, char **argv ){
   uint64_t *data = (uint64_t *)(xbrtime_malloc( sizeof(uint64_t) * size ));
 
   if (mype == 0) {
-    printf("PE %d: Putting data to PE %d", mype, pe);
+    printf("PE %d: Putting data to PE %d\n", mype, pe);
     xbrtime_uint64_put_signal(data, message, size, sig_addr, 1, XBRTIME_SIGNAL_SET, pe);
-    printf("PE %d: Waiting for data from PE %d", mype, pe);
+    printf("PE %d: Waiting for data from PE %d\n", mype, pe);
     xbrtime_uint64_wait_until(sig_addr, XBRTIME_CMP_EQ, 1);
   }
   else {
-    printf("PE %d: Waiting for data from PE %d", mype, pe);
+    printf("PE %d: Waiting for data from PE %d\n", mype, pe);
     xbrtime_uint64_wait_until(sig_addr, XBRTIME_CMP_EQ, 1);
-    printf("PE %d: Data received", mype);
-    printf("PE %d: Putting data to PE %d", mype, pe);
+    printf("PE %d: Data received\n", mype);
+    printf("PE %d: Putting data to PE %d\n", mype, pe);
     xbrtime_uint64_put_signal(data, data, size, sig_addr, 1, XBRTIME_SIGNAL_SET, pe);
   }
 
-  printf("PE %d: Data received, sig_addr = %d", mype, sig_addr[0]);
+  printf("PE %d: Data received, sig_addr = %d\n", mype, sig_addr[0]);
 
   if ( mype == 1) {
     for (i = 0; i < size; i++) {

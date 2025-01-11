@@ -12,8 +12,6 @@
 
 
 #include "xbrtime.h"
-#include <stdio.h>
-
 
 int main(void) {
   int *dest;
@@ -25,7 +23,7 @@ int main(void) {
   dest = (int *)xbrtime_malloc(1 * sizeof(int));
   dest[0] = mype;
   
-  printf("Before atomic set: %d: dest = %ld", mype, dest[0]);
+  printf("Before atomic set: PE %d: dest = %ld\n", mype, dest[0]);
 
   xbrtime_barrier_all();
   int new_val = mype + 99;
@@ -33,7 +31,7 @@ int main(void) {
     xbrtime_int_atomic_set(&dest[0], new_val, (mype + 1) % npes);
   }
   xbrtime_barrier_all();
-  printf("After atomic set: %d: dest = %ld", mype, dest[0]);
+  printf("After atomic set: PE %d: dest = %ld\n", mype, dest[0]);
 
   xbrtime_free(dest);
   xbrtime_close();

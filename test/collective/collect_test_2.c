@@ -39,9 +39,9 @@ int main()
 
   xbrtime_set_lock(lock);
 
-  printf("%d: Dest:", mype);
+  printf("PE %d: Dest:\n", mype);
   for (int i = 0; i < total_nelem; i++)
-    printf("dest[%d] = %d", i, dest[i]);
+    printf("dest[%d] = %d\n", i, dest[i]);
 
   xbrtime_clear_lock(lock);
   

@@ -10,8 +10,6 @@
  *
  */
 
-#include <stdio.h>
-#include <inttypes.h>
 #include "xbrtime.h"
 
 int main( int argc, char **argv ){
@@ -39,7 +37,7 @@ int main( int argc, char **argv ){
 
   if (mype == 0) {
     for (int i = 0; i < 10; i++) {
-      printf("dest[%d] = %c", i, dest[i]);
+      printf("dest[%d] = %c\n", i, dest[i]);
     }
   }
   xbrtime_free( source );

@@ -34,9 +34,9 @@ int main()
   }
 
   if ( mype == 1 ) {
-    printf("Before Alltoalls");
+    printf("Before Alltoalls\n");
     for (int i = 0; i < count * sst * npes; i++) {
-      printf("source[%d] = %" PRId64 "", i, source[i]);
+      printf("source[%d] = %" PRId64 "\n", i, source[i]);
     }
   }
 
@@ -50,15 +50,15 @@ int main()
     for (int i = 0; i < count; i++) {
       int j = dst * ((pe * count) + i);
       if (dest[j] != pe + i) {
-        printf("[%d] ERROR: dest[%d]=%" PRId64 ", should be %d", mype, j, dest[j], pe + i);
+        printf("[%d] ERROR: dest[%d]=%" PRId64 ", should be %d\n", mype, j, dest[j], pe + i);
       }
     }
   }
 
   if ( mype == 1 ) {
-    printf("After Alltoalls");
+    printf("After Alltoalls\n");
     for (int i = 0; i < count * dst * npes; i++) {
-      printf("dest[%d] = %" PRId64 "", i, dest[i]);
+      printf("dest[%d] = %" PRId64 "\n", i, dest[i]);
     }
   }
 

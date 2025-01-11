@@ -11,7 +11,6 @@
  */
 
 #include "xbrtime.h"
-#include <stdio.h>
 
 int main(void) {
   int *dest;
@@ -26,7 +25,7 @@ int main(void) {
     old = xbrtime_int_atomic_fetch_inc(&dest[0], 1);
   }
   xbrtime_barrier_all();
-  printf("%d: old = %d, dst = %d", mype, old, dest[0]);
+  printf("PE %d: old = %d, dst = %d\n", mype, old, dest[0]);
 
   xbrtime_free(dest);
   xbrtime_close();

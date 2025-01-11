@@ -21,17 +21,17 @@ int main( int argc, char **argv ){
 
   rtn = xbrtime_init();
 
-  printf( "Allocating %d bytes on symmetric heaps", (int)(size) );
+  printf( "Allocating %d bytes on symmetric heaps\n", (int)(size) );
   ptr = xbrtime_align( sizeof( int ), size );
 
-  printf( "PTR = %p", ptr );
+  printf( "PTR = %p\n", ptr );
 
   // Check if ptr is aligned to sizeof( uint64_t )
   if( ptr && ( (uintptr_t)ptr % sizeof( int ) ) == 0 ){
-    printf( "PTR is aligned to sizeof( int )" );
+    printf( "PTR is aligned to sizeof( int )\n" );
   }
 
-  printf( "Freeing the memory" );
+  printf( "Freeing the memory\n" );
   xbrtime_free( ptr );
 
   xbrtime_close();

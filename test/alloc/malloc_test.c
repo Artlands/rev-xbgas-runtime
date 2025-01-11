@@ -17,20 +17,20 @@ int main( int argc, char **argv ){
   void *ptr1, *ptr2, *ptr3;
   size_t sz1 = 2048, sz2 = 1984, sz3 = 1024;
 
-  printf( "Allocating %d bytes", (int)(sz1) );
+  printf( "Allocating %d bytes\n", (int)(sz1) );
   ptr1 = malloc( sz1 );
-  printf( "PTR 1 = %p", ptr1 );
+  printf( "PTR 1 = %p\n", ptr1 );
 
-  printf( "Allocating %d bytes", (int)(sz2) );
+  printf( "Allocating %d bytes\n", (int)(sz2) );
   ptr2 = malloc( sz2 );
-  printf( "PTR 2 = %p", ptr2 );
+  printf( "PTR 2 = %p\n", ptr2 );
 
   free( ptr1 );
   free( ptr2 );
 
-  printf( "Allocating %d bytes", (int)(sz3) );
+  printf( "Allocating %d bytes\n", (int)(sz3) );
   ptr3 = malloc( sz3 );
-  printf( "PTR 3 = %p", ptr3 );
+  printf( "PTR 3 = %p\n", ptr3 );
   free( ptr3 );
 
   return rtn;

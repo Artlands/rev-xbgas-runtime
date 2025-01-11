@@ -10,7 +10,6 @@
  *
  */
 
-#include <stdio.h>
 #include "xbrtime.h"
 
 int main(void) {
@@ -33,9 +32,9 @@ int main(void) {
 
   xbrtime_barrier_all();
   if (oldval == -1)
-    printf("PE %d was first", mype);
+    printf("PE %d was first\n", mype);
 
-  printf("PE %d value = %d, race_winner = %d", mype, oldval, race_winner[0]);
+  printf("PE %d value = %d, race_winner = %d\n", mype, oldval, race_winner[0]);
 
   xbrtime_free(race_winner);
   xbrtime_close();

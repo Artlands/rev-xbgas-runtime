@@ -20,7 +20,7 @@ int main()
   int npes = xbrtime_num_pes();
 
   if ( npes != 2 ) {
-    printf("This test requires 2 PEs");
+    printf("This test requires 2 PEs\n");
     xbrtime_close();
     return 1;
   }
@@ -36,14 +36,14 @@ int main()
   for (int i = 0; i < total_nelem; i++)
     dest[i] = -9999;
 
-  printf("PE %d: Source = %d %d", mype, source[0], source[1]);
+  printf("PE %d: Source = %d %d\n", mype, source[0], source[1]);
 
   /* wait for all PEs to initialize source/dest */
   xbrtime_barrier_all();
 
   xbrtime_int_collect(dest, source, my_nelem);
 
-  printf("PE %d: Dest = %d %d %d %d", mype, dest[0], dest[1], dest[2], dest[3]);
+  printf("PE %d: Dest = %d %d %d %d\n", mype, dest[0], dest[1], dest[2], dest[3]);
   
   xbrtime_free(dest);
   xbrtime_free(source);

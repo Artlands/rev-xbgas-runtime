@@ -12,8 +12,6 @@
 
 
 #include "xbrtime.h"
-#include <stdio.h>
-
 
 int main(void) {
   int *dest;
@@ -30,7 +28,7 @@ int main(void) {
   int new_val = mype;
   if ( mype & 1 ) {
     int swapped_val = xbrtime_int_atomic_swap(&dest[0], new_val, (mype + 1) % npes);
-    printf("%d: dest = %ld, swapped = %ld", mype, dest[0], swapped_val);
+    printf("PE %d: dest = %ld, swapped = %ld\n", mype, dest[0], swapped_val);
   }
 
   xbrtime_barrier_all();

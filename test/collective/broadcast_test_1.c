@@ -33,7 +33,7 @@ int main()
 
   xbrtime_long_broadcast(dest, source, 4, 0);
 
-  printf("PE %d: %ld %ld %ld %ld", mype, dest[0], dest[1], dest[2], dest[3]);
+  printf("PE %d: %ld %ld %ld %ld\n", mype, dest[0], dest[1], dest[2], dest[3]);
 
   xbrtime_free(dest);
   xbrtime_free(source);

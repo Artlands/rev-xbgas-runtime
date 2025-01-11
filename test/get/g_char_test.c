@@ -10,7 +10,6 @@
  *
  */
 
-#include <stdio.h>
 #include "xbrtime.h"
 
 int main( int argc, char **argv ){
@@ -34,7 +33,7 @@ int main( int argc, char **argv ){
   xbrtime_barrier_all();
 
   if (mype == 0) 
-    printf("Dest: %c", dest);
+    printf("Dest: %c\n", dest);
 
   xbrtime_free( source );
   xbrtime_close();

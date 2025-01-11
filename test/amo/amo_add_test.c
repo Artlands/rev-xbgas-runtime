@@ -11,7 +11,6 @@
  */
 
 #include "xbrtime.h"
-#include <stdio.h>
 
 int main(void) {
   int *dest;
@@ -25,7 +24,7 @@ int main(void) {
     xbrtime_int_atomic_add(&dest[0], 26, 0);
   }
   xbrtime_barrier_all();
-  printf("%d: dst = %d", mype, dest[0]);
+  printf("%d: dst = %d\n", mype, dest[0]);
 
   xbrtime_free(dest);
   xbrtime_close();

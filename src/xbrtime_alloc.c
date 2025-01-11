@@ -116,11 +116,11 @@ void __free_align(void *ptr, size_t alignment) {
     return;
   }
   // Call the REV system call to free memory
-  rev_munmap((void *)(((uintptr_t*)ptr)[-2]), ((uintptr_t*)ptr)[-1]);
+  rev_munmap((unsigned long)(((uintptr_t*)ptr)[-2]), ((uintptr_t*)ptr)[-1]);
 
 #ifdef _ALLOC_DEBUG_
   printf("_XBRTIME_DEBUG_ : Free the memory on private heap. Aligned pointer: %p, Original pointer: %p, Size: %lu", 
-          ptr, (void *)(((uintptr_t*)ptr)[-2]), ((uintptr_t*)ptr)[-1]);
+          ptr, (unsigned long)(((uintptr_t*)ptr)[-2]), ((uintptr_t*)ptr)[-1]);
 #endif
 
   return;

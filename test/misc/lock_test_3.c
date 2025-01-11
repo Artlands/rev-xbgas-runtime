@@ -11,7 +11,7 @@
  */
 
 #include "xbrtime.h"
-#include <stdio.h>
+
 
 int main(void) {
   xbrtime_init();
@@ -40,10 +40,9 @@ int main(void) {
   xbrtime_barrier_all();
 
   if (mype == 0)
-    printf("First Lock - Result: PE %d: count is %d", mype, count[0]);
+    printf("First Lock - Result: PE %d: count is %d\n", mype, count[0]);
 
   /* Second lock */
-  /* FIXME: hanging when PE > 2 */
   xbrtime_set_lock(lock);
 
   val = xbrtime_int_g(count2, 0); /* get count value on PE 0 */
@@ -55,7 +54,7 @@ int main(void) {
   xbrtime_barrier_all();
 
   if (mype == 0)
-    printf("Second Lock - Result: PE %d: count is %d", mype, count2[0]);
+    printf("Second Lock - Result: PE %d: count is %d\n", mype, count2[0]);
 
   xbrtime_free(lock);
   xbrtime_free(count);

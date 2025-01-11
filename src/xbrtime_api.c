@@ -26,13 +26,15 @@ void __xbrtime_put_1( uint64_t dest, uint64_t value, uint32_t pe );
 void __xbrtime_put_2( uint64_t dest, uint64_t value, uint32_t pe );
 void __xbrtime_put_4( uint64_t dest, uint64_t value, uint32_t pe );
 void __xbrtime_put_8( uint64_t dest, uint64_t value, uint32_t pe );
+void __xbrtime_put_f4( uint64_t dest, uint64_t value, uint32_t pe );
+void __xbrtime_put_f8( uint64_t dest, uint64_t value, uint32_t pe );
 
 uint64_t __xbrtime_get_u1( uint64_t source, uint32_t pe );
 uint64_t __xbrtime_get_s1( uint64_t source, uint32_t pe );
 uint64_t __xbrtime_get_u2( uint64_t source, uint32_t pe );
 uint64_t __xbrtime_get_s2( uint64_t source, uint32_t pe );
-uint64_t __xbrtime_get_f4( uint64_t source, uint32_t pe );
-uint64_t __xbrtime_get_f8( uint64_t source, uint32_t pe );
+float __xbrtime_get_f4( uint64_t source, uint32_t pe );
+double __xbrtime_get_f8( uint64_t source, uint32_t pe );
 uint64_t __xbrtime_get_4( uint64_t source, uint32_t pe );
 uint64_t __xbrtime_get_8( uint64_t source, uint32_t pe );
 
@@ -78,8 +80,8 @@ void xbrtime_##_typename##_p(_type *dest, _type value, int pe)                  
                                   xbrtime_decode_pe(pe));                                   \
 }                                                                                                   
 
-  XBGAS_P(float, float, 4)
-  XBGAS_P(double, double, 8)
+  XBGAS_P(float, float, f4)
+  XBGAS_P(double, double, f8)
   XBGAS_P(long double, longdouble, 8)
   XBGAS_P(char, char, 1)
   XBGAS_P(signed char, schar, 1)

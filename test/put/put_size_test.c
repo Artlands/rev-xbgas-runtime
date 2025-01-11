@@ -10,9 +10,6 @@
  *
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <inttypes.h>
 #include "xbrtime.h"
 
 #define TEST_SIZE 32
@@ -46,7 +43,7 @@ int main( int argc, char **argv ){
     uint8_t *tmp = (uint8_t *)dest;
     for( int i=0; i<TEST_SIZE; i++ ){
       if( *tmp != 1 ){
-        printf("Error detected in dest array at index %d; expected %d, but received %d", i, 1, *tmp);
+        printf("Error detected in dest array at index %d; expected %d, but received %d\n", i, 1, *tmp);
       }
       *tmp++;
     }

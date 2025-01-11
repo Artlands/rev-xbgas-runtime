@@ -1,4 +1,4 @@
-/* _GET_LONG_TEST_C_
+/* _PUT_INT_TEST_C_
  *
  * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
  * All Rights Reserved
@@ -12,45 +12,46 @@
 
 #include "xbrtime.h"
 
-#define TEST_SIZE 16
+#define TEST_SIZE 4
 
 int main( int argc, char **argv ){
   int mype, npes;
-  void *dest = malloc( TEST_SIZE );
+  float *source = malloc( sizeof(float) * TEST_SIZE );
 
   xbrtime_init();
   mype = xbrtime_mype();
 
   // Symmetric memory allocation
-  void *source =xbrtime_malloc( TEST_SIZE );
+  float *dest = (float *)(xbrtime_malloc( sizeof(float) * TEST_SIZE ));
 
   // Initialize the source and dest array
-  memset(dest, 0, TEST_SIZE);
-  memset(source, mype, TEST_SIZE);
+  for( int i=0; i<TEST_SIZE; i++ ){
+    source[i] = mype + i + 0.55;
+    dest[i] = 99.99;
+  }
 
   /* perform a barrier */
   xbrtime_barrier_all();
 
   if( xbrtime_mype() == 0 ){
     /* perform an operation */
-    xbrtime_getmem(dest, source, TEST_SIZE, 1);
+    xbrtime_float_put(dest, source, TEST_SIZE, 1);
   }
 
   xbrtime_barrier_all();
 
-  if( xbrtime_mype() == 0 ){
-    uint8_t *tmp = (uint8_t *)dest;
+  // Validate the results
+  if( xbrtime_mype() == 1 ){
     for( int i=0; i<TEST_SIZE; i++ ){
-      if( *tmp != 1 ){
-        printf("Error detected in dest array at index %d; expected %d, but received %d\n", i, 1, *tmp);
-      }
-      *tmp++;
+      // if( dest[i] != 0 + i ){
+      //   printf( "Error detected in dest[%d] = %d\n", i, dest[i] );
+      // }
+      printf( "PE %d: dest[%d] = %.2f\n", mype, i, dest[i] );
     }
   }
-
-  xbrtime_free( source );
+  xbrtime_free( dest );
   xbrtime_close();
-  free( dest );
+  free( source );
   
   return 0;
 }

@@ -15,17 +15,17 @@
 int main( int argc, char **argv ){
   int rtn = 0;
 
-  printf( "Initializing xBGAS Runtime" );
+  printf( "Initializing xBGAS Runtime\n" );
   rtn = xbrtime_init();
-  printf( "xBGAS is Initialized; Closing xBGAS" );
+  printf( "xBGAS is Initialized; Closing xBGAS\n" );
 
-  printf( "I AM PE=%d of %d TOTAL PEs",
+  printf( "I AM PE=%d of %d TOTAL PEs\n",
           xbrtime_mype(),
           xbrtime_num_pes() );
 
 
   xbrtime_close();
-  printf( "xBGAS is Closed" );
+  printf( "xBGAS is Closed\n" );
 
   return rtn;
 }

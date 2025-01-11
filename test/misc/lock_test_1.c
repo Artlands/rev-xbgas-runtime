@@ -11,7 +11,6 @@
  */
 
 #include "xbrtime.h"
-#include <stdio.h>
 
 int main(void) {
   xbrtime_init();
@@ -37,7 +36,7 @@ int main(void) {
   xbrtime_barrier_all();
 
   if (mype == 0)
-    printf("Result: PE %d: count is %d", mype, count[0]);
+    printf("Result: PE %d: count is %d\n", mype, count[0]);
 
   xbrtime_free(lock);
   xbrtime_free(count);

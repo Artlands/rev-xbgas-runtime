@@ -32,7 +32,7 @@ $(ISA_TESTS): $(ISA_EXES)
 #	@echo "RISCV_GCC_OPTS = $(RISCV_GCC_OPTS)"
 	$(CC) $(CFLAGS) $(RISCV_GCC_OPTS)  -o $@ $< -L$(XBGAS_RUNTIME)/lib -lxbrtime -lm
 clean:
-	rm -Rf *.exe
+	rm -Rf *.exe *.dump
 
 dump: $(ISA_EXES)
 	$(foreach var,$(ISA_EXES),$(RV_OBJDUMP) -d $(var) > $(var).dump;)

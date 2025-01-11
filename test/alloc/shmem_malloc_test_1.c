@@ -21,12 +21,12 @@ int main( int argc, char **argv ){
 
   rtn = xbrtime_init();
 
-  printf( "Allocating %d bytes on symmetric heaps", (int)(size) );
+  printf( "Allocating %d bytes on symmetric heaps\n", (int)(size) );
   ptr = xbrtime_malloc( size );
 
-  printf( "PTR = %p", ptr );
+  printf( "PTR = %p\n", ptr );
 
-  printf( "Freeing the memory" );
+  printf( "Freeing the memory\n" );
   xbrtime_free( ptr );
 
   xbrtime_close();

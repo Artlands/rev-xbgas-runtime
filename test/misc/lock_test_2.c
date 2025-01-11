@@ -11,8 +11,6 @@
  */
 
 #include "xbrtime.h"
-#include <stdio.h>
-
 
 int main(void) {
   xbrtime_init();
@@ -30,20 +28,20 @@ int main(void) {
   int test = xbrtime_test_lock(lock);
 
   if ( test == 1 ) {
-    printf("PE %d: Lock is busy. Do nothing.", mype);
+    printf("PE %d: Lock is busy. Do nothing.\n", mype);
   } else {
-    printf("PE %d: Lock is free. Get the lock.", mype);
+    printf("PE %d: Lock is free. Get the lock.\n", mype);
     int val = xbrtime_int_g(count, 0); /* get count value on PE 0 */
     val++; /* incrementing and updating count on PE 0 */
     xbrtime_int_p(count, val, 0);
-    printf("PE %d: Free the lock.", mype);
+    printf("PE %d: Free the lock.\n", mype);
     xbrtime_clear_lock(lock); /* ensures count update completes before clearing the lock */
   }
   
   xbrtime_barrier_all();
 
   if (mype == 0)
-    printf("Result: PE %d: count is %d", mype, count[0]);
+    printf("Result: PE %d: count is %d\n", mype, count[0]);
 
   xbrtime_free(lock);
   xbrtime_free(count);

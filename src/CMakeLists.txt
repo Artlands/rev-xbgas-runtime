@@ -31,6 +31,7 @@ xbrtime_atomics_asm.s
 xbrtime_wait.c
 xbrtime_test.c
 xbrtime_lock.c
+xbrtime_print.c
 )
 
 add_library( xbrtime STATIC ${XbrtimeSrcs} )
