@@ -72,8 +72,7 @@ __xbrtime_put_4:
   .type __xbrtime_put_f4, @function
 __xbrtime_put_f4:
   eaddie e10, a2, 0
-  flw ft0, 0(a1)
-  fmv.x.w t0, ft0
+  fmv.x.w t0, fa0
   esw t0, 0(a0)
   ret
   .size __xbrtime_put_f4, .-__xbrtime_put_f4
@@ -94,8 +93,7 @@ __xbrtime_put_8:
   .type __xbrtime_put_f8, @function
 __xbrtime_put_f8:
   eaddie e10, a2, 0
-  fld ft0, 0(a1)
-  fmv.x.d t0, ft0
+  fmv.x.d t0, fa0
   esd t0, 0(a0)
   ret
   .size __xbrtime_put_f8, .-__xbrtime_put_f8

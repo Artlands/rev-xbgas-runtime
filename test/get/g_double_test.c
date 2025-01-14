@@ -13,22 +13,22 @@
 #include "xbrtime.h"
 
 int main( int argc, char **argv ){
-  float *source;
-  float dest = 0.01;
+  double *source;
+  double dest = 0.01;
 
   xbrtime_init();
   int mype = xbrtime_mype();
-  source = (float *)xbrtime_malloc( sizeof(float) );
+  source = (double *)xbrtime_malloc( sizeof(double) );
 
   if (mype == 1)
-    source[0] = 0.555;
+    source[0] = 0.999;
   else
     source[0] = 0.0;
 
   xbrtime_barrier_all();
 
   if( mype == 0 )
-    dest = xbrtime_float_g( source, 1 );
+    dest = xbrtime_double_g( source, 1 );
 
   xbrtime_barrier_all();
 

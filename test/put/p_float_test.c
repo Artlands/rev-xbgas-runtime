@@ -12,16 +12,15 @@
 
 #include "xbrtime.h"
 
-// TODO: the floating-point value is not being transferred correctly
 int main( int argc, char **argv ){
-  float source = -11.22;
+  float source = 0.05;
   float *dest;
 
   xbrtime_init();
   int mype = xbrtime_mype();
   
   dest = (float *)xbrtime_malloc( sizeof(float) );
-  dest[0] = (float)(mype + 5.55);
+  dest[0] = 0.01;
 
   if( mype == 0 )
     xbrtime_float_p( dest, source, 1 );
@@ -30,7 +29,7 @@ int main( int argc, char **argv ){
 
   // if (mype == 1) 
   //   printf("Dest[0]: %.2f\n", dest[0]);
-  printf("PE %d: Dest[0]: %.2f\n", mype, dest[0]);
+  printf("PE %d : Dest[0]: %.2f\n", mype, dest[0]);
 
   xbrtime_free( dest );
   xbrtime_close();
