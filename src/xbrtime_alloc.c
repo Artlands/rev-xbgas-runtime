@@ -28,7 +28,7 @@ mem_block *__merge_blocks(mem_block *block) {
       block->next->prev = block;
     }
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Merge the block with the next block. Merged block Start: %p, Size: %ld", (void *)block, block->size);
+  printf("XBRTIME_DEBUG : Merge the block with the next block. Merged block Start: %p, Size: %ld\n", (void *)block, block->size);
 #endif
   }
   // Merge the block with its previous block
@@ -40,13 +40,13 @@ mem_block *__merge_blocks(mem_block *block) {
       block->next->prev = block->prev;
     }
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Merge the block with the previous block. Merged block Start: %p, Size: %ld", (void *)(block->prev), block->prev->size);
+  printf("XBRTIME_DEBUG : Merge the block with the previous block. Merged block Start: %p, Size: %ld\n", (void *)(block->prev), block->prev->size);
 #endif
     return block->prev;
   }
 
 #ifdef _ALLOC_DEBUG_
-  printf(" _XBRTIME_DEBUG_ : Block is merged. Block Start: %p, Size: %ld", (void *)block, block->size);
+  printf(" XBRTIME_DEBUG : Block is merged. Block Start: %p, Size: %ld\n", (void *)block, block->size);
 #endif
   return block;
 }
@@ -66,7 +66,7 @@ void __split_block(mem_block *block, size_t aligned_size) {
     new_block->next->prev = new_block;
   }
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Split the block. Original block: Start: %p, Size: %ld. New block: Start: %p, Size: %ld", 
+  printf("XBRTIME_DEBUG : Split the block. Original block: Start: %p, Size: %ld. New block: Start: %p, Size: %ld\n", 
          (void *)block, block->size, (void *)new_block, new_block->size);
 #endif
 }
@@ -104,7 +104,7 @@ void *__malloc_align(size_t size, size_t alignment) {
   ((uintptr_t*)aligned)[-1] = total_size;
 
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Allocate a new segment on private heap. Aligned pointer %p, Original pointer: %p, Size: %lu", 
+  printf("XBRTIME_DEBUG : Allocate a new segment on private heap. Aligned pointer %p, Original pointer: %p, Size: %lu\n", 
           (void *)aligned, (void *)original, total_size);
 #endif
 
@@ -119,7 +119,7 @@ void __free_align(void *ptr, size_t alignment) {
   rev_munmap((unsigned long)(((uintptr_t*)ptr)[-2]), ((uintptr_t*)ptr)[-1]);
 
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Free the memory on private heap. Aligned pointer: %p, Original pointer: %p, Size: %lu", 
+  printf("XBRTIME_DEBUG : Free the memory on private heap. Aligned pointer: %p, Original pointer: %p, Size: %lu\n", 
           ptr, (unsigned long)(((uintptr_t*)ptr)[-2]), ((uintptr_t*)ptr)[-1]);
 #endif
 
@@ -163,7 +163,7 @@ void *__shmem_malloc_align(size_t aligned_size, size_t alignment) {
     block->prev = NULL;
 
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : First allocate on symmetric heap, block address %p, ptr: %p, size : %ld", block, (char *)block + _MEM_META_SIZE_, block->size);
+  printf("XBRTIME_DEBUG : First allocate on symmetric heap, block address %p, ptr: %p, size : %ld\n", block, (char *)block + _MEM_META_SIZE_, block->size);
 #endif
 
     if( block->size > total_size ){
@@ -182,7 +182,7 @@ void *__shmem_malloc_align(size_t aligned_size, size_t alignment) {
     } else {
 
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Allocate on symmetric heap, block address %p, ptr: %p, size : %ld", block, (char *)block + _MEM_META_SIZE_, block->size);
+  printf("XBRTIME_DEBUG : Allocate on symmetric heap, block address %p, ptr: %p, size : %ld\n", block, (char *)block + _MEM_META_SIZE_, block->size);
 #endif
 
       if( block->size > total_size ){
@@ -210,7 +210,7 @@ void __shmem_free(void *ptr) {
   mem_block *block = (mem_block *)((char *)ptr - _MEM_META_SIZE_);
 
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Free on symmetric heap, block address %p, ptr: %p, size: %ld", block, (char *)block + _MEM_META_SIZE_, block->size);
+  printf("XBRTIME_DEBUG : Free on symmetric heap, block address %p, ptr: %p, size: %ld\n", block, (char *)block + _MEM_META_SIZE_, block->size);
 #endif
 
   // Mark the block as free
@@ -251,7 +251,7 @@ void *__xbrtime_shared_malloc( size_t size, size_t alignment ){
 
   /* memory is good, register the block */
 #ifdef _ALLOC_DEBUG_
-  printf( "_XBRTIME_DEBUG_ : Register the shared memory block. Slot: %d, Address: %p, Size: %ld", slot, ptr, size );
+  printf( "XBRTIME_DEBUG : Register the shared memory block. Slot: %d, Address: %p, Size: %ld\n", slot, ptr, size );
 #endif
 
   __XBRTIME_CONFIG->_MMAP[slot].size = aligned_size;
@@ -365,7 +365,7 @@ void *xbrtime_realloc(void *ptr, size_t new_size){
   old_size = block->size;
   if( old_size >= new_size ){
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Old size is greater than or equal to new size. Old size: %ld, New size: %ld", old_size, new_size);
+  printf("XBRTIME_DEBUG : Old size is greater than or equal to new size. Old size: %ld, New size: %ld\n", old_size, new_size);
 #endif
     return ptr;
   }
@@ -376,8 +376,8 @@ void *xbrtime_realloc(void *ptr, size_t new_size){
   }
 
 #ifdef _ALLOC_DEBUG_
-  printf("_XBRTIME_DEBUG_ : Old size is less than new size. Old size: %ld, New size: %ld", old_size, new_size);
-  printf("_XBRTIME_DEBUG_ : Allocate a new block. Address: %p, Size: %ld", new_ptr, new_size);
+  printf("XBRTIME_DEBUG : Old size is less than new size. Old size: %ld, New size: %ld\n", old_size, new_size);
+  printf("XBRTIME_DEBUG : Allocate a new block. Address: %p, Size: %ld\n", new_ptr, new_size);
 #endif
 
   // Copy the old data to the new location

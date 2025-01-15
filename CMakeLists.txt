@@ -51,9 +51,9 @@ project(xbgas-runtime C CXX ASM)
 #-- COMPILER OPTIONS
 #------------------------------------------------------------------------
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -static -w")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -static -w -DXBRTIME_DEBUG")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O3 -static -w")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -fno-builtin-printf -static -w")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -fno-builtin-printf -static -w -DXBRTIME_DEBUG")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O3 -fno-builtin-printf -static -w")
 
 # xbrtime paths
 set(REV_SYSCALLS_PATH "${REV}/common/syscalls" CACHE PATH "REV syscalls path")

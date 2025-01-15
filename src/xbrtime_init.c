@@ -30,7 +30,7 @@ extern void xbrtime_close(){
   int i = 0;
 
 #ifdef _INIT_DEBUG_
-  printf("XBGAS-RUNTIME: Closing the XBGAS-RUNTIME\n");
+  printf("XBRTIME_DEBUG: Closing the XBGAS-RUNTIME\n");
 #endif
 
   /* initiate a barrier */
@@ -43,7 +43,7 @@ extern void xbrtime_close(){
     /* free all the remaining shared blocks */
     for( i=0; i<_XBRTIME_MEM_SLOTS_; i++ ){
 #ifdef _INIT_DEBUG_
-      printf("XBGAS-RUNTIME: Freeing shared memory block %d\n", i);
+      printf("XBRTIME_DEBUG: Freeing shared memory block %d\n", i);
 #endif
       if( __XBRTIME_CONFIG->_MMAP[i].size != 0 ){
         xbrtime_free((void *)(__XBRTIME_CONFIG->_MMAP[i].start_addr));
@@ -59,7 +59,7 @@ extern void xbrtime_close(){
   }
 
 #ifdef _INIT_DEBUG_
-  printf("XBGAS-RUNTIME: Closing the XBGAS-RUNTIME\n");
+  printf("XBRTIME_DEBUG: Closing the XBGAS-RUNTIME\n");
 #endif
   
   return;

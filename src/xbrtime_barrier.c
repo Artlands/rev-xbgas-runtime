@@ -41,15 +41,16 @@ extern void xbrtime_barrier_all(){
 	if (iter < log(num_pe)/log(2))
 		iter++;
   
+	// Comment out the heavy fence. This causes the reduction tests hang.
   /* force a heavy fence */
-  __xbrtime_asm_fence();
+  // __xbrtime_asm_fence();
 
 	while(i < iter){
   	/* derive the correct target pe */
 		target 	= (mype + stride)%num_pe; 
 
 #ifdef _BARRIER_DEBUG_
-  	printf( "XBRTIME_DEBUG : PE=%d: BARRIER TARGET=%d", xbrtime_mype(),
+  	printf( "XBRTIME_DEBUG : PE=%d: Barrier target = %d\n", xbrtime_mype(),
           (int)(target) );
 #endif
 
@@ -57,7 +58,7 @@ extern void xbrtime_barrier_all(){
   	addr 		= (uint64_t)(&__XBRTIME_CONFIG->_BARRIER[SENSE*10+i]);
 
 #ifdef _BARRIER_DEBUG_
-  	printf( "XBRTIME_DEBUG : PE=%d: TOUCHING REMOTE ADDRESS ON PHYSICAL TARGET=%d",
+  	printf( "XBRTIME_DEBUG : PE=%d: Touching remote address on physical target = %d\n",
           xbrtime_mype(),
           (int)(target) );
 #endif
@@ -65,13 +66,13 @@ extern void xbrtime_barrier_all(){
   	__xbrtime_remote_touch( addr, target, stride);	
 
 #ifdef _BARRIER_DEBUG_
-  	printf( "XBRTIME_DEBUG : PE=%d: SUCCESS TOUCHING REMOTE ADDRESS", xbrtime_mype() );
+  	printf( "XBRTIME_DEBUG : PE=%d: Success touching remote address\n", xbrtime_mype() );
 #endif
 
   	/* spinwait on local value */
  		while( __XBRTIME_CONFIG->_BARRIER[SENSE*10+i] != stride ){
 #ifdef XBRTIME_DEBUG
-			printf("XBRTIME_DEBUG : PE = %d, SENSE = %ld, LOCAL BARRIER = 0x%lx",xbrtime_mype(), SENSE, __XBRTIME_CONFIG->_BARRIER[SENSE]);
+			printf("XBRTIME_DEBUG : PE = %d, SENSE = %ld, Local barrier = 0x%lx\n",xbrtime_mype(), SENSE, __XBRTIME_CONFIG->_BARRIER[SENSE]);
 #endif
 		}
 
@@ -86,7 +87,7 @@ extern void xbrtime_barrier_all(){
   SENSE = 1 - SENSE;
 
 #ifdef _BARRIER_DEBUG_
-  printf( "XBRTIME_DEBUG : PE=%d: BARRIER COMPLETE", xbrtime_mype() );
+  printf( "XBRTIME_DEBUG : PE=%d: Barrier complete\n", xbrtime_mype() );
 #endif
 }
 

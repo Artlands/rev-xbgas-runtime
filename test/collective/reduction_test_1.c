@@ -53,9 +53,10 @@ int main()
     printf("A maximal number occured (at least once) at the following indices:\n");
     for (int i = 0; i < NELEMS; i++) {
       if (value_is_maximal_all[i] == 1) {
-        printf("%d\n", i);
+        printf("%d ", i);
       }
     }
+    printf("\n");
   }
 
   xbrtime_free(value_is_maximul);

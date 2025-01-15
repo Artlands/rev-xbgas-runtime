@@ -36,7 +36,7 @@ void xbrtime_init_lock(long *lock){
 
 #ifdef _LOCK_DEBUG_
   int mype = xbrtime_mype();
-  printf("PE %d: Initialize lock at %p", mype, lock);
+  printf("XBRTIME_DEBUG : PE %d: Initialize lock at %p\n", mype, lock);
 #endif
 
 }
@@ -46,13 +46,13 @@ void xbrtime_set_lock(long *lock){
   mcs_node_t *mcs_node = (mcs_node_t *)lock;
   // Get the previous PE from the next/tail of the lock owner, and set the next/tail to myself
 #ifdef _LOCK_DEBUG_
-  printf("PE %d: Atomic swap %p on %d with %d", mype, &mcs_node->next, lock_owner(lock), mype);
+  printf("XBRTIME_DEBUG : PE %d: Atomic swap %p on %d with %d\n", mype, &mcs_node->next, lock_owner(lock), mype);
 #endif
 
   int prev = xbrtime_int_atomic_swap(&mcs_node->next, mype, lock_owner(lock));
 
 #ifdef _LOCK_DEBUG_
-  printf("PE %d: Previous PE %d", mype, prev);
+  printf("XBRTIME_DEBUG : PE %d: Previous PE %d\n", mype, prev);
 #endif
 
   if ( prev != XBGAS_LOCK_NULL_PE ) {
@@ -60,7 +60,7 @@ void xbrtime_set_lock(long *lock){
     xbrtime_int_atomic_set(&mcs_node->next, mype, prev);
 
 #ifdef _LOCK_DEBUG_
-    printf("PE %d: Atomic set %p on %d with %d", mype, &mcs_node->next, prev, mype);
+    printf("XBRTIME_DEBUG : PE %d: Atomic set %p on %d with %d\n", mype, &mcs_node->next, prev, mype);
 #endif
 
     // Spin until the lock is released
@@ -75,7 +75,7 @@ void xbrtime_clear_lock(long *lock){
   mcs_node_t *mcs_node = (mcs_node_t *)lock;
 
 #ifdef _LOCK_DEBUG_
-    printf("PE %d: mcs_node->next = %d", mype, mcs_node->next);
+    printf("XBRTIME_DEBUG : PE %d: mcs_node->next = %d\n", mype, mcs_node->next);
 #endif
 
   if ( mcs_node->next == XBGAS_LOCK_NULL_PE ) {
@@ -83,7 +83,7 @@ void xbrtime_clear_lock(long *lock){
   }
 
 #ifdef _LOCK_DEBUG_
-  printf("PE %d: Release the next PE %d, set waiting to %d", mype, mcs_node->next, XBGAS_LOCK_PROCEEDING);
+  printf("XBRTIME_DEBUG : PE %d: Release the next PE %d, set waiting to %d\n", mype, mcs_node->next, XBGAS_LOCK_PROCEEDING);
 #endif
 
   // Release the next PE
@@ -95,13 +95,13 @@ int xbrtime_test_lock(long *lock){
   mcs_node_t *mcs_node = (mcs_node_t *)lock;
   // Get the previous PE from the next/tail of the lock owner
 #ifdef _LOCK_DEBUG_
-  printf("PE %d: Atomic swap %p on %d with %d", mype, &mcs_node->next, lock_owner(lock), mype);
+  printf("XBRTIME_DEBUG : PE %d: Atomic swap %p on %d with %d\n", mype, &mcs_node->next, lock_owner(lock), mype);
 #endif
 
   int prev = xbrtime_int_atomic_fetch(&mcs_node->next, lock_owner(lock));
 
 #ifdef _LOCK_DEBUG_
-  printf("PE %d: Previous PE %d", mype, prev);
+  printf("XBRTIME_DEBUG : PE %d: Previous PE %d\n", mype, prev);
 #endif
 
   if ( prev != XBGAS_LOCK_NULL_PE ) {
