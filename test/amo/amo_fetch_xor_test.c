@@ -1,6 +1,6 @@
 /* _AMO_FETCH_XOR_TEST_C_
  *
- * Copyright (C) 2017-2024 Tactical Computing Laboratories, LLC
+ * Copyright (C) 2017-2025 Tactical Computing Laboratories, LLC
  * All Rights Reserved
  * contact@tactcomplabs.com
  *

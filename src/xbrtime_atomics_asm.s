@@ -1,7 +1,7 @@
 #
 # _XBRTIME_ATOMICS_ASM_S_
 #
-# Copyright (C) 2017-2024 Tactical Computing Laoratories, LLC
+# Copyright (C) 2017-2025 Tactical Computing Laoratories, LLC
 # All Rights Reserved
 # contact@tactcomplabs.com
 #
