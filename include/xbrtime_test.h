@@ -25,7 +25,7 @@ extern "C" {
       \param cmp_value is the value to be compared with ivar.
       \return int returns 1 if the comparison of the symmetric object pointed to by ivar with the value cmp_value according to the comparison operator cmp evaluates to true; otherwise, it returns 0.
 */
-#define XBGAS_DECL_TEST(_type, _typename)                             \ 
+#define XBGAS_DECL_TEST(_type, _typename)                            \
 int xbrtime_##_typename##_test(_type *ivar, int cmp, _type cmp_value);       
 
     /* Test operations */
@@ -53,7 +53,7 @@ int xbrtime_##_typename##_test(_type *ivar, int cmp, _type cmp_value);
       \param cmp_value is the value to be compared with the objects pointed to by ivars.
       \return int returns 1 if all variables in ivars satisfy the test condition or if nelems is 0, otherwise this routine returns 0.
 */
-#define XBGAS_DECL_TEST_ALL(_type, _typename)                                                                \ 
+#define XBGAS_DECL_TEST_ALL(_type, _typename)                                                                \
 int xbrtime_##_typename##_test_all(_type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value);       
 
     /* Test all operations */
@@ -81,7 +81,7 @@ int xbrtime_##_typename##_test_all(_type *ivars, size_t nelems, const int *statu
       \param cmp_value is the value to be compared with the objects pointed to by ivars.
       \return size_t returns the index of an element in the ivars array that satisfies the test condition. If the test set is empty or no conditions in the test set are satisfied, this routine returns SIZE_MAX.
 */
-#define XBGAS_DECL_TEST_ANY(_type, _typename)                                                                 \ 
+#define XBGAS_DECL_TEST_ANY(_type, _typename)                                                                  \
 size_t xbrtime_##_typename##_test_any(_type *ivars, size_t nelems, const int *status, int cmp, _type cmp_value);       
 
     /* Test any operations */
@@ -111,7 +111,7 @@ size_t xbrtime_##_typename##_test_any(_type *ivars, size_t nelems, const int *st
       \param cmp_value is the value to be compared with the objects pointed to by ivars.
       \return size_t returns the number of indices returned in the indices array. If the test set is empty, this routine returns 0.
 */
-#define XBGAS_DECL_TEST_SOME(_type, _typename)                                                                 \ 
+#define XBGAS_DECL_TEST_SOME(_type, _typename)                                                                                   \
 size_t xbrtime_##_typename##_test_some(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type cmp_value);       
 
     /* Test some operations */
@@ -140,7 +140,7 @@ size_t xbrtime_##_typename##_test_some(_type *ivars, size_t nelems, size_t *indi
       \param *cmp_values is the local address of an array of length nelems containing values to be compared with the respective objects in ivars.
       \return int returns 1 if all variables in ivars satisfy the test conditions or if nelems is 0, otherwise this routine returns 0.
 */
-#define XBGAS_DECL_TEST_ALL_VECTOR(_type, _typename)                                                                  \ 
+#define XBGAS_DECL_TEST_ALL_VECTOR(_type, _typename)                                                                 \
 int xbrtime_##_typename##_test_all_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values);       
 
     /* Test all vector operations */
@@ -168,7 +168,7 @@ int xbrtime_##_typename##_test_all_vector(_type *ivars, size_t nelems, const int
       \param *cmp_values is the local address of an array of length nelems containing values to be compared with the respective objects in ivars.
       \return size_t returns the index of an element in the ivars array that satisfies the test condition. If the test set is empty or no conditions in the test set are satisfied, this routine returns SIZE_MAX.
 */
-#define XBGAS_DECL_TEST_ANY_VECTOR(_type, _typename)                                                                   \ 
+#define XBGAS_DECL_TEST_ANY_VECTOR(_type, _typename)                                                                    \
 size_t xbrtime_##_typename##_test_any_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values);       
 
     /* Test any vector operations */
@@ -198,7 +198,7 @@ size_t xbrtime_##_typename##_test_any_vector(_type *ivars, size_t nelems, const 
       \param *cmp_values is the local address of an array of length nelems containing values to be compared with the respective objects in ivars.
       \return size_t returns the number of indices returned in the indices array. If the test set is empty, this routine returns 0.
 */
-#define XBGAS_DECL_TEST_SOME_VECTOR(_type, _typename)                                                                                    \ 
+#define XBGAS_DECL_TEST_SOME_VECTOR(_type, _typename)                                                                                    \
 size_t xbrtime_##_typename##_test_some_vector(_type *ivars, size_t nelems, size_t *indices, const int *status, int cmp, _type *cmp_value);       
 
     /* Test some vector operations */
