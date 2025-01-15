@@ -224,7 +224,7 @@ size_t xbrtime_##_typename##_test_some(_type *ivars, size_t nelems, size_t *indi
 #undef XBGAS_TEST_SOME
 
 #define XBGAS_TEST_ALL_VECTOR(_type, _typename)                                                                             \ 
-void xbrtime_##_typename##_test_all_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values)      \
+int xbrtime_##_typename##_test_all_vector(_type *ivars, size_t nelems, const int *status, int cmp, _type *cmp_values)      \
 {                                                                                                                           \
   size_t i;                                                                                                                 \
   for(i=0;i<nelems;++i){                                                                                                    \

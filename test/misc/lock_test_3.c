@@ -26,9 +26,8 @@ int main(void) {
 
   xbrtime_barrier_all();
   
-  xbrtime_init_lock(lock);
-
   /* First lock */
+  xbrtime_init_lock(lock);
   xbrtime_set_lock(lock);
 
   int val = xbrtime_int_g(count, 0); /* get count value on PE 0 */
@@ -42,7 +41,10 @@ int main(void) {
   if (mype == 0)
     printf("First Lock - Result: PE %d: count is %d\n", mype, count[0]);
 
-  /* Second lock */
+  xbrtime_barrier_all();
+
+  /* Second lock. Have to initialize the lock first*/
+  xbrtime_init_lock(lock);
   xbrtime_set_lock(lock);
 
   val = xbrtime_int_g(count2, 0); /* get count value on PE 0 */

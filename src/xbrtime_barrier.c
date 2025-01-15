@@ -71,6 +71,7 @@ extern void xbrtime_barrier_all(){
 
   	/* spinwait on local value */
  		while( __XBRTIME_CONFIG->_BARRIER[SENSE*10+i] != stride ){
+			asm volatile("nop");
 #ifdef XBRTIME_DEBUG
 			printf("XBRTIME_DEBUG : PE = %d, SENSE = %ld, Local barrier = 0x%lx\n",xbrtime_mype(), SENSE, __XBRTIME_CONFIG->_BARRIER[SENSE]);
 #endif
