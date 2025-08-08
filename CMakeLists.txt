@@ -74,8 +74,10 @@ include_directories(
 
 # # Find all the relevant packages
 find_package(Doxygen)
-option(BUILD_DOCUMENTATION "Create and install the doxygen-ized API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
-
+option(BUILD_DOCUMENTATION
+  "Create and install the doxygen-ized API documentation (requires Doxygen)"
+  OFF
+)
 #------------------------------------------------------------------------
 #-- DOCUMENTATION
 #------------------------------------------------------------------------
